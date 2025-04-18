@@ -37,20 +37,23 @@
 </head>
 <body>
 
-<div class="login-card">
-    <h2>Login</h2>
-    <form method="POST" action="{{ route('login') }}">
-    
-        <div class="mb-3">
-            <input type="text" name="user_id" class="form-control" placeholder="User ID" required>
-        </div>
-        <div class="mb-3">
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
-        </div>
-        
-         <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
-    </form>
-</div>
+    <div class="login-card">
+        <h2>Login</h2>
+        <form method="POST" action="/login">
+            @csrf
+            <div class="mb-3">
+                <input type="text" name="username" class="form-control" placeholder="Username" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
+        </form>
+    </div>
 
+    @if ($errors->has('login'))
+        <p style="color:red;">{{ $errors->first('login') }}</p>
+    @endif
 </body>
 </html>

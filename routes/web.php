@@ -1,23 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
-Route::get('/', function () {
-    return view('index');
-})->name('index');
+Route::get('/', [AuthController::class, 'loginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::get('/dataPesanan', function () {
-    return view('dataPesanan');
-})->name('dataPesanan');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/grafik', function () {
+        return view('index');
+    })->name('index');
 
-Route::get('/dataPelanggan', function () {
-    return view('dataPelanggan');
-})->name('dataPelanggan');
+    Route::get('/dataPesanan', function () {
+        return view('dataPesanan');
+    })->name('dataPesanan');
 
-Route::get('/dataPengeluaran', function () {
-    return view('dataPengeluaran');
-})->name('dataPengeluaran');
+    Route::get('/dataPelanggan', function () {
+        return view('dataPelanggan');
+    })->name('dataPelanggan');
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
+    Route::get('/dataPengeluaran', function () {
+        return view('dataPengeluaran');
+    })->name('dataPengeluaran');
+});

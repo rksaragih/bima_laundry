@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pesanan_satuans', function (Blueprint $table) {
+        Schema::create('pesanans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
             $table->foreignId('id_pelanggan')->constrained('pelanggans')->onDelete('cascade');
             $table->foreignId('id_layanan')->constrained('layanans')->onDelete('cascade');
             $table->string('jenis_barang');
             $table->text('spesifikasi_barang');
-            $table->integer('jumlah_pakaian');
+            $table->string('tipe_pesanan');
             $table->string('status_cucian');
             $table->string('status_pembayaran');
             $table->integer('total_harga');
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pesanan_satuans');
+        Schema::dropIfExists('pesanans');
     }
 };
