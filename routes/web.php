@@ -23,4 +23,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dataPengeluaran', function () {
         return view('dataPengeluaran');
     })->name('dataPengeluaran');
+
+    Route::get('/dataLayanan', function () {
+        return view('dataLayanan');
+    })->name('dataLayanan');
 });

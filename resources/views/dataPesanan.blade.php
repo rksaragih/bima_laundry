@@ -61,7 +61,7 @@
               </a>
             </li>
             <li class="mb-4">
-              <a class="flex items-center text-gray-700" href="#">
+              <a class="flex items-center text-gray-700" href="{{ route('dataLayanan') }}">
                 <img src="images/icon-data-layanan.png" alt="" class="mr-2" />
                 Data Layanan
               </a>
