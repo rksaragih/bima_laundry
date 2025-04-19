@@ -35,6 +35,14 @@
             />
           </div>
           <ul>
+            @if(Auth::user()->role === 'Admin')
+            <li class="mb-4">
+              <a class="flex items-center text-biruBima" href="{{ route('index') }}">
+                <img src="images/icon-dashboard.png" alt="" class="mr-2" />
+                Grafik Bisnis
+              </a>
+            </li>
+            @endif
             <li class="mb-4">
               <a
                 class="flex items-center text-gray-700"
@@ -68,14 +76,6 @@
                 {{ Auth::user()->role === 'Kasir' ? 'Tambah Pengeluaran' : 'Data Pengeluaran' }}
               </a>
             </li>
-            @if(Auth::user()->role === 'Admin')
-            <li class="mb-4">
-              <a class="flex items-center text-yellow-500" href="{{ route('index') }}">
-                <img src="images/icon-dashboard.png" alt="" class="mr-2" />
-                Grafik Bisnis
-              </a>
-            </li>
-            @endif
             <li class="mt-8">
               <a href="#" class="flex items-center text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="fas fa-sign-out-alt mr-3"></i> Logout

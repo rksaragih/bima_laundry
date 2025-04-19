@@ -3,18 +3,18 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Bima Laundry - Data Pengeluaran</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         biruBima: '#3A51D5',
-                    }
-                }
-            }
-        }
+                    },
+                },
+            },
+        };
     </script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 </head>
 
@@ -31,6 +31,14 @@
             />
           </div>
           <ul>
+            @if(Auth::user()->role === 'Admin')
+            <li class="mb-4">
+              <a class="flex items-center text-gray-700" href="{{ route('index') }}">
+                <img src="images/icon-dashboard.png" alt="" class="mr-2" />
+                Grafik Bisnis
+              </a>
+            </li>
+            @endif
             <li class="mb-4">
               <a
                 class="flex items-center text-gray-700"
@@ -57,21 +65,13 @@
             </li>
             <li class="mb-4">
               <a
-                class="flex items-center text-yellow-500"
+                class="flex items-center text-biruBima"
                 href="{{ route('dataPengeluaran') }}"
               >
                 <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
                 {{ Auth::user()->role === 'Kasir' ? 'Tambah Pengeluaran' : 'Data Pengeluaran' }}
               </a>
             </li>
-            @if(Auth::user()->role === 'Admin')
-            <li class="mb-4">
-              <a class="flex items-center text-gray-500" href="{{ route('index') }}">
-                <img src="images/icon-dashboard.png" alt="" class="mr-2" />
-                Grafik Bisnis
-              </a>
-            </li>
-            @endif
             <li class="mt-8">
               <a class="flex items-center text-red-500" href="{{ route('login') }}">
                 <i class="fas fa-sign-out-alt mr-3"> </i>

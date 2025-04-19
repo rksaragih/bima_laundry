@@ -14,11 +14,21 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $request->validate([
+            'username' => 'required|string|max:255',
+            'password' => 'required|string|min:8',
+        ]);
+
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            if (Auth::user()->role === 'Admin') {
+            return redirect()->intended('/grafik');
+            } elseif (Auth::user()->role === 'Kasir') {
             return redirect()->intended('/dataPesanan');
+            }
         }
 
         return back()->withErrors([
