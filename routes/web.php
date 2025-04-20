@@ -2,12 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\LayananController;
 
 Route::get('/', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::middleware(['auth'])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+
     Route::get('/grafik', function () {
         return view('index');
     })->name('index');
@@ -16,15 +19,11 @@ Route::middleware(['auth'])->group(function () {
         return view('dataPesanan');
     })->name('dataPesanan');
 
-    Route::get('/dataPelanggan', function () {
-        return view('dataPelanggan');
-    })->name('dataPelanggan');
+    Route::resource('pelanggan', PelangganController::class)->except(['show']);
+    Route::resource('layanan', LayananController::class)->except(['show']);
 
     Route::get('/dataPengeluaran', function () {
         return view('dataPengeluaran');
     })->name('dataPengeluaran');
 
-    Route::get('/dataLayanan', function () {
-        return view('dataLayanan');
-    })->name('dataLayanan');
 });

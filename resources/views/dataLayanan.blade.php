@@ -4,6 +4,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Bima Laundry - Data Layanan</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
     <script>
         tailwind.config = {
             theme: {
@@ -15,6 +16,13 @@
             },
         };
     </script>
+
+    <style>
+      [x-cloak] {
+          display: none !important;
+      }
+    </style>
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 </head>
 
@@ -35,7 +43,7 @@
             <li class="mb-4">
               <a class="flex items-center text-gray-700" href="{{ route('index') }}">
                 <img src="images/icon-dashboard.png" alt="" class="mr-2" />
-                Grafik Bisnis
+                Dashboard
               </a>
             </li>
             @endif
@@ -45,24 +53,24 @@
                 href="{{ route('dataPesanan') }}"
               >
                 <img src="images/icon-data-pesanan.png" alt="" class="mr-1" />
-                Data Pesanan
+                Pesanan
               </a>
             </li>
             <li class="mb-4">
               <a
                 class="flex items-center text-gray-700"
-                href="{{ route('dataPelanggan') }}"
+                href="{{ route('pelanggan.index') }}"
               >
                 <img src="images/icon-data-pelanggan.png" alt="" class="mr-2" />
-                Data Pelanggan
+                Pelanggan
               </a>
             </li>
             <li class="mb-4">
               <a 
                 class="flex items-center text-biruBima"
-                href="{{ route('dataLayanan') }}">
+                href="{{ route('layanan.index') }}">
                 <img src="images/icon-data-layanan.png" alt="" class="mr-2" />
-                Data Layanan
+                Layanan
               </a>
             </li>
             <li class="mb-4">
@@ -71,7 +79,7 @@
                 href="{{ route('dataPengeluaran') }}"
               >
                 <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
-                {{ Auth::user()->role === 'Kasir' ? 'Tambah Pengeluaran' : 'Data Pengeluaran' }}
+                {{ Auth::user()->role === 'Kasir' ? 'Tambah Pengeluaran' : 'Pengeluaran' }}
               </a>
             </li>
             <li class="mt-8">
@@ -86,125 +94,147 @@
 
     <!-- main -->
     <div class="flex-1 p-10">
-        <div class="bg-white p-6 rounded-lg shadow-lg">
+        <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedLayanan: {} }">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Data Layanan</h1>
                 <input class="border rounded-lg px-4 py-2" placeholder="Search..." type="text"/>
             </div>
+
+          @if (auth()->user()->role === 'Admin')
+          <!-- Modal -->
+          <div x-data="{ openModal: false }">
+
             <div class="flex space-x-4 mb-4">
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg" onclick="tambahData()">Tambah Data</button>
-                <button class="bg-green-500 text-white px-4 py-2 rounded-lg" onclick="refreshData()">Refresh Data</button>
+              <button x-on:click="openModal = true" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                Tambah Data
+              </button>
             </div>
-            <table class="min-w-full bg-white">
-                <thead>
-                <tr>
-                    <th class="py-2 px-4 border-b">No.</th>
-                    <th class="py-2 px-4 border-b">Jenis Layanan</th>
-                    <th class="py-2 px-4 border-b">Harga</th>
-                    <th class="py-2 px-4 border-b">Aksi</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td class="py-2 px-4 border-b">1</td>
-                    <td class="py-2 px-4 border-b">Cuci Kering</td>
-                    <td class="py-2 px-4 border-b">Rp 7.000</td>
-                    <td class="py-2 px-4 border-b">
-                        <button class="bg-yellow-500 text-white px-2 py-1 rounded-lg" onclick="editData('C001')">Edit</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded-lg">Delete</button>
 
-                    </td>
-                </tr>
-                <tr>
-                    <td class="py-2 px-4 border-b">2</td>
-                    <td class="py-2 px-4 border-b">Cuci Kering + Setrika 1</td>
-                    <td class="py-2 px-4 border-b">Rp 10.000</td>
-                    <td class="py-2 px-4 border-b">
-                        <button class="bg-yellow-500 text-white px-2 py-1 rounded-lg" onclick="editData('C002')">Edit</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded-lg">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="py-2 px-4 border-b">3</td>
-                    <td class="py-2 px-4 border-b">Cuci Kering + Setrika 2</td>
-                    <td class="py-2 px-4 border-b">Rp. 9.000</td>
-                    <td class="py-2 px-4 border-b">
-                        <button class="bg-yellow-500 text-white px-2 py-1 rounded-lg" onclick="editData('C003')">Edit</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded-lg">Delete</button>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td class="py-2 px-4 border-b">4</td>
-                    <td class="py-2 px-4 border-b">Cuci Kering + Setrika 3</td>
-                    <td class="py-2 px-4 border-b">Rp. 8.000</td>
-                    <td class="py-2 px-4 border-b">
-                        <button class="bg-yellow-500 text-white px-2 py-1 rounded-lg" onclick="editData('C004')">Edit</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded-lg">Delete</button>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td class="py-2 px-4 border-b">5</td>
-                    <td class="py-2 px-4 border-b">Express (3 Jam)</td>
-                    <td class="py-2 px-4 border-b">Rp. 20.000</td>
-                    <td class="py-2 px-4 border-b">
-                        <button class="bg-yellow-500 text-white px-2 py-1 rounded-lg" onclick="editData('C005')">Edit</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded-lg">Delete</button>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td class="py-2 px-4 border-b">6</td>
-                    <td class="py-2 px-4 border-b">Express (8 Jam)</td>
-                    <td class="py-2 px-4 border-b">Rp. 18.000</td>
-                    <td class="py-2 px-4 border-b">
-                        <button class="bg-yellow-500 text-white px-2 py-1 rounded-lg" onclick="editData('C006')">Edit</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded-lg">Delete</button>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td class="py-2 px-4 border-b">7</td>
-                    <td class="py-2 px-4 border-b">Express (12 Jam)</td>
-                    <td class="py-2 px-4 border-b">Rp. 12.000</td>
-                    <td class="py-2 px-4 border-b">
-                        <button class="bg-yellow-500 text-white px-2 py-1 rounded-lg" onclick="editData('C007')">Edit</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded-lg">Delete</button>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td class="py-2 px-4 border-b">8</td>
-                    <td class="py-2 px-4 border-b">Setrika Express</td>
-                    <td class="py-2 px-4 border-b">Rp. 7.000</td>
-                    <td class="py-2 px-4 border-b">
-                        <button class="bg-yellow-500 text-white px-2 py-1 rounded-lg" onclick="editData('C008')">Edit</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded-lg">Delete</button>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td class="py-2 px-4 border-b">9</td>
-                    <td class="py-2 px-4 border-b">Setrika</td>
-                    <td class="py-2 px-4 border-b">Rp. 6.000</td>
-                    <td class="py-2 px-4 border-b">
-                        <button class="bg-yellow-500 text-white px-2 py-1 rounded-lg" onclick="editData('C009')">Edit</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded-lg">Delete</button>
-
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="flex justify-between items-center mt-4">
-                <span>Showing 1-5 of 50</span>
-                <div class="flex space-x-2">
-                    <button class="px-3 py-1 border rounded-lg" onclick="previousPage()">Previous</button>
-                    <button class="px-3 py-1 border rounded-lg" onclick="goToPage(1)">1</button>
-                    <button class="px-3 py-1 border rounded-lg" onclick="goToPage(2)">2</button>
-                    <button class="px-3 py-1 border rounded-lg" onclick="nextPage()">Next</button>
+            <div
+                x-show="openModal"
+                x-cloak
+                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+            >
+                <div class="bg-white p-6 rounded w-96">
+                    <h2 class="text-lg font-bold mb-4">Tambah Data Layanan</h2>
+                    <form action="{{ route('layanan.store') }}" method="POST">
+                        @csrf
+                        <div class="mb-4">
+                            <label class="block mb-1">Jenis Layanan</label>
+                            <input type="text" name="jenis_layanan" class="w-full border rounded p-2" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block mb-1">Harga</label>
+                            <input type="text" name="harga" class="w-full border rounded p-2" required>
+                        </div>
+                        <div class="flex justify-end">
+                            <button
+                                type="button"
+                                x-on:click="openModal = false"
+                                class="mr-2 text-gray-500"
+                            >
+                                Batal
+                            </button>
+                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
+                                Simpan
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
+          </div>
+          @endif
+        
+            <table class="min-w-full bg-white">
+                <thead>
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Layanan</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga (kg/satuan)</th>
+                    @if (auth()->user()->role === 'Admin')
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    @endif
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($layanans as $index => $layanan)
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ $index + 1 }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ $layanan->jenis_layanan }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Rp. {{ $layanan->harga }}</td>
+                    @if (auth()->user()->role === 'Admin')
+                      <td class="px-6 py-4 whitespace-nowrap flex gap-2">
+
+                        <button
+                          class="bg-blue-500 text-white px-3 py-1 hover:bg-blue-600 rounded text-sm"
+                          x-on:click="openEditModal = true; selectedLayanan = {{ $layanan }}"
+                        >
+                          Edit
+                        </button>
+
+                        <div
+                          x-show="openEditModal"
+                          class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                          x-cloak
+                        >
+                          <div class="bg-white p-6 rounded w-96">
+                              <h2 class="text-lg font-bold mb-4">Edit Data Layanan</h2>
+                              <form
+                                  x-bind:action="'/layanan/' + selectedLayanan.id"
+                                  method="POST"
+                              >
+                                  @csrf
+                                  @method('PUT')
+
+                                  <div class="mb-4">
+                                      <label class="block mb-1">Jenis Layanan</label>
+                                      <input
+                                          type="text"
+                                          name="jenis_layanan"
+                                          class="w-full border rounded p-2"
+                                          x-model="selectedLayanan.jenis_layanan"
+                                          required
+                                      >
+                                  </div>
+                                  <div class="mb-4">
+                                      <label class="block mb-1">Harga</label>
+                                      <input
+                                          type="text"
+                                          name="harga"
+                                          class="w-full border rounded p-2"
+                                          x-model="selectedLayanan.harga"
+                                          required
+                                      >
+                                  </div>
+                                  <div class="flex justify-end">
+                                      <button
+                                          type="button"
+                                          x-on:click="openEditModal = false"
+                                          class="mr-2 text-gray-500"
+                                      >
+                                          Batal
+                                      </button>
+                                      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                                          Update
+                                      </button>
+                                  </div>
+                              </form>
+                          </div>
+                      </div>
+                        <form action="{{ route('layanan.destroy', $layanan->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus layanan ini?');">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">
+                            Hapus
+                          </button>
+                        </form>
+                        @endif
+
+                      </td>
+                  </tr>
+                  @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

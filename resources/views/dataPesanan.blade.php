@@ -38,7 +38,7 @@
             <li class="mb-4">
               <a class="flex items-center text-gray-700" href="{{ route('index') }}">
                 <img src="images/icon-dashboard.png" alt="" class="mr-2" />
-                Grafik Bisnis
+                Dashboard
               </a>
             </li>
             @endif
@@ -48,22 +48,22 @@
                 href="{{ route('dataPesanan') }}"
               >
                 <img src="images/icon-data-pesanan.png" alt="" class="mr-1" />
-                Data Pesanan
+                Pesanan
               </a>
             </li>
             <li class="mb-4">
               <a
                 class="flex items-center text-gray-700"
-                href="{{ route('dataPelanggan') }}"
+                href="{{ route('pelanggan.index') }}"
               >
                 <img src="images/icon-data-pelanggan.png" alt="" class="mr-2" />
-                Data Pelanggan
+                Pelanggan
               </a>
             </li>
             <li class="mb-4">
-              <a class="flex items-center text-gray-700" href="{{ route('dataLayanan') }}">
+              <a class="flex items-center text-gray-700" href="{{ route('layanan.index') }}">
                 <img src="images/icon-data-layanan.png" alt="" class="mr-2" />
-                Data Layanan
+                Layanan
               </a>
             </li>
             <li class="mb-4">
@@ -72,7 +72,7 @@
                 href="{{ route('dataPengeluaran') }}"
               >
                 <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
-                {{ Auth::user()->role === 'Kasir' ? 'Tambah Pengeluaran' : 'Data Pengeluaran' }}
+                {{ Auth::user()->role === 'Kasir' ? 'Tambah Pengeluaran' : 'Pengeluaran' }}
               </a>
             </li>
             <li class="mt-8">
