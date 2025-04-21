@@ -6,6 +6,7 @@
     Bima Laundry - Data Pesanan
     </title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
     <script>
         tailwind.config = {
         theme: {
@@ -17,6 +18,13 @@
         },
         };
     </script>
+
+    <style>
+      [x-cloak] {
+          display: none !important;
+      }
+    </style>
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     </head>
 
@@ -25,7 +33,7 @@
 
     <!-- ini sidebar -->
     <div class="w-1/5 bg-white h-screen shadow-lg">
-        <div class="p-6">
+        <div class="p-6" x-data="{ openModalPengeluaran : false }">
           <div class="flex items-center mb-8">
             <img
               alt="Logo"
@@ -67,13 +75,63 @@
               </a>
             </li>
             <li class="mb-4">
-              <a
-                class="flex items-center text-gray-700"
-                href="{{ route('dataPengeluaran') }}"
-              >
+              @if (Auth::user()->role === 'Kasir')
+                <a
+                  href="#"
+                  class="flex items-center text-gray-700"
+                  x-on:click.prevent="openModalPengeluaran = true"
+                >
+              
+                  <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
+                  Tambah Pengeluaran
+                </a>
+
+                <div
+                x-show="openModalPengeluaran"
+                x-cloak
+                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                >
+                  <div class="bg-white p-6 rounded w-96">
+                      <h2 class="text-lg font-bold mb-4">Tambah Data Pengeluaran</h2>
+                      <form action="{{ route('pengeluaran.store') }}" method="POST">
+                          @csrf
+                          <div class="mb-4">
+                              <label class="block mb-1">Jenis Pengeluaran</label>
+                              <input type="text" name="jenis_pengeluaran" class="w-full border rounded p-2" required>
+                          </div>
+                          <div class="mb-4">
+                              <label class="block mb-1">Biaya</label>
+                              <input type="text" name="biaya" class="w-full border rounded p-2" required>
+                          </div>
+                          <div class="mb-4">
+                              <label class="block mb-1">Tanggal</label>
+                              <input type="date" name="tanggal" class="w-full border rounded p-2" required>
+                          </div>
+                          <div class="flex justify-end">
+                              <button
+                                  type="button"
+                                  x-on:click="openModalPengeluaran = false"
+                                  class="mr-2 text-gray-500"
+                              >
+                                  Batal
+                              </button>
+                              <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
+                                  Simpan
+                              </button>
+                          </div>
+                      </form>
+                  </div>
+                </div>
+
+              @else
+                <a
+                  href="{{ route('pengeluaran.index') }}"
+                  class="flex items-center text-gray-700"
+                >
                 <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
-                {{ Auth::user()->role === 'Kasir' ? 'Tambah Pengeluaran' : 'Pengeluaran' }}
-              </a>
+                Pengeluaran
+                </a>
+              @endif
             </li>
             <li class="mt-8">
               <a class="flex items-center text-red-500" href="{{ route('login') }}">
