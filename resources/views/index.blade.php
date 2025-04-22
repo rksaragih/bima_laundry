@@ -4,17 +4,18 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" defer></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              biruBima: "#3A51D5",
+              biruBima: "#6FBcFF",
             },
           },
         },
       };
-      
+
     </script>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -31,40 +32,46 @@
             <img
               alt="Logo"
               class="mr-3"
-              src="images/logo-bima-laundry-hitam.png"
+              src="images/logo-bima-laundry-svg.svg"
             />
           </div>
           <ul>
             @if(Auth::user()->role === 'Admin')
             <li class="mb-4">
-              <a class="flex items-center text-biruBima" href="{{ route('index') }}">
-                <img src="images/icon-dashboard.png" alt="" class="mr-2" />
+              <a class="flex items-center gap-4 text-biruBima" href="{{ route('index') }}">
+                <i class="fa-solid fa-table-columns fa-fw"></i>
                 Dashboard
               </a>
             </li>
             @endif
             <li class="mb-4">
               <a
-                class="flex items-center text-gray-700"
+                class="flex items-center gap-4 text-gray-700"
                 href="{{ route('dataPesanan') }}"
               >
-                <img src="images/icon-data-pesanan.png" alt="" class="mr-1" />
-                Pesanan
+              <i class="fas fa-file-alt fa-fw"></i>
+              Pesanan
               </a>
             </li>
             <li class="mb-4">
               <a
-                class="flex items-center text-gray-700"
+                class="flex items-center gap-4 text-gray-700"
                 href="{{ route('pelanggan.index') }}"
               >
-                <img src="images/icon-data-pelanggan.png" alt="" class="mr-2" />
-                Pelanggan
+              <i class="fas fa-users fa-fw"></i>
+              Pelanggan
               </a>
             </li>
             <li class="mb-4">
-              <a class="flex items-center text-gray-700" href="{{ route('layanan.index') }}">
-                <img src="images/icon-data-layanan.png" alt="" class="mr-2" />
+              <a class="flex items-center gap-4 text-gray-700" href="{{ route('layanan.index') }}">
+                <i class="fas fa-user-shield fa-fw"></i>
                 Layanan
+              </a>
+            </li>
+            <li class="mb-4">
+              <a class="flex items-center gap-4 text-gray-700" href="#">
+                <i class="fas fa-shipping-fast fa-fw"></i>
+                Layanan Pengiriman
               </a>
             </li>
             <li class="mb-4">
@@ -74,7 +81,7 @@
                   class="flex items-center text-gray-700"
                   x-on:click.prevent="openModalPengeluaran = true"
                 >
-              
+
                   <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
                   Tambah Pengeluaran
                 </a>
@@ -119,18 +126,18 @@
               @else
                 <a
                   href="{{ route('pengeluaran.index') }}"
-                  class="flex items-center text-gray-700"
+                  class="flex items-center gap-4 text-gray-700"
                 >
-                <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
+                <i class="fas fa-wallet fa-fw"></i>
                 Pengeluaran
                 </a>
               @endif
             </li>
             <li class="mt-8">
-              <a href="#" class="flex items-center text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="fas fa-sign-out-alt mr-3"></i> Logout
               </a>
-            
+
               <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
                 @csrf
               </form>
@@ -141,6 +148,7 @@
 
       <!-- Main -->
       <div class="w-4/5 p-6">
+
         <div class="flex justify-between items-center mb-8">
           <h1 class="text-2xl font-bold">Dashboard</h1>
           <span class="text-blue-500"> Kasir </span>
@@ -148,8 +156,8 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="bg-biruBima text-white p-20 rounded-lg flex items-center">
-            <div class="bg-white text-biruBima p-8 rounded-full mr-6">
-              <img src="images/icon-data-pesanan.png" alt="" />
+            <div class="bg-white text-biruBima p-10 rounded-full mr-6">
+                <i class="fas fa-file-alt fa-fw"></i>
             </div>
             <div>
               <h2 class="text-2xl font-semibold mb-1">Data Pesanan</h2>
@@ -158,8 +166,8 @@
           </div>
 
           <div class="bg-biruBima text-white p-20 rounded-lg flex items-center">
-            <div class="bg-white text-biruBima p-8 rounded-full mr-6">
-              <img src="images/icon-data-pelanggan.png" alt="" />
+            <div class="bg-white text-biruBima p-10 rounded-full mr-6">
+                <i class="fas fa-users fa-fw"></i>
             </div>
             <div>
               <h2 class="text-2xl font-semibold mb-1">Data Pelanggan</h2>
@@ -168,8 +176,8 @@
           </div>
 
           <div class="bg-biruBima text-white p-20 rounded-lg flex items-center">
-            <div class="bg-white text-biruBima p-8 rounded-full mr-6">
-              <img src="images/icon-data-layanan.png" alt="" />
+            <div class="bg-white text-biruBima p-10 rounded-full mr-6">
+                <i class="fas fa-user-shield fa-fw"></i>
             </div>
             <div>
               <h2 class="text-2xl font-semibold mb-1">Data Layanan</h2>
@@ -178,8 +186,8 @@
           </div>
 
           <div class="bg-biruBima text-white p-20 rounded-lg flex items-center">
-            <div class="bg-white text-biruBima p-8 rounded-full mr-6">
-              <img src="images/icon-pengeluaran.png" alt="" />
+            <div class="bg-white text-biruBima p-10 rounded-full mr-6">
+                <i class="fas fa-wallet fa-fw"></i>
             </div>
             <div>
               <h2 class="text-2xl font-semibold mb-1">Data Pengeluaran</h2>

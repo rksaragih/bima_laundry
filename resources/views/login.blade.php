@@ -8,7 +8,7 @@
 
     <style>
         body {
-            background-color: #3A51D5;
+            background-color: #6FBcFF;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -33,11 +33,23 @@
         .form-control {
             border-radius: 8px;
         }
+
+        .logo{
+            margin-left: -17px;
+        }
     </style>
 </head>
 <body>
 
     <div class="login-card">
+        <div class="logo">
+            <div class="text-center mb-4">
+                <img src="{{ asset('images/logo-bima-laundry-svg.svg') }}"
+                alt="Logo Bima Laundry"
+                style="max-height: 60px;">
+            </div>
+        </div>
+
         <h2>Login</h2>
         <form method="POST" action="/login">
             @csrf
@@ -47,7 +59,7 @@
             <div class="mb-3">
                 <input type="password" name="password" class="form-control" placeholder="Password" required>
             </div>
-            
+
             <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
         </form>
     </div>
