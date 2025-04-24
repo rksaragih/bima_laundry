@@ -161,7 +161,6 @@
         <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedLayanan: {} }">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Data Layanan</h1>
-                <input class="border rounded-lg px-4 py-2" placeholder="Search..." type="text"/>
             </div>
 
           @if (auth()->user()->role === 'Admin')
@@ -210,7 +209,7 @@
           @endif
 
             <table class="min-w-full bg-white">
-                <thead>
+                <thead class="bg-gray-50">
                   <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Layanan</th>
