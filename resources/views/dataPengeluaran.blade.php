@@ -188,7 +188,7 @@
                         @endphp
 
                         <button
-                          class="bg-blue-500 text-white px-3 py-1 hover:bg-blue-600 rounded text-sm"
+                          class="bg-blue-500 h-9 w-20 text-white px-4 py-2 hover:bg-blue-600 rounded text-sm"
                           x-on:click= "openEditModal = true; selectedPengeluaran = {{ $pengeluaran }}"
                         >
                           Edit
@@ -259,7 +259,7 @@
                           @method('DELETE')
                           <button
                             type="submit"
-                            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">
+                            class="bg-red-500 h-9 w-20 text-white px-4 py-2 rounded hover:bg-red-600 text-sm">
                             Hapus
                           </button>
                         </form>

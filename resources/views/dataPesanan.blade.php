@@ -47,33 +47,33 @@
           <ul>
             @if(Auth::user()->role === 'Admin')
             <li class="mb-4">
-              <a class="flex items-center text-gray-700" href="{{ route('index') }}">
-                <img src="images/icon-dashboard.png" alt="" class="mr-2" />
+              <a class="flex items-center gap-4 text-gray-700" href="{{ route('index') }}">
+                <i class="fa-solid fa-table-columns fa-fw"></i>
                 Dashboard
               </a>
             </li>
             @endif
             <li class="mb-4">
               <a
-                class="flex items-center text-biruBima"
+                class="flex items-center gap-4 text-biruBima"
                 href="{{ route('dataPesanan') }}"
               >
-                <img src="images/icon-data-pesanan.png" alt="" class="mr-1" />
+                <i class="fas fa-file-alt fa-fw"></i>
                 Pesanan
               </a>
             </li>
             <li class="mb-4">
               <a
-                class="flex items-center text-gray-700"
+                class="flex items-center gap-4 text-gray-700"
                 href="{{ route('pelanggan.index') }}"
               >
-                <img src="images/icon-data-pelanggan.png" alt="" class="mr-2" />
+               <i class="fas fa-users fa-fw"></i>
                 Pelanggan
               </a>
             </li>
             <li class="mb-4">
-              <a class="flex items-center text-gray-700" href="{{ route('layanan.index') }}">
-                <img src="images/icon-data-layanan.png" alt="" class="mr-2" />
+              <a class="flex items-center gap-4 text-gray-700" href="{{ route('layanan.index') }}">
+                <i class="fas fa-user-shield fa-fw"></i>
                 Layanan
               </a>
             </li>
