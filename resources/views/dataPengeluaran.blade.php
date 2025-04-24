@@ -37,7 +37,7 @@
             <img
               alt="Logo"
               class="mr-3"
-              src="images/logo-bima-laundry-hitam.png"
+              src="images/logo-bima-laundry-svg.svg"
             />
           </a>
         </div>
@@ -107,7 +107,6 @@
         <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedPengeluaran: {} }">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Data Pengeluaran</h1>
-                <input class="border rounded-lg px-4 py-2" placeholder="Search..." type="text"/>
             </div>
 
             <!-- Modal -->
@@ -253,7 +252,7 @@
                               </form>
                           </div>
                         </div>
-                
+
                         <form action="{{ route('pengeluaran.destroy', $pengeluaran->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pengeluaran ini?');">
                           @csrf
                           @method('DELETE')

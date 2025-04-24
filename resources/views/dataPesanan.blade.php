@@ -40,7 +40,7 @@
               <img
                 alt="Logo"
                 class="mr-3"
-                src="images/logo-bima-laundry-hitam.png"
+                src="images/logo-bima-laundry-svg.svg"
               />
             </a>
           </div>
@@ -83,7 +83,7 @@
                 Layanan Pengiriman
                 </a>
             </li>
-                
+
             <li class="mb-4">
                 @if (Auth::user()->role === 'Kasir')
                     <a
@@ -168,21 +168,18 @@
             <input class="border rounded-lg px-4 py-2" placeholder="Search..." type="text"/>
             </div>
             <div class="flex space-x-4 mb-4">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg" onclick="window.location.href='forms/tambah_data.html'">
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg" onclick="window.location.href='{{ route('tambahPesanan') }}'">
             Tambah Data
             </button>
             <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg">
-            Sortir Status Belum Bayar
-            </button>
-            <button class="bg-green-500 text-white px-4 py-2 rounded-lg">
-            Refresh Data
+            Filter
             </button>
             </div>
             <table class="min-w-full bg-white">
             <thead>
             <tr>
                 <th class="py-2 px-4 border-b">
-                ID Pesanan
+                No
                 </th>
                 <th class="py-2 px-4 border-b">
                 Nama Pelanggan
@@ -191,25 +188,7 @@
                 Nomor Telepon
                 </th>
                 <th class="py-2 px-4 border-b">
-                Alamat
-                </th>
-                <th class="py-2 px-4 border-b">
-                Jenis Barang
-                </th>
-                <th class="py-2 px-4 border-b">
-                Status Pembayaran
-                </th>
-                <th class="py-2 px-4 border-b">
-                Spesifikasi Barang
-                </th>
-                <th class="py-2 px-4 border-b">
                 Jenis Layanan
-                </th>
-                <th class="py-2 px-4 border-b">
-                Kiloan
-                </th>
-                <th class="py-2 px-4 border-b">
-                Satuan
                 </th>
                 <th class="py-2 px-4 border-b">
                 Tanggal Terima
@@ -218,7 +197,13 @@
                 Estimasi Selesai
                 </th>
                 <th class="py-2 px-4 border-b">
-                Antarjemput
+                Status Pembayaran
+                </th>
+                <th class="py-2 px-4 border-b">
+                Status Cucian
+                </th>
+                <th class="py-2 px-4 border-b">
+                Total Harga
                 </th>
                 <th class="py-2 px-4 border-b">
                 Aksi
@@ -237,25 +222,7 @@
                 08129128129
                 </td>
                 <td class="py-2 px-4 border-b">
-                Lodaya
-                </td>
-                <td class="py-2 px-4 border-b">
-                Baju
-                </td>
-                <td class="py-2 px-4 border-b">
-                Lunas
-                </td>
-                <td class="py-2 px-4 border-b">
-                Wol
-                </td>
-                <td class="py-2 px-4 border-b">
                 Cuci Kering
-                </td>
-                <td class="py-2 px-4 border-b">
-                2kg
-                </td>
-                <td class="py-2 px-4 border-b">
-                3
                 </td>
                 <td class="py-2 px-4 border-b">
                 2025-11-04
@@ -264,7 +231,13 @@
                 2025-11-06
                 </td>
                 <td class="py-2 px-4 border-b">
-                YA
+                Lunas
+                </td>
+                <td class="py-2 px-4 border-b">
+                Selesai
+                </td>
+                <td class="py-2 px-4 border-b">
+                200.000
                 </td>
                 <td class="py-2 px-4 border-b relative" x-data="{ open: false }">
                     <!-- dropdown -->
@@ -280,8 +253,8 @@
                         @click.away="open = false"
                         class="dropdown-menu absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50"
                     >
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="window.location.href='forms/detail.html'">Details</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="window.location.href='forms/edit.html'">Edit</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="window.location.href='{{ route('detailPesanan') }}'">Details</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="window.location.href='{{ route('editPesanan') }}'">Edit</a>
                         <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete</a>
                     </div>
                 </td>

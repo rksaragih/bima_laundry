@@ -37,7 +37,7 @@
             <img
               alt="Logo"
               class="mr-3"
-              src="images/logo-bima-laundry-hitam.png"
+              src="images/logo-bima-laundry-svg.svg"
             />
           </a>
         </div>
