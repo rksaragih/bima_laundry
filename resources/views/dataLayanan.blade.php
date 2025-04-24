@@ -4,13 +4,14 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Bima Laundry - Data Layanan</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" defer></script>
     <script src="//unpkg.com/alpinejs" defer></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        biruBima: '#3A51D5',
+                        biruBima: '#6FBcFF',
                     },
                 },
             },
@@ -43,38 +44,44 @@
           <ul>
             @if(Auth::user()->role === 'Admin')
             <li class="mb-4">
-              <a class="flex items-center text-gray-700" href="{{ route('index') }}">
-                <img src="images/icon-dashboard.png" alt="" class="mr-2" />
+              <a class="flex items-center gap-4 text-gray-700" href="{{ route('index') }}">
+                <i class="fa-solid fa-table-columns fa-fw"></i>
                 Dashboard
               </a>
             </li>
             @endif
             <li class="mb-4">
               <a
-                class="flex items-center text-gray-700"
+                class="flex items-center gap-4 text-gray-700"
                 href="{{ route('dataPesanan') }}"
               >
-                <img src="images/icon-data-pesanan.png" alt="" class="mr-1" />
-                Pesanan
+              <i class="fas fa-file-alt fa-fw"></i>
+              Pesanan
               </a>
             </li>
             <li class="mb-4">
               <a
-                class="flex items-center text-gray-700"
+                class="flex items-center gap-4 text-gray-700"
                 href="{{ route('pelanggan.index') }}"
               >
-                <img src="images/icon-data-pelanggan.png" alt="" class="mr-2" />
-                Pelanggan
+              <i class="fas fa-users fa-fw"></i>
+              Pelanggan
               </a>
             </li>
             <li class="mb-4">
-              <a 
-                class="flex items-center text-biruBima"
+              <a
+                class="flex items-center gap-4 text-biruBima"
                 href="{{ route('layanan.index') }}">
-                <img src="images/icon-data-layanan.png" alt="" class="mr-2" />
+                <i class="fas fa-user-shield fa-fw"></i>
                 Layanan
               </a>
             </li>
+            <li class="mb-4">
+                <a class="flex items-center gap-4 text-gray-700" href="{{ route('layanan.index') }}">
+                  <i class="fas fa-shipping-fast fa-fw"></i>
+                  Layanan Pengiriman
+                </a>
+              </li>
             <li class="mb-4">
               @if (Auth::user()->role === 'Kasir')
                 <a
@@ -82,7 +89,7 @@
                   class="flex items-center text-gray-700"
                   x-on:click.prevent="openModalPengeluaran = true"
                 >
-              
+
                   <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
                   Tambah Pengeluaran
                 </a>
@@ -127,15 +134,15 @@
               @else
                 <a
                   href="{{ route('pengeluaran.index') }}"
-                  class="flex items-center text-gray-700"
+                  class="flex items-center gap-4 text-gray-700"
                 >
-                <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
+                <i class="fas fa-wallet fa-fw"></i>
                 Pengeluaran
                 </a>
               @endif
             </li>
             <li class="mt-8">
-              <a class="flex items-center text-red-500" href="{{ route('login') }}">
+              <a class="flex items-center gap-2 text-red-500" href="{{ route('login') }}">
                 <i class="fas fa-sign-out-alt mr-3"> </i>
                 Logout
               </a>
@@ -146,6 +153,11 @@
 
     <!-- main -->
     <div class="flex-1 p-10">
+        <header class="bg-biruBima text-white px-6 py-3 shadow">
+            <div class="flex justify-between items-center">
+              <div class="text-2xl font-semibold ml-auto">Kasir</div>
+            </div>
+          </header>
         <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedLayanan: {} }">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Data Layanan</h1>
@@ -196,7 +208,7 @@
             </div>
           </div>
           @endif
-        
+
             <table class="min-w-full bg-white">
                 <thead>
                   <tr>
@@ -218,7 +230,7 @@
                       <td class="px-6 py-4 whitespace-nowrap flex gap-2">
 
                         <button
-                          class="bg-blue-500 text-white px-3 py-1 hover:bg-blue-600 rounded text-sm"
+                          class="bg-blue-500 h-9 w-20 text-white px-3 py-1 hover:bg-blue-600 rounded text-sm"
                           x-on:click="openEditModal = true; selectedLayanan = {{ $layanan }}"
                         >
                           Edit
@@ -276,7 +288,7 @@
                         <form action="{{ route('layanan.destroy', $layanan->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus layanan ini?');">
                           @csrf
                           @method('DELETE')
-                          <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">
+                          <button type="submit" class="bg-red-500 h-9 w-20 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">
                             Hapus
                           </button>
                         </form>
