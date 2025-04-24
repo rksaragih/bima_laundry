@@ -32,11 +32,13 @@
     <div class="w-1/5 bg-white h-screen shadow-lg">
       <div class="p-6" x-data="{ openModalPengeluaran: false }">
         <div class="flex items-center mb-8">
-          <img
-            alt="Logo"
-            class="mr-3"
-            src="images/logo-bima-laundry-hitam.png"
-          />
+          <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('dataPesanan') }}">
+            <img
+              alt="Logo"
+              class="mr-3"
+              src="images/logo-bima-laundry-hitam.png"
+            />
+          </a>
         </div>
         <ul>
           @if(Auth::user()->role === 'Admin')

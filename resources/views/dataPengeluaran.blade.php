@@ -32,21 +32,21 @@
     <div class="w-1/5 bg-white h-screen shadow-lg">
       <div class="p-6">
         <div class="flex items-center mb-8">
-          <img
-            alt="Logo"
-            class="mr-3"
-            src="images/logo-bima-laundry-hitam.png"
-          />
+          <a href="{{ route('index') }}">
+            <img
+              alt="Logo"
+              class="mr-3"
+              src="images/logo-bima-laundry-hitam.png"
+            />
+          </a>
         </div>
         <ul>
-          @if(Auth::user()->role === 'Admin')
           <li class="mb-4">
             <a class="flex items-center text-gray-700" href="{{ route('index') }}">
               <img src="images/icon-dashboard.png" alt="" class="mr-2" />
               Dashboard
             </a>
           </li>
-          @endif
           <li class="mb-4">
             <a
               class="flex items-center text-gray-700"
@@ -242,7 +242,6 @@
                           </div>
                         </div>
                 
-                        @if (auth()->user()->role === 'Admin')
                         <form action="{{ route('pengeluaran.destroy', $pengeluaran->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pengeluaran ini?');">
                           @csrf
                           @method('DELETE')
@@ -252,7 +251,6 @@
                             Hapus
                           </button>
                         </form>
-                        @endif
 
                       </td>
                     </tr>
