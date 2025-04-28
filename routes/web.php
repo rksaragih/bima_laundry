@@ -13,15 +13,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-
     Route::get('/grafik', function () {
         return view('index');
     })->name('index');
-
-    Route::get('/editPesanan', function () {
-        return view('pesanan.editPesanan');
-    })->name('editPesanan');
-
     Route::resource('pesanan', PesananController::class)->except(['show']);
     route::get('/detailPesanan/{id}', [PesananController::class, 'detail'])->name('pesanan.detail');
     route::get('/editPesanan/{id}', [PesananController::class, 'edit'])->name('pesanan.edit');
