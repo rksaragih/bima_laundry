@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class PengeluaranController extends Controller
 {
+
+    // public function __construct()
+    // {
+    //     if (!Auth::check()) {
+    //         redirect()->route('login')->send();
+    //     }
+    // }
     
     public function index()
     {

@@ -25,10 +25,13 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             if (Auth::user()->role === 'Admin') {
-            return redirect()->intended('/grafik');
+                return redirect()->route('index');
             } elseif (Auth::user()->role === 'Kasir') {
-            return redirect()->route('pesanan.index');
+                return redirect()->route('pesanan.index');
+            } else{
+                return view('login');
             }
+    
         }
 
         return back()->withErrors([
@@ -39,10 +42,16 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        $request->session()->flush();
 
-        return redirect('/');
+        return redirect('/')->with('message', 'Anda berhasil logout');;
+    }
+
+    public function getGrafik() {
+        return view('index');
     }
 
 }

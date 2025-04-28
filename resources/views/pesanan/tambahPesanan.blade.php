@@ -365,6 +365,21 @@
             }
         }
 
+        .modal-transition-enter {
+            transition: opacity 0.3s ease-out;
+            opacity: 0;
+        }
+        .modal-transition-enter-end {
+            opacity: 1;
+        }
+        .modal-transition-leave {
+            transition: opacity 0.3s ease-in;
+            opacity: 1;
+        }
+        .modal-transition-leave-end {
+            opacity: 0;
+        }
+
         [x-cloak] {
             display: none !important;
         }
@@ -386,7 +401,7 @@
             <!-- Pelanggan -->
             <div>
                 <label>Pelanggan</label>
-                <select name="id_pelanggan" x-model="id_pelanggan" id="id_pelanggan" class="w-full border rounded p-2">
+                <select name="id_pelanggan" x-model="id_pelanggan" id="id_pelanggan" class="w-full border rounded p-2" required>
                     <option value="">-- Pilih Pelanggan --</option>
                     @foreach($pelanggans as $pelanggan)
                         <option value="{{ $pelanggan->id }}"
@@ -400,7 +415,10 @@
                 </select>
             </div>
 
-            <button x-on:click="openModalTambahPelanggan = true" class="mt-2 text-blue-500 text-sm hover:underline">
+            <button 
+                type="button" 
+                @click.prevent.stop="openModalTambahPelanggan = true"  
+                class="mt-2 text-blue-500 text-sm hover:underline">
                 + Tambah Pelanggan Baru
             </button>
 
@@ -434,13 +452,13 @@
 
             @if($tipe == 'kiloan')
                 <div class="mb-4">
-                    <label>Berat Pakaian</label>
+                    <label>Berat Pakaian (Kg)</label>
                     <input type="number" step="0.01" id="berat_pakaian" name="berat_pakaian" placeholder="Berat Pakaian (Kg)" required>
                 </div>
             @elseif($tipe == 'satuan')
                 <div class="mb-4">
-                    <label>Jumlah Pakaian</label>
-                    <input type="number" step="0.01" id="jumlah_pakaian" name="jumlah_pakaian" placeholder="Jumlah Pakaian" required>
+                    <label>Jumlah Pakaian (Potong)</label>
+                    <input type="number" step="0.01" id="jumlah_pakaian" name="jumlah_pakaian" placeholder="Jumlah Pakaian (Potong)" required>
                 </div>
             @endif
 
@@ -477,7 +495,17 @@
                 
         </form>
 
-        <div id="modalKonfirmasi" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" x-on:click.outside="modalKonfirmasi = false" >
+        <div 
+            id="modalKonfirmasi" 
+            class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" 
+            x-on:click.outside="modalKonfirmasi = false" 
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+        >
             <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
                 <h3 class="text-lg font-semibold mb-4">Konfirmasi Data Pesanan</h3>
                 
@@ -667,9 +695,31 @@
                 document.getElementById('status_pembayaran').value = "Belum Lunas";
                 
                 // Tampilkan modal konfirmasi
-                document.getElementById('modalKonfirmasi').classList.remove('hidden');
+                bukaModal();
             }
-            
+
+            function bukaModal() {
+                const modal = document.getElementById('modalKonfirmasi');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex', 'modal-transition-enter');
+                setTimeout(() => {
+                    modal.classList.add('modal-transition-enter-end');
+                }, 10);
+            }
+
+            function tutupModal() {
+                const modal = document.getElementById('modalKonfirmasi');
+                modal.classList.add('modal-transition-leave');
+                modal.classList.remove('modal-transition-enter-end');
+                setTimeout(() => {
+                    modal.classList.add('modal-transition-leave-end');
+                    setTimeout(() => {
+                        modal.classList.remove('flex', 'modal-transition-leave', 'modal-transition-leave-end');
+                        modal.classList.add('hidden');
+                    }, 300);
+                }, 10);
+            }
+                    
             function formatRupiah(angka) {
                 return new Intl.NumberFormat('id-ID').format(angka);
             }
@@ -680,9 +730,6 @@
                 return new Date(dateString).toLocaleDateString('id-ID', options);
             }
             
-            function tutupModal() {
-                document.getElementById('modalKonfirmasi').classList.add('hidden');
-            }
             
             function submitForm() {
                 const statusPembayaran = document.querySelector('input[name="konfirmasi_status_pembayaran"]:checked').value;

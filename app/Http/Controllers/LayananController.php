@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Layanan;
+use Illuminate\Support\Facades\Auth;
 
 class LayananController extends Controller
 {
 
+    // public function __construct()
+    // {
+    //     if (!Auth::check()) {
+    //         redirect()->route('login')->send();
+    //     };
+    // }
+    
     public function index()
     {
         $layanans = Layanan::all();

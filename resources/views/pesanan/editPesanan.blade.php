@@ -529,7 +529,10 @@
                 </select>
             </div>
 
-            <button type="button" x-on:click="openModalTambahPelanggan = true" class="mt-2 text-blue-500 text-sm hover:underline">
+            <button 
+                type="button" 
+                @click.prevent.stop="openModalTambahPelanggan = true"  
+                class="mt-2 text-blue-500 text-sm hover:underline">
                 + Tambah Pelanggan Baru
             </button>
 
@@ -635,6 +638,12 @@
             x-show="openModalKonfirmasi" 
             class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center" 
             x-cloak
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
         >
             <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full" @click.outside="openModalKonfirmasi = false">
                 <h3 class="text-lg font-semibold mb-4">Konfirmasi Data Pesanan</h3>

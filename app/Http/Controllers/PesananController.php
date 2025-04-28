@@ -13,6 +13,14 @@ use Illuminate\Http\Request;
 
 class PesananController extends Controller
 {
+
+    // public function __construct()
+    // {
+    //     if (!Auth::check()) {
+    //         redirect()->route('login')->send();
+    //     }
+    // }
+    
     public function index()
     {
         $pesanans = Pesanan::with(['pelanggan', 'layanan', 'kiloan', 'satuan'])->orderBy('created_at', 'desc')->paginate(10);

@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pelanggan;
+use Illuminate\Support\Facades\Auth;
 
 class PelangganController extends Controller
 {
     
+    // public function __construct()
+    // {
+    //     if (!Auth::check()) {
+    //         redirect()->route('login')->send();
+    //     }
+    // }
+
     public function index()
     {
         $pelanggans = Pelanggan::orderBy('created_at', 'desc')->paginate(10);

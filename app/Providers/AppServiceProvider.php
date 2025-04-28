@@ -19,6 +19,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Response::macro('noCache', function ($value) {
+            return \Response::make($value)
+                ->header('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
+        });
     }
 }
