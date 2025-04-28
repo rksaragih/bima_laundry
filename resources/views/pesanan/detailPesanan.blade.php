@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Pesanan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    
+    <script>
+        tailwind.config = {
+        theme: {
+            extend: {
+            colors: {
+                biruBima: '#6FBcFF',
+            },
+            },
+        },
+        };
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -261,69 +277,61 @@
             }
         }
     </style>
+
 </head>
 <body>
     <div class="container">
         <div class="card">
-            <h1>Detail Pesanan</h1>
+            <h1 class="text-2xl font-bold mb-6">Detail Pesanan</h1>
 
-            <div class="detail-container">
-                <div class="detail-item">
-                    <div class="detail-text">Nama: JohnDoe</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">No Telp: 08123456789</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">Alamat: Jl. Merdeka No.1</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">Jenis Layanan: Cuci Kering</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">Jenis Barang: Baju</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">Kiloan: 2kg</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">Satuan: 2</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">Spesifikasi Barang:</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">Antar Jemput: YA</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">Tanggal Terima:</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">Estimasi Selesai:</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">Status Pembayaran:</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-text">Total Harga: 100000</div>
+            <div class="bg-white rounded-lg shadow p-6 mb-8">
+                <h2 class="text-lg font-semibold mb-4 border-b pb-2">Data Pelanggan</h2>
+                <div class="space-y-2">
+                    <p><strong>Nama: </strong> {{ $pesanan->pelanggan->nama }} </p>
+                    <p><strong>Alamat: </strong> {{ $pesanan->pelanggan->alamat }} </p>
+                    <p><strong>No Hp.: </strong> {{ $pesanan->pelanggan->nomor_telepon }} </p>
                 </div>
             </div>
 
-            <div class="button-container">
-                <button class="cancel-btn">Cancel</button>
-                <button class="print-btn">Print</button>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4 border-b pb-2">Data Pesanan</h2>
+                <div class="space-y-2">
+                    <p><strong>Jenis Layanan: </strong> {{ $pesanan->layanan->jenis_layanan }} </p>
+                    <p><strong>Spesifikasi Barang: </strong> {{ $pesanan->spesifikasi_barang }} </p>
+                    <p><strong>Jenis Barang: </strong> {{ $pesanan->jenis_barang }} </p>
+
+                    @if( $pesanan->tipe_pesanan === 'kiloan' && $kiloan )
+                        <p><strong>Tipe Pesanan: </strong> Kiloan </p>
+                        <p><strong>Berat Pakaian: </strong> {{ $kiloan->berat_pakaian }} Kg </p>
+                    @elseif( $pesanan->tipe_pesanan === 'satuan' && $satuan )
+                        <p><strong>Tipe Pesanan: </strong> Satuan </p>
+                        <p><strong>Jumlah Pakaian: </strong> {{ $satuan->jumlah_pakaian }} Buah </p>
+                    @endif
+
+                    <p><strong>Tanggal Terima: </strong>{{ \Carbon\Carbon::parse($pesanan->tanggal_terima)->format('d M Y') }}</p>
+                    <p><strong>Estimasi Selesai: </strong>{{ \Carbon\Carbon::parse($pesanan->tanggal_selesai)->format('d M Y') }}</p>
+
+                    <p><strong>Status Cucian: </strong> {{ $pesanan->status_cucian }} </p>
+                    <p><strong>Status Pembayaran: </strong> {{ $pesanan->status_pembayaran }} </p>
+
+                    <p><strong>Total Harga: </strong> {{ $pesanan->total_harga }} </p>
+                </div>
+            </div>
+
+            <div class="button-container mt-6 flex justify-end gap-4">
+                <button 
+                    class="cancel-btn bg-red-400 text-white px-4 py-2 rounded hover:bg-red-500"
+                    onclick="window.location.href='{{ route('pesanan.index') }}'"
+                >
+                    Cancel
+                </button>
+
+                <button 
+                    class="print-btn bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-500"
+                    onclick="window.print()"
+                >
+                    Print
+                </button>
             </div>
         </div>
     </div>

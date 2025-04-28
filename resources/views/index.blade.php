@@ -29,7 +29,7 @@
       <div class="w-1/5 bg-white h-screen shadow-lg">
         <div class="p-6" x-data="{ openModalPengeluaran: false }">
           <div class="flex items-center mb-8">
-            <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('dataPesanan') }}">
+            <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('pesanan.index') }}">
               <img
                 alt="Logo"
                 class="mr-3"
@@ -49,7 +49,7 @@
             <li class="mb-4">
               <a
                 class="flex items-center gap-4 text-gray-700"
-                href="{{ route('dataPesanan') }}"
+                href="{{ route('pesanan.index') }}"
               >
               <i class="fas fa-file-alt fa-fw"></i>
               Pesanan
@@ -153,7 +153,7 @@
 
         <div class="flex justify-between items-center mb-8">
           <h1 class="text-2xl font-bold">Dashboard</h1>
-          <span class="text-blue-500"> Kasir </span>
+          <span class="text-blue-500"> {{ Auth::user()->role }} </span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

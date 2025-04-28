@@ -27,7 +27,7 @@ class AuthController extends Controller
             if (Auth::user()->role === 'Admin') {
             return redirect()->intended('/grafik');
             } elseif (Auth::user()->role === 'Kasir') {
-            return redirect()->intended('/dataPesanan');
+            return redirect()->route('pesanan.index');
             }
         }
 

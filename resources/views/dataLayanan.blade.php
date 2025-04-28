@@ -33,7 +33,7 @@
 <div class="w-1/5 bg-white h-screen shadow-lg">
         <div class="p-6" x-data="{ openModalPengeluaran: false }">
           <div class="flex items-center mb-8">
-            <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('dataPesanan') }}">
+            <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('pesanan.index') }}">
               <img
                 alt="Logo"
                 class="mr-3"
@@ -53,7 +53,7 @@
             <li class="mb-4">
               <a
                 class="flex items-center gap-4 text-gray-700"
-                href="{{ route('dataPesanan') }}"
+                href="{{ route('pesanan.index') }}"
               >
               <i class="fas fa-file-alt fa-fw"></i>
               Pesanan
@@ -94,12 +94,31 @@
                   Tambah Pengeluaran
                 </a>
 
+                <div 
+                  x-show="openModalPengeluaran"
+                  x-transition:enter="transition ease-out duration-300"
+                  x-transition:enter-start="opacity-0"
+                  x-transition:enter-end="opacity-100"
+                  x-transition:leave="transition ease-in duration-200"
+                  x-transition:leave-start="opacity-100"
+                  x-transition:leave-end="opacity-0"
+                  class="fixed inset-0 bg-black bg-opacity-50 z-40"
+                  x-cloak
+                    >
+                </div>
+
                 <div
-                x-show="openModalPengeluaran"
-                x-cloak
-                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                  x-show="openModalPengeluaran"
+                  x-cloak
+                  x-transition:enter="transition ease-out duration-300 transform"
+                  x-transition:enter-start="opacity-0 translate-y-5 scale-95"
+                  x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                  x-transition:leave="transition ease-in duration-200 transform"
+                  x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                  x-transition:leave-end="opacity-0 translate-y-5 scale-95"
+                  class="fixed inset-0 flex items-center justify-center z-50"
                 >
-                  <div class="bg-white p-6 rounded w-96">
+                <div class="bg-white p-6 rounded w-96" @click.away="openModalPengeluaran = false">
                       <h2 class="text-lg font-bold mb-4">Tambah Data Pengeluaran</h2>
                       <form action="{{ route('pengeluaran.store') }}" method="POST">
                           @csrf
@@ -123,7 +142,7 @@
                               >
                                   Batal
                               </button>
-                              <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
+                              <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
                                   Simpan
                               </button>
                           </div>
@@ -155,7 +174,7 @@
     <div class="flex-1 p-10">
         <header class="bg-biruBima text-white px-6 py-3 shadow">
             <div class="flex justify-between items-center">
-              <div class="text-2xl font-semibold ml-auto">Kasir</div>
+              <div class="text-2xl font-semibold ml-auto">{{ Auth::user()->role }}</div>
             </div>
           </header>
         <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedLayanan: {} }">
@@ -168,17 +187,36 @@
           <div x-data="{ openModal: false }">
 
             <div class="flex space-x-4 mb-4">
-              <button x-on:click="openModal = true" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+              <button x-on:click="openModal = true" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg">
                 Tambah Data
               </button>
+            </div>
+
+            <div 
+              x-show="openModal"
+              x-transition:enter="transition ease-out duration-300"
+              x-transition:enter-start="opacity-0"
+              x-transition:enter-end="opacity-100"
+              x-transition:leave="transition ease-in duration-200"
+              x-transition:leave-start="opacity-100"
+              x-transition:leave-end="opacity-0"
+              class="fixed inset-0 bg-black bg-opacity-50 z-40"
+              x-cloak
+            >
             </div>
 
             <div
                 x-show="openModal"
                 x-cloak
-                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                class="fixed inset-0 flex items-center justify-center z-50"
+                x-transition:enter="transition ease-out duration-300 transform"
+                x-transition:enter-start="opacity-0 translate-y-5 scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                x-transition:leave="transition ease-in duration-200 transform"
+                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                x-transition:leave-end="opacity-0 translate-y-5 scale-95"
             >
-                <div class="bg-white p-6 rounded w-96">
+                <div class="bg-white p-6 rounded w-96" @click.away="openModal = false">
                     <h2 class="text-lg font-bold mb-4">Tambah Data Layanan</h2>
                     <form action="{{ route('layanan.store') }}" method="POST">
                         @csrf
@@ -198,7 +236,7 @@
                             >
                                 Batal
                             </button>
-                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
+                            <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
                                 Simpan
                             </button>
                         </div>
@@ -209,7 +247,7 @@
           @endif
 
             <table class="min-w-full bg-white">
-                <thead>
+                <thead class="bg-gray-50">
                   <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Layanan</th>
@@ -229,18 +267,40 @@
                       <td class="px-6 py-4 whitespace-nowrap flex gap-2">
 
                         <button
-                          class="bg-blue-500 h-9 w-20 text-white px-3 py-1 hover:bg-blue-600 rounded text-sm"
+                          class="bg-blue-400 h-9 w-20 text-white px-3 py-1 hover:bg-blue-500 rounded text-sm"
                           x-on:click="openEditModal = true; selectedLayanan = {{ $layanan }}"
                         >
                           Edit
                         </button>
 
-                        <div
+                        <div 
                           x-show="openEditModal"
-                          class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                          x-transition:enter="transition ease-out duration-300"
+                          x-transition:enter-start="opacity-0"
+                          x-transition:enter-end="opacity-100"
+                          x-transition:leave="transition ease-in duration-200"
+                          x-transition:leave-start="opacity-100"
+                          x-transition:leave-end="opacity-0"
+                          class="fixed inset-0 bg-black bg-opacity-50 z-40"
                           x-cloak
                         >
-                          <div class="bg-white p-6 rounded w-96">
+                        </div>
+
+                        <div
+                          x-show="openEditModal"
+                          class="fixed inset-0 flex items-center justify-center z-50"
+                          x-cloak
+                          x-transition:enter="transition ease-out duration-300 transform"
+                          x-transition:enter-start="opacity-0 translate-y-5 scale-95"
+                          x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                          x-transition:leave="transition ease-in duration-200 transform"
+                          x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                          x-transition:leave-end="opacity-0 translate-y-5 scale-95"
+                        >
+                          <div 
+                            class="bg-white p-6 rounded w-96"
+                            @click.away="openEditModal = false"
+                          >
                               <h2 class="text-lg font-bold mb-4">Edit Data Layanan</h2>
                               <form
                                   x-bind:action="'/layanan/' + selectedLayanan.id"
@@ -277,7 +337,7 @@
                                       >
                                           Batal
                                       </button>
-                                      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                                      <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
                                           Update
                                       </button>
                                   </div>
@@ -287,7 +347,7 @@
                         <form action="{{ route('layanan.destroy', $layanan->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus layanan ini?');">
                           @csrf
                           @method('DELETE')
-                          <button type="submit" class="bg-red-500 h-9 w-20 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">
+                          <button type="submit" class="bg-red-400 h-9 w-20 text-white px-3 py-1 rounded hover:bg-red-500 text-sm">
                             Hapus
                           </button>
                         </form>

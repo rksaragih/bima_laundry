@@ -24,7 +24,7 @@ class PelangganController extends Controller
 
         Pelanggan::create($request->all());
 
-        return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil ditambahkan.');
+        return redirect()->back()->with('success', 'Data pelanggan berhasil ditambahkan.');
     }
 
     public function update(Request $request, $id)

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreign('id')->references('id')->on('pesanans')->onDelete('cascade');
             $table->integer('berat_pakaian');
+            $table->timestamps();
         });
     }
 
