@@ -473,7 +473,7 @@
             </div>
 
             <button type="button" onclick="konfirmasiSimpan()" class="bg-blue-400 h-9 w-20 text-white px-4 py-2 hover:bg-blue-500 rounded text-sm">Simpan</button>
-            <button type="button" onclick="window.location.href='{{ route('pesanan.index') }}'" class="bg-gray-500 h-9 w-20 text-white px-4 py-2 hover:bg-gray-600 rounded text-sm">Batal</button>
+            <button type="button" onclick="window.location.href='{{ route('pesanan.index') }}'" class="bg-gray-400 h-9 w-20 text-white px-4 py-2 hover:bg-gray-500 rounded text-sm">Batal</button>
                 
         </form>
 
@@ -541,7 +541,7 @@
                 </div>
                 
                 <div class="mt-6 flex justify-end space-x-3">
-                    <button onclick="tutupModal()" class="px-4 py-2 text-white bg-gray-300 hover:bg-gray-400 rounded text-sm">
+                    <button onclick="tutupModal()" class="px-4 py-2 text-white bg-gray-400 hover:bg-gray-500 rounded text-sm">
                         Batal
                     </button>
                     <button onclick="submitForm()" class="px-4 py-2 bg-blue-400 hover:bg-blue-500 text-white rounded text-sm">
