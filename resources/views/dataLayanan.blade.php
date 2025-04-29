@@ -84,17 +84,17 @@
               </li>
             <li class="mb-4">
               @if (Auth::user()->role === 'Kasir')
-                <a
-                  href="#"
-                  class="flex items-center text-gray-700"
-                  x-on:click.prevent="openModalPengeluaran = true"
-                >
+              <a
+              href="#"
+              class="flex items-center gap-4 text-gray-700"
+              x-on:click.prevent="openModalPengeluaran = true"
+            >
+              <i class="fas fa-wallet fa-fw"></i>
+              Tambah Pengeluaran
+            </a>
 
-                  <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
-                  Tambah Pengeluaran
-                </a>
 
-                <div 
+                <div
                   x-show="openModalPengeluaran"
                   x-transition:enter="transition ease-out duration-300"
                   x-transition:enter-start="opacity-0"
@@ -192,7 +192,7 @@
               </button>
             </div>
 
-            <div 
+            <div
               x-show="openModal"
               x-transition:enter="transition ease-out duration-300"
               x-transition:enter-start="opacity-0"
@@ -273,7 +273,7 @@
                           Edit
                         </button>
 
-                        <div 
+                        <div
                           x-show="openEditModal"
                           x-transition:enter="transition ease-out duration-300"
                           x-transition:enter-start="opacity-0"
@@ -297,7 +297,7 @@
                           x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                           x-transition:leave-end="opacity-0 translate-y-5 scale-95"
                         >
-                          <div 
+                          <div
                             class="bg-white p-6 rounded w-96"
                             @click.away="openEditModal = false"
                           >

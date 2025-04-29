@@ -106,17 +106,17 @@
 
             <li class="mb-4">
                 @if (Auth::user()->role === 'Kasir')
-                    <a
-                    href="#"
-                    class="flex items-center text-gray-700"
-                    x-on:click.prevent="openModalPengeluaran = true"
-                    >
+                <a
+                href="#"
+                class="flex items-center gap-4 text-gray-700"
+                x-on:click.prevent="openModalPengeluaran = true"
+              >
+                <i class="fas fa-wallet fa-fw"></i>
+                Tambah Pengeluaran
+              </a>
 
-                    <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
-                    Tambah Pengeluaran
-                    </a>
 
-                    <div 
+                    <div
                         x-show="openModalPengeluaran"
                         x-transition:enter="transition ease-out duration-300"
                         x-transition:enter-start="opacity-0"
@@ -207,19 +207,19 @@
             <input class="border rounded-lg px-4 py-2" placeholder="Search..." type="text"/>
             </div>
             <div class="flex space-x-4 mb-4">
-                <button 
-                    class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg" 
+                <button
+                    class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg"
                     x-on:click="openJenisPesananModal = true"
                 >
                     Tambah Data
                 </button>
 
-                <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg">
+                <button class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded-lg">
                     Filter
                 </button>
             </div>
 
-            <div 
+            <div
                 x-show="openJenisPesananModal"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0"
@@ -232,7 +232,7 @@
                 >
             </div>
 
-            <div 
+            <div
                 x-show="openJenisPesananModal"
                 class="fixed inset-0 flex items-center justify-center z-50"
                 x-cloak
@@ -247,20 +247,20 @@
                     <h2 class="text-lg font-bold mb-4">Pilih Jenis Pesanan</h2>
 
                     <div class="flex flex-col gap-4">
-                    <a 
-                        href="{{ route('pesanan.create', ['tipe' => 'kiloan']) }}" 
+                    <a
+                        href="{{ route('pesanan.create', ['tipe' => 'kiloan']) }}"
                         class="bg-blue-400 hover:bg-blue-500 text-white py-2 rounded"
                     >
                         Kiloan
                     </a>
 
-                    <a 
-                        href="{{ route('pesanan.create', ['tipe' => 'satuan']) }}" 
+                    <a
+                        href="{{ route('pesanan.create', ['tipe' => 'satuan']) }}"
                         class="bg-green-400 hover:bg-green-500 text-white py-2 rounded"
                     >
                         Satuan
                     </a>
-                    <a 
+                    <a
                         href="#"
                         x-on:click="openJenisPesananModal = false"
                         class="mr-2 text-gray-500"
@@ -308,8 +308,8 @@
             </thead>
             <tbody>
                 @foreach ($pesanans as $index => $pesanan)
-                    <tr 
-                        class="cursor-pointer hover:bg-gray-200" 
+                    <tr
+                        class="cursor-pointer hover:bg-gray-200"
                         onclick="window.location.href='{{ route('pesanan.detail', ['id' => $pesanan->id]) }}'"
                         >
                       <td class="px-6 py-4 whitespace-nowrap">{{ $pesanans->firstItem() + $index }}</td>
@@ -331,7 +331,7 @@
                                 <i class="fas fa-ellipsis-v"></i>
                             </button>
 
-                            <div 
+                            <div
                                 x-show="openSelectionModal"
                                 x-transition:enter="transition ease-out duration-300"
                                 x-transition:enter-start="opacity-0"
@@ -356,12 +356,12 @@
                                 x-transition:leave-end="opacity-0 translate-y-5 scale-95"
                                 x-on:click="openSelectionModal = false; event.stopPropagation();"
                             >
-                                <div 
+                                <div
                                     id="openSelectionModal"
-                                    class="bg-white p-6 rounded w-96" 
-                                    x-on:click.stop 
+                                    class="bg-white p-6 rounded w-96"
+                                    x-on:click.stop
                                 >
-                                    <form 
+                                    <form
                                         action="{{ route('pesanan.updateStatus', ['id' => $pesanan->id]) }}"
                                         method="POST"
                                     >
@@ -377,16 +377,16 @@
                                             <h4 class="font-semibold text-gray-800">Status Pembayaran</h4>
                                             <div class="flex items-center space-x-4 mt-2">
                                                 <label class="inline-flex items-center">
-                                                    <input type="radio" name="status_pembayaran" 
-                                                        value="Belum Lunas" 
+                                                    <input type="radio" name="status_pembayaran"
+                                                        value="Belum Lunas"
                                                         :checked="selectedPesanan.status_pembayaran === 'Belum Lunas'"
                                                         class="form-radio h-5 w-5 text-red-600"
                                                     >
                                                     <span class="ml-2 text-gray-700">Belum Lunas</span>
                                                 </label>
                                                 <label class="inline-flex items-center">
-                                                    <input type="radio" name="status_pembayaran" 
-                                                        value="Lunas" 
+                                                    <input type="radio" name="status_pembayaran"
+                                                        value="Lunas"
                                                         :checked="selectedPesanan.status_pembayaran === 'Lunas'"
                                                         class="form-radio h-5 w-5 text-green-600"
                                                     >
@@ -399,7 +399,7 @@
                                                 Simpan
                                             </button>
                                             @if (auth()->user()->role === 'Admin')
-                                            <button type="button" 
+                                            <button type="button"
                                                 class="bg-green-400 text-white px-4 py-2 rounded hover:bg-green-500"
                                                 x-on:click="window.location.href = '{{ route('pesanan.edit', $pesanan->id) }}'"
                                             >
@@ -408,11 +408,11 @@
                                             @endif
                                         </div>
                                     </form>
-                                    <form 
-                                        action="{{ route('pesanan.destroy', $pesanan->id ) }}" 
+                                    <form
+                                        action="{{ route('pesanan.destroy', $pesanan->id ) }}"
                                         method="POST"
                                         onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');"
-                                    >   
+                                    >
                                         @csrf
                                         @method('DELETE')
                                         <div class="flex flex-col gap-4">
@@ -421,8 +421,8 @@
                                                 Hapus Data
                                             </button>
                                             @endif
-                                            <button 
-                                            type="button" 
+                                            <button
+                                            type="button"
                                             class="bg-transparent text-dark shadow-none hover:underline border-none"
                                             x-on:click=" openSelectionModal = !openSelectionModal;"
                                             >
@@ -432,7 +432,7 @@
                                     </form>
                                 </div>
                             </div>
-                        </td>   
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
