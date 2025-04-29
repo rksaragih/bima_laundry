@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pelanggan;
+use Illuminate\Support\Facades\Auth;
 
 class PelangganController extends Controller
 {
     
+    // public function __construct()
+    // {
+    //     if (!Auth::check()) {
+    //         redirect()->route('login')->send();
+    //     }
+    // }
+
     public function index()
     {
         $pelanggans = Pelanggan::orderBy('created_at', 'desc')->paginate(10);
@@ -24,7 +32,7 @@ class PelangganController extends Controller
 
         Pelanggan::create($request->all());
 
-        return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil ditambahkan.');
+        return redirect()->back()->with('success', 'Data pelanggan berhasil ditambahkan.');
     }
 
     public function update(Request $request, $id)
