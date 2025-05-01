@@ -88,10 +88,13 @@
             </a>
           </li>
           <li class="mt-8">
-            <a class="flex items-center gap-2 text-red-500" href="{{ route('login') }}">
-              <i class="fas fa-sign-out-alt mr-3"> </i>
-              Logout
+            <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <i class="fas fa-sign-out-alt mr-3"></i> Logout
             </a>
+
+            <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+              @csrf
+            </form>
           </li>
         </ul>
       </div>
@@ -216,89 +219,6 @@
                           Edit
                         </button>
 
-                        <div 
-                            x-show="openEditModal"
-                            x-transition:enter="transition ease-out duration-300"
-                            x-transition:enter-start="opacity-0"
-                            x-transition:enter-end="opacity-100"
-                            x-transition:leave="transition ease-in duration-200"
-                            x-transition:leave-start="opacity-100"
-                            x-transition:leave-end="opacity-0"
-                            class="fixed inset-0 bg-black bg-opacity-50 z-40"
-                            x-cloak
-                        >
-                        </div>
-
-                        <div
-                          x-show="openEditModal"
-                          class="fixed inset-0 flex items-center justify-center z-50"
-                          x-transition:enter="transition ease-out duration-300 transform"
-                          x-transition:enter-start="opacity-0 translate-y-5 scale-95"
-                          x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                          x-transition:leave="transition ease-in duration-200 transform"
-                          x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                          x-transition:leave-end="opacity-0 translate-y-5 scale-95"
-                          x-cloak
-                        >
-                          <div 
-                            @click.away="openEditModal = false"
-                            class="bg-white p-6 rounded w-96"
-                          >
-                              <h2 class="text-lg font-bold mb-4">Edit Data pengeluaran</h2>
-                              <form
-                                  x-bind:action="'/pengeluaran/' + selectedPengeluaran.id"
-                                  method="POST"
-                              >
-                                  @csrf
-                                  @method('PUT')
-
-                                  <div class="mb-4">
-                                      <label class="block mb-1">Jenis Pengeluaran</label>
-                                      <input
-                                          type="text"
-                                          name="jenis_pengeluaran"
-                                          class="w-full border rounded p-2"
-                                          x-model="selectedPengeluaran.jenis_pengeluaran"
-                                          required
-                                      >
-                                  </div>
-                                  <div class="mb-4">
-                                      <label class="block mb-1">Biaya</label>
-                                      <input
-                                          type="text"
-                                          name="biaya"
-                                          class="w-full border rounded p-2"
-                                          x-model="selectedPengeluaran.biaya"
-                                          required
-                                      >
-                                  </div>
-                                  <div class="mb-4">
-                                      <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
-                                      <input
-                                          type="date"
-                                          name="tanggal"
-                                          class="w-full border rounded-lg focus:ring-blue-400 focus:border-blue-400 p-3"
-                                          x-model="selectedPengeluaran.tanggal"
-                                          required
-                                          onfocus="this.showPicker && this.showPicker()"
-                                      >
-                                  </div>
-                                  <div class="flex justify-end">
-                                      <button
-                                          type="button"
-                                          x-on:click="openEditModal = false"
-                                          class="mr-2 text-gray-500"
-                                      >
-                                          Batal
-                                      </button>
-                                      <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
-                                          Update
-                                      </button>
-                                  </div>
-                              </form>
-                          </div>
-                        </div>
-
                         <form action="{{ route('pengeluaran.destroy', $pengeluaran->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pengeluaran ini?');">
                           @csrf
                           @method('DELETE')
@@ -314,6 +234,89 @@
                   @endforeach
                 </tbody>
             </table>
+
+            <div 
+            x-show="openEditModal"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-black bg-opacity-50 z-40"
+            x-cloak
+          >
+            </div>
+
+            <div
+              x-show="openEditModal"
+              class="fixed inset-0 flex items-center justify-center z-50"
+              x-transition:enter="transition ease-out duration-300 transform"
+              x-transition:enter-start="opacity-0 translate-y-5 scale-95"
+              x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+              x-transition:leave="transition ease-in duration-200 transform"
+              x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+              x-transition:leave-end="opacity-0 translate-y-5 scale-95"
+              x-cloak
+            >
+              <div 
+                @click.away="openEditModal = false"
+                class="bg-white p-6 rounded w-96"
+              >
+                  <h2 class="text-lg font-bold mb-4">Edit Data pengeluaran</h2>
+                  <form
+                      x-bind:action="'/pengeluaran/' + selectedPengeluaran.id"
+                      method="POST"
+                  >
+                      @csrf
+                      @method('PUT')
+
+                      <div class="mb-4">
+                          <label class="block mb-1">Jenis Pengeluaran</label>
+                          <input
+                              type="text"
+                              name="jenis_pengeluaran"
+                              class="w-full border rounded p-2"
+                              x-model="selectedPengeluaran.jenis_pengeluaran"
+                              required
+                          >
+                      </div>
+                      <div class="mb-4">
+                          <label class="block mb-1">Biaya</label>
+                          <input
+                              type="text"
+                              name="biaya"
+                              class="w-full border rounded p-2"
+                              x-model="selectedPengeluaran.biaya"
+                              required
+                          >
+                      </div>
+                      <div class="mb-4">
+                          <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+                          <input
+                              type="date"
+                              name="tanggal"
+                              class="w-full border rounded-lg focus:ring-blue-400 focus:border-blue-400 p-3"
+                              x-model="selectedPengeluaran.tanggal"
+                              required
+                              onfocus="this.showPicker && this.showPicker()"
+                          >
+                      </div>
+                      <div class="flex justify-end">
+                          <button
+                              type="button"
+                              x-on:click="openEditModal = false"
+                              class="mr-2 text-gray-500"
+                          >
+                              Batal
+                          </button>
+                          <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
+                              Update
+                          </button>
+                      </div>
+                  </form>
+              </div>
+            </div>
 
             <div class="mt-4">
               {{ $pengeluarans->links() }}

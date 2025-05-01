@@ -296,17 +296,48 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-lg font-semibold mb-4 border-b pb-2">Data Pesanan</h2>
                 <div class="space-y-2">
-                    <p><strong>Jenis Layanan: </strong> {{ $pesanan->layanan->jenis_layanan }} </p>
-                    <p><strong>Spesifikasi Barang: </strong> {{ $pesanan->spesifikasi_barang }} </p>
-                    <p><strong>Jenis Barang: </strong> {{ $pesanan->jenis_barang }} </p>
+                    <p><strong>Kategori Pesanan: </strong>{{ $pesanan->details->first()?->layanan?->kategori ?? '-' }}</p>
 
-                    @if( $pesanan->tipe_pesanan === 'kiloan' && $kiloan )
-                        <p><strong>Tipe Pesanan: </strong> Kiloan </p>
-                        <p><strong>Berat Pakaian: </strong> {{ $kiloan->berat_pakaian }} Kg </p>
-                    @elseif( $pesanan->tipe_pesanan === 'satuan' && $satuan )
-                        <p><strong>Tipe Pesanan: </strong> Satuan </p>
-                        <p><strong>Jumlah Pakaian: </strong> {{ $satuan->jumlah_pakaian }} Buah </p>
-                    @endif
+                    <div class="bg-gray-50 rounded-lg p-5 shadow mb-8">
+                        <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">Detail Layanan</h2>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border border-gray-200">
+                                <thead>
+                                    <tr>
+                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">No</th>
+                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Layanan</th>
+                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Jenis Barang</th>
+                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Spesifikasi</th>
+                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Jumlah/Berat</th>
+                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Harga Satuan</th>
+                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($pesanan->details as $index => $item)
+                                    <tr class="{{ $index % 2 === 0 ? 'bg-white' : 'bg-gray-50' }}">
+                                        <td class="py-3 px-4 border-b">{{ $index + 1 }}</td>
+                                        <td class="py-3 px-4 border-b">{{ $item->layanan->jenis_laundry }}</td>
+                                        <td class="py-3 px-4 border-b">{{ $item->jenis_barang }}</td>
+                                        <td class="py-3 px-4 border-b">{{ $item->spesifikasi_barang }}</td>
+                                        <td class="py-3 px-4 border-b">{{ $item->jumlah }}</td>
+                                        <td class="py-3 px-4 border-b">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                                        <td class="py-3 px-4 border-b font-medium">Rp {{ number_format($item->jumlah * $item->harga_satuan, 0, ',', '.') }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr class="bg-gray-100">
+                                        <td colspan="6" class="py-3 px-4 border-b text-right font-bold">Total:</td>
+                                        <td class="py-3 px-4 border-b font-bold text-blue-600">
+                                            Rp {{ number_format($pesanan->details->sum(function($item) { return $item->jumlah * $item->harga_satuan; }), 0, ',', '.') }}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
 
                     <p><strong>Tanggal Terima: </strong>{{ \Carbon\Carbon::parse($pesanan->tanggal_terima)->format('d M Y') }}</p>
                     <p><strong>Estimasi Selesai: </strong>{{ \Carbon\Carbon::parse($pesanan->tanggal_selesai)->format('d M Y') }}</p>

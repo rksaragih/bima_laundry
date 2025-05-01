@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Tambah Data Pesanan</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" defer></script>
     <script src="//unpkg.com/alpinejs" defer></script>
@@ -21,71 +27,6 @@
             },
         },
         };
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        // Inisialisasi flatpickr untuk tanggal terima
-        const fpTerimaOptions = {
-            dateFormat: "d F Y",
-            locale: "id",
-            minDate: "today",
-            onChange: function(selectedDates, dateStr) {
-                // Update hidden input dengan format tanggal untuk backend (YYYY-MM-DD)
-                document.getElementById('tanggal_terima').value = formatDateForBackend(selectedDates[0]);
-                
-                // Set min date untuk estimasi selesai menjadi tanggal terima + 1 hari
-                let minSelesaiDate = new Date(selectedDates[0]);
-                minSelesaiDate.setDate(minSelesaiDate.getDate() + 1);
-                fpSelesai.set('minDate', minSelesaiDate);
-                
-                // Reset tanggal selesai jika lebih awal dari min date
-                const tanggalSelesaiDate = fpSelesai.selectedDates[0];
-                if (tanggalSelesaiDate && tanggalSelesaiDate < minSelesaiDate) {
-                    fpSelesai.clear();
-                }
-            }
-        };
-        
-        const fpSelesaiOptions = {
-            dateFormat: "d F Y",
-            locale: "id",
-            minDate: "today",
-            onChange: function(selectedDates, dateStr) {
-                // Update hidden input dengan format tanggal untuk backend (YYYY-MM-DD)
-                document.getElementById('tanggal_selesai').value = formatDateForBackend(selectedDates[0]);
-            }
-        };
-        
-        const fpTerima = flatpickr("#tanggal_terima_display", fpTerimaOptions);
-        const fpSelesai = flatpickr("#tanggal_selesai_display", fpSelesaiOptions);
-        
-        // Set tanggal default untuk tanggal terima (hari ini)
-        const today = new Date();
-        fpTerima.setDate(today);
-        document.getElementById('tanggal_terima').value = formatDateForBackend(today);
-        
-        // Set tanggal default untuk estimasi selesai (hari ini + 1 hari)
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        fpSelesai.setDate(tomorrow);
-        document.getElementById('tanggal_selesai').value = formatDateForBackend(tomorrow);
-        });
-
-        const radioButtons = document.querySelectorAll('input[name="konfirmasi_status_pembayaran"]');
-        radioButtons.forEach(function(radio) {
-            radio.addEventListener('change', function() {
-                // Update nilai status pembayaran di form
-                document.getElementById('status_pembayaran').value = this.value;
-            });
-        });
-        
-        function formatDateForBackend(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
     </script>
     
     <style>
@@ -388,196 +329,178 @@
 
 </head>
 <body>
-    <div class="container"  x-data="{ openModalTambahPelanggan: false }">
-        <h1><b>Tambah Pesanan</b></h1>
+    <div class="container mx-auto p-6" x-data="openModalTambahPelanggan: false">
+        <h1 class="text-3xl font-bold mb-6">Tambah Pesanan</h1>
 
-        <form action="{{ route('pesanan.store') }}" method="POST" id="pesananForm">
+        <form 
+            action="{{ route('pesanan.store') }}" method="POST" 
+            x-data="formHandler( '{{ $kategori }}', {{ $pelanggan->toJson() }} )"
+            >
             @csrf
 
-            <input type="hidden" name="tipe_pesanan" value="{{ $tipe }}">
+            <input type="hidden" name="kategori" :value="kategori">
 
-            <input type="hidden" name="status_pembayaran" id="status_pembayaran" value="Belum Lunas">
-
-            <!-- Pelanggan -->
             <div>
-                <label>Pelanggan</label>
-                <select name="id_pelanggan" x-model="id_pelanggan" id="id_pelanggan" class="w-full border rounded p-2" required>
-                    <option value="">-- Pilih Pelanggan --</option>
-                    @foreach($pelanggans as $pelanggan)
-                        <option value="{{ $pelanggan->id }}"
-                            data-nama ="{{ $pelanggan->nama }}"
-                            data-alamat="{{ $pelanggan->alamat }}"
-                            data-telepon="{{ $pelanggan->nomor_telepon }}"
-                            >
-                            {{ $pelanggan->nama }}
-                        </option>
+                <label class="font-semibold text-lg">Kategori</label>
+                <div class="flex gap-4 mb-4">
+                    <label class="flex items-center">
+                        <input type="radio" name="kategori" value="Reguler" x-model="kategori" class="mr-2"> Reguler
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="kategori" value="Express" x-model="kategori" class="mr-2"> Express
+                    </label>
+                </div>
+        
+            <div class="mb-2">
+                <label class="font-semibold">Pelanggan:</label>
+                <select name="pelanggan_id" class="form-select mb-2 w-full" x-model="pelanggan_id" required id="pelanggan_id">
+                    <option value="">--Pilih Pelanggan--</option>
+                    @foreach ($pelanggan as $p)
+                        <option value="{{ $p->id }}">{{ $p->nama }}</option>
                     @endforeach
                 </select>
             </div>
 
             <button 
                 type="button" 
-                @click.prevent.stop="openModalTambahPelanggan = true"  
-                class="mt-2 text-blue-500 text-sm hover:underline">
+                x-on:click.stop="openModalTambahPelanggan = true"  
+                class="mb-4 text-blue-500 text-sm hover:underline">
                 + Tambah Pelanggan Baru
             </button>
-
-            <!-- Layanan -->
-            <div class="mb-4">
-                <label>Layanan</label>
-                <select name="id_layanan" id="id_layanan" class="w-full border rounded p-2" required>
-                    <option value="">-- Pilih Layanan --</option>
-                    @foreach($layanans as $layanan)
-                        <option value="{{ $layanan->id }}"
-                            data-layanan="{{ $layanan->jenis_layanan }}"
-                            data-harga="{{ $layanan->harga }}"
-                            >
-                            {{ $layanan->jenis_layanan }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- Informasi Barang -->
-            <div class="mb-4">
-                <label>Spesifikasi Barang</label>
-                <input type="text" name="spesifikasi_barang" id="spesifikasi_barang" class="w-full border rounded p-2" required>
-            </div>
         
-            <!-- Jenis Barang -->
-            <div class="mb-4">
-                <label>Jenis Barang</label>
-                <input type="text" name="jenis_barang" id="jenis_barang" class="w-full border rounded p-2" required>
-            </div>
-
-            @if($tipe == 'kiloan')
-                <div class="mb-4">
-                    <label>Berat Pakaian (Kg)</label>
-                    <input type="number" step="0.01" id="berat_pakaian" name="berat_pakaian" placeholder="Berat Pakaian (Kg)" required>
-                </div>
-            @elseif($tipe == 'satuan')
-                <div class="mb-4">
-                    <label>Jumlah Pakaian (Potong)</label>
-                    <input type="number" step="0.01" id="jumlah_pakaian" name="jumlah_pakaian" placeholder="Jumlah Pakaian (Potong)" required>
-                </div>
-            @endif
-
-            <input type="hidden" name="total_harga" id="total_harga">
-
-            <div class="mb-4">
-                <label>Tanggal Terima</label>
-                <div class="relative">
-                    <input type="text" name="tanggal_terima_display" id="tanggal_terima_display" class="w-full border rounded p-2 cursor-pointer bg-white" readonly required>
-                    <input type="hidden" name="tanggal_terima" id="tanggal_terima">
-                    <div class="absolute top-0 right-0 px-3 py-2 text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar" viewBox="0 0 16 16">
-                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
-                        </svg>
-                    </div>
-                </div>
+            <div class="mb-2">
+                <label class="font-semibold">Tanggal Terima:</label>
+                <input type="text" id="tanggal_terima" name="tanggal_terima" class="form-control mb-2" x-model="tanggal_terima" required>
             </div>
         
             <div class="mb-4">
-                <label>Estimasi Selesai</label>
-                <div class="relative">
-                    <input type="text" name="tanggal_selesai_display" id="tanggal_selesai_display" class="w-full border rounded p-2 cursor-pointer bg-white" readonly required>
-                    <input type="hidden" name="tanggal_selesai" id="tanggal_selesai">
-                    <div class="absolute top-0 right-0 px-3 py-2 text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar" viewBox="0 0 16 16">
-                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
-                        </svg>
+                <label class="font-semibold">Tanggal Selesai:</label>
+                <input type="text" id="tanggal_selesai" name="tanggal_selesai" class="form-control mb-2" x-model="tanggal_selesai" required>
+            </div>
+        
+            <template x-for="(item, index) in items" :key="index">
+                <div class="border p-4 mb-4 bg-gray-100 rounded-lg shadow-md">
+                    <div class="grid grid-cols-1 gap-2 mb-3">
+                        <label class="font-semibold">Layanan</label>
+                        <select :name="`layanan_id[]`" x-model="item.layanan_id" class="form-select mb-2 w-full">
+                            <option value="">--Pilih Layanan--</option>
+                            <template x-for="layanan in layananFiltered" :key="layanan.id">
+                                <option :value="layanan.id" x-text="`${layanan.jenis_laundry}`"></option>
+                            </template>
+                        </select>
+                        <input type="text" class="form-control mb-2 w-full" :name="`jenis_barang[]`" x-model="item.jenis_barang" placeholder="Jenis Barang">
+                        <input type="text" class="form-control mb-2 w-full" :name="`spesifikasi_barang[]`" x-model="item.spesifikasi_barang" placeholder="Spesifikasi">
+                        <input type="number" class="form-control mb-2 w-full" :name="`jumlah[]`" x-model="item.jumlah" placeholder="Berat (Kg)/Jumlah Pakaian">
+                        <input type="number" class="form-control mb-2 w-full" :name="`harga_satuan[]`" x-model="item.harga_satuan" placeholder="Harga Per kg/Per Satuan">
+                    </div>  
+                    <button type="button" class="btn btn-danger w-full py-2 bg-red-400 text-white rounded hover:bg-red-500" @click="items.splice(index, 1)">Hapus</button>
+                </div>
+            </template>
+        
+            <button type="button" class="btn btn-secondary py-2 px-4 bg-blue-400 text-white rounded hover:bg-blue-500" @click="items.push({ layanan_id: '', jenis_barang: '', spesifikasi_barang: '', jumlah: '', harga_satuan: '' })">
+                Tambah Layanan
+            </button>
+        
+            <!-- Modal Trigger -->
+            <button type="button" class="btn btn-primary py-2 px-6 mt-4 bg-blue-400 text-white rounded hover:bg-blue-500" @click="showModal = true">Simpan Pesanan</button>
+
+            <!-- Modal Konfirmasi -->
+            <div 
+                x-show="showModal" x-cloak
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-black bg-opacity-50 z-40"
+            >
+            </div>
+            <div 
+                class="fixed inset-0 flex items-center justify-center z-50" 
+                x-show="showModal" x-cloak
+                x-transition:enter="transition ease-out duration-300" 
+                x-transition:enter-start="opacity-0 translate-y-5" 
+                x-transition:enter-end="opacity-100 translate-y-0" 
+                x-transition:leave="transition ease-in duration-200" 
+                x-transition:leave-start="opacity-100 translate-y-0" 
+                x-transition:leave-end="opacity-0 translate-y-5"
+            >
+                <div class="bg-white w-full max-w-lg p-6 rounded-lg shadow-xl">
+                    <h2 class="text-2xl font-semibold mb-4 text-center">Konfirmasi Pesanan</h2>
+
+                    <div class="mb-4">
+                        <p><strong>Kategori:</strong> <span x-text="kategori"></span></p>
+                        <p><strong>Pelanggan:</strong>
+                            <template x-if="pelanggan_id">
+                                <span x-text="getNamaPelanggan(pelanggan_id)"></span>
+                            </template>
+                        </p>
+                        <p><strong>Nomor Telepon:</strong>
+                            <template x-if="pelanggan_id">
+                                <span x-text="getTeleponPelanggan(pelanggan_id)"></span>
+                            </template>
+                        </p>
+                        <p><strong>Tanggal Terima:</strong><span x-text="formatTanggal(tanggal_terima)"></span></p>
+                        <p><strong>Tanggal Selesai:</strong><span x-text="formatTanggal(tanggal_selesai)"></span></p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="font-bold">Detail Layanan:</h3>
+                        <template x-for="(item, index) in items" :key="index">
+                            <div class="border p-2 my-2 rounded bg-gray-50">
+                                <p><strong>Layanan:</strong> <span x-text="getNamaLayanan(item.layanan_id)"></span></p>
+                                <p><strong>Jenis Barang:</strong> <span x-text="item.jenis_barang"></span></p>
+                                <p><strong>Spesifikasi:</strong> <span x-text="item.spesifikasi_barang"></span></p>
+                                <p><strong>Jumlah/Berat (Kg):</strong> <span x-text="item.jumlah + ' ' + getSatuan(item.layanan_id)"></span></p>
+                                <p><strong>Harga Satuan:</strong> Rp<span x-text="item.harga_satuan"></span></p>
+                                <p><strong>Subtotal:</strong> Rp<span x-text="item.jumlah * item.harga_satuan"></span></p>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="mb-4 font-bold text-right">
+                        Total: Rp.<span x-text="getTotalHarga()"></span>
+                    </div>
+
+                    <div class="mt-4">
+                        <p class="font-semibold mb-2">Status Pembayaran</p>
+                        <div class="flex flex-wrap gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                                <input 
+                                    type="radio" name="status_pembayaran" 
+                                    value="Lunas" x-model="status_pembayaran" 
+                                    class="text-blue-500 focus:ring-blue-400 border-gray-300 rounded"
+                                > 
+                                <span class="whitespace-nowrap">Lunas</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                                <input 
+                                    type="radio" name="status_pembayaran" 
+                                    value="Belum Lunas" x-model="status_pembayaran" 
+                                    class="text-blue-500 focus:ring-blue-400 border-gray-300 rounded"
+                                > 
+                                <span class="whitespace-nowrap">Belum Lunas</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-4">
+                        <button type="submit" class="bg-blue-400 text-white px-6 py-2 rounded hover:bg-blue-500">Konfirmasi & Simpan</button>
+                        <button type="button" @click="showModal = false" class="bg-red-400 text-white px-6 py-2 rounded hover:bg-red-500">Batal</button>
                     </div>
                 </div>
             </div>
 
-            <button type="button" onclick="konfirmasiSimpan()" class="bg-blue-400 h-9 w-20 text-white px-4 py-2 hover:bg-blue-500 rounded text-sm">Simpan</button>
-            <button type="button" onclick="window.location.href='{{ route('pesanan.index') }}'" class="bg-gray-400 h-9 w-20 text-white px-4 py-2 hover:bg-gray-500 rounded text-sm">Batal</button>
-                
+            <button 
+                type="button" 
+                class="btn btn-primary py-2 px-6 mt-4 bg-gray-400 text-white rounded hover:bg-gray-500" 
+                onclick="window.location.href='{{ route('pesanan.index') }}'"
+            >
+                Kembali
+            </button>
+
         </form>
-
-        <div 
-            id="modalKonfirmasi" 
-            class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" 
-            x-on:click.outside="modalKonfirmasi = false" 
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="transition ease-in duration-300"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-        >
-            <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-                <h3 class="text-lg font-semibold mb-4">Konfirmasi Data Pesanan</h3>
-                
-                <div class="space-y-4 max-h-96 overflow-y-auto">
-                    <div class="border-b pb-2">
-                        <h4 class="font-medium text-blue-500">Detail Pelanggan</h4>
-                        <div class="grid grid-cols-1 gap-1 mt-1">
-                            <div><span class="font-medium">Nama:</span> <span id="konfirmasi_nama_pelanggan">-</span></div>
-                            <div><span class="font-medium">Alamat:</span> <span id="konfirmasi_alamat_pelanggan">-</span></div>
-                            <div><span class="font-medium">Telepon:</span> <span id="konfirmasi_telepon_pelanggan">-</span></div>
-                        </div>
-                    </div>
-                    
-                    <div class="border-b pb-2">
-                        <h4 class="font-medium text-blue-500">Detail Layanan</h4>
-                        <div class="grid grid-cols-1 gap-1 mt-1">
-                            <div><span class="font-medium">Jenis Layanan:</span> <span id="konfirmasi_jenis_layanan">-</span></div>
-                            <div><span class="font-medium">Harga per Unit:</span> Rp <span id="konfirmasi_harga_layanan">-</span></div>
-                        </div>
-                    </div>
-                    
-                    <div class="border-b pb-2">
-                        <h4 class="font-medium text-blue-500">Detail Barang</h4>
-                        <div class="grid grid-cols-1 gap-1 mt-1">
-                            <div><span class="font-medium">Spesifikasi:</span> <span id="konfirmasi_spesifikasi_barang">-</span></div>
-                            <div><span class="font-medium">Jenis Barang:</span> <span id="konfirmasi_jenis_barang">-</span></div>
-                            @if($tipe == 'kiloan')
-                                <div><span class="font-medium">Berat Pakaian:</span> <span id="konfirmasi_berat_pakaian">-</span> Kg</div>
-                            @elseif($tipe == 'satuan')
-                                <div><span class="font-medium">Jumlah Pakaian:</span> <span id="konfirmasi_jumlah_pakaian">-</span></div>
-                            @endif
-                        </div>
-                    </div>
-                    
-                    <div class="border-b pb-2">
-                        <h4 class="font-medium text-blue-500">Jadwal</h4>
-                        <div class="grid grid-cols-1 gap-1 mt-1">
-                            <div><span class="font-medium">Tanggal Terima:</span> <span id="konfirmasi_tanggal_terima">-</span></div>
-                            <div><span class="font-medium">Estimasi Selesai:</span> <span id="konfirmasi_tanggal_selesai">-</span></div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-blue-50 p-3 rounded-md">
-                        <h4 class="font-semibold text-blue-600">Total Harga</h4>
-                        <div class="text-xl font-bold mt-1">Rp <span id="konfirmasi_total_harga">0</span></div>
-                    </div>
-
-                    <div class="bg-gray-50 p-3 rounded-md">
-                        <h4 class="font-semibold text-gray-800">Status Pembayaran</h4>
-                        <div class="flex items-center space-x-4 mt-2">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="konfirmasi_status_pembayaran" value="Belum Lunas" class="form-radio h-5 w-5 text-red-600" checked>
-                                <span class="ml-2 text-gray-700">Belum Lunas</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="konfirmasi_status_pembayaran" value="Lunas" class="form-radio h-5 w-5 text-green-600">
-                                <span class="ml-2 text-gray-700">Lunas</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-6 flex justify-end space-x-3">
-                    <button onclick="tutupModal()" class="px-4 py-2 text-white bg-gray-400 hover:bg-gray-500 rounded text-sm">
-                        Batal
-                    </button>
-                    <button onclick="submitForm()" class="px-4 py-2 bg-blue-400 hover:bg-blue-500 text-white rounded text-sm">
-                        Ya, Simpan
-                    </button>
-                </div>
-            </div>
-        </div>
 
         <div 
             x-show="openModalTambahPelanggan"
@@ -630,123 +553,115 @@
                 </form>
             </div>
         </div>
+        
 
-        <script>
-            function konfirmasiSimpan() {
-                // Validasi form terlebih dahulu
-                const form = document.getElementById('pesananForm');
-                if (!form.checkValidity()) {
-                    form.reportValidity();
-                    return;
-                }
+    <script>
+        function formHandler(kategoriAwal, pelangganData) {
+            return {
+                kategori: kategoriAwal,
+                pelanggan_id: '',
+                tanggal_terima: '',
+                tanggal_selesai: '',
+                status_cucian: '',
+                status_pembayaran: '',
+                showModal: false,
+                openModalTambahPelanggan: false,
+                pelangganList: pelangganData,
+                items: [{ layanan_id: '', jenis_barang: '', spesifikasi_barang: '', jumlah: '', harga_satuan: '' }],
                 
-                // Ambil nilai-nilai untuk ditampilkan di modal
-                const pelangganSelect = document.getElementById('id_pelanggan');
-                const pelangganOption = pelangganSelect.options[pelangganSelect.selectedIndex];
-                const layananSelect = document.getElementById('id_layanan');
-                const layananOption = layananSelect.options[layananSelect.selectedIndex];
+                layananAll: @json($layanan),
                 
-                // Isi modal dengan data formulir
-                // Data Pelanggan
-                document.getElementById('konfirmasi_nama_pelanggan').textContent = pelangganOption ? pelangganOption.getAttribute('data-nama') : '-';
-                document.getElementById('konfirmasi_alamat_pelanggan').textContent = pelangganOption ? pelangganOption.getAttribute('data-alamat') : '-';
-                document.getElementById('konfirmasi_telepon_pelanggan').textContent = pelangganOption ? pelangganOption.getAttribute('data-telepon') : '-';
+                get layananFiltered() {
+                    return this.layananAll.filter(l => l.kategori === this.kategori);
+                },
                 
-                // Data Layanan
-                const namaLayanan = layananOption ? layananOption.getAttribute('data-layanan') : '-';
-                const hargaLayanan = layananOption ? parseFloat(layananOption.getAttribute('data-harga')) : 0;
+                addItem() {
+                    this.items.push({ layanan_id: '', jenis_barang: '', spesifikasi_barang: '', jumlah: '', harga_satuan: '' });
+                },
                 
-                document.getElementById('konfirmasi_jenis_layanan').textContent = namaLayanan;
-                document.getElementById('konfirmasi_harga_layanan').textContent = formatRupiah(hargaLayanan);
+                getNamaPelanggan(id) {
+                    const p = this.pelangganList.find(p => p.id == id);
+                    return p ? p.nama : '-';
+                },
                 
-                // Data Barang
-                document.getElementById('konfirmasi_spesifikasi_barang').textContent = document.getElementById('spesifikasi_barang').value;
-                document.getElementById('konfirmasi_jenis_barang').textContent = document.getElementById('jenis_barang').value;
+                getTeleponPelanggan(id) {
+                    const p = this.pelangganList.find(p => p.id == id);
+                    return p ? p.nomor_telepon : '-';
+                },
                 
-                // Hitung total harga berdasarkan tipe pesanan
-                let totalHarga = 0;
-                @if($tipe == 'kiloan')
-                    const beratPakaian = parseFloat(document.getElementById('berat_pakaian').value) || 0;
-                    document.getElementById('konfirmasi_berat_pakaian').textContent = beratPakaian;
-                    totalHarga = hargaLayanan * beratPakaian;
-                @elseif($tipe == 'satuan')
-                    const jumlahPakaian = parseFloat(document.getElementById('jumlah_pakaian').value) || 0;
-                    document.getElementById('konfirmasi_jumlah_pakaian').textContent = jumlahPakaian;
-                    totalHarga = hargaLayanan * jumlahPakaian;
-                @endif
-                
-                // Simpan total harga ke form (untuk dikirim ke server) dan tampilkan di modal
-                document.getElementById('total_harga').value = totalHarga;
-                document.getElementById('konfirmasi_total_harga').textContent = formatRupiah(totalHarga);
-                
-                // Data Jadwal
-                const tanggalTerima = document.getElementById('tanggal_terima').value;
-                const tanggalSelesai = document.getElementById('tanggal_selesai').value;
-                
-                document.getElementById('konfirmasi_tanggal_terima').textContent = formatDate(tanggalTerima);
-                document.getElementById('konfirmasi_tanggal_selesai').textContent = formatDate(tanggalSelesai);
+                getNamaLayanan(id) {
+                    const l = this.layananAll.find(l => l.id == id);
+                    return l ? `${l.jenis_laundry} (${l.kategori})` : '—';
+                },
 
-                document.querySelectorAll('input[name="konfirmasi_status_pembayaran"]').forEach(function(radio) {
-                    if (radio.value === "Belum Lunas") {
-                        radio.checked = true;
-                    }
-                });
+                getSatuan(layanan_id) {
+                    const layanan = this.layananAll.find(l => l.id == layanan_id);
+                    return layanan && layanan.jenis_laundry === 'Satuan' ? 'potong' : 'Kg';
+                },
                 
-                document.getElementById('status_pembayaran').value = "Belum Lunas";
+                getTotalHarga() {
+                    return this.items.reduce((sum, i) => sum + (parseInt(i.harga_satuan || 0) * parseInt(i.jumlah || 0)), 0);
+                },
+
+                formatTanggal(dateStr) {
+                    if (!dateStr) return '-';
+                    const options = { day: '2-digit', month: 'long', year: 'numeric' };
+                    return new Date(dateStr).toLocaleDateString('id-ID', options);
+                },
                 
-                // Tampilkan modal konfirmasi
-                bukaModal();
-            }
+                init() {
+                    this.$nextTick(() => {
+                        const today = new Date();
+                        const self = this;
 
-            function bukaModal() {
-                const modal = document.getElementById('modalKonfirmasi');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex', 'modal-transition-enter');
-                setTimeout(() => {
-                    modal.classList.add('modal-transition-enter-end');
-                }, 10);
-            }
+                        const formattedDate = today.toISOString().split('T')[0];
 
-            function tutupModal() {
-                const modal = document.getElementById('modalKonfirmasi');
-                modal.classList.add('modal-transition-leave');
-                modal.classList.remove('modal-transition-enter-end');
-                setTimeout(() => {
-                    modal.classList.add('modal-transition-leave-end');
-                    setTimeout(() => {
-                        modal.classList.remove('flex', 'modal-transition-leave', 'modal-transition-leave-end');
-                        modal.classList.add('hidden');
-                    }, 300);
-                }, 10);
-            }
-                    
-            function formatRupiah(angka) {
-                return new Intl.NumberFormat('id-ID').format(angka);
-            }
-            
-            function formatDate(dateString) {
-                if (!dateString) return '-';
-                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                return new Date(dateString).toLocaleDateString('id-ID', options);
-            }
-            
-            
-            function submitForm() {
-                const statusPembayaran = document.querySelector('input[name="konfirmasi_status_pembayaran"]:checked').value;
-                document.getElementById('status_pembayaran').value = statusPembayaran;
-                // Submit form
-                document.getElementById('pesananForm').submit();
-                tutupModal();
-            }
-            
-            // Tutup modal jika user klik di luar modal
-            window.onclick = function(event) {
-                const modal = document.getElementById('modalKonfirmasi');
-                if (event.target === modal) {
-                    tutupModal();
+                        this.tanggal_terima = formattedDate;
+                        this.tanggal_selesai = formattedDate;
+                        
+                        flatpickr("#tanggal_terima", {
+                            altInput: true,
+                            altFormat: "d F Y",
+                            dateFormat: "Y-m-d",
+                            locale: "id",
+                            minDate: "today",
+                            defaultDate: formattedDate,
+                            onChange: function(selectedDates, dateStr) {
+                                self.tanggal_terima = dateStr;
+                            }
+                        });
+                        
+                        flatpickr("#tanggal_selesai", {
+                            altInput: true,
+                            altFormat: "d F Y",
+                            dateFormat: "Y-m-d",
+                            locale: "id",
+                            minDate: "today",
+                            defaultDate: formattedDate,
+                            onChange: function(selectedDates, dateStr) {
+                                self.tanggal_selesai = dateStr;
+                            }
+                        });
+                        
+                        $('#pelanggan_id').select2({
+                            placeholder: "Cari Pelanggan...",
+                            allowClear: true,
+                            width: '100%'
+                        }).on('change', function() {
+                            self.pelanggan_id = $(this).val();
+                        });
+                        
+                        // const tanggalTerimaFmt = flatpickr.formatDate(today, "d F Y", 'id');
+                        // const tanggalSelesaiFmt = flatpickr.formatDate(today, "d F Y", 'id');
+                        // this.tanggal_terima = tanggalTerimaFmt;
+                        // this.tanggal_selesai = tanggalSelesaiFmt;
+                        
+                        this.status_pembayaran = 'Belum Lunas';
+                    });
                 }
             }
-        </script>
+        }
+    </script>
 
     </div>
 </body>

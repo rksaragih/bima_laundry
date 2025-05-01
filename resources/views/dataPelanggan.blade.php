@@ -159,10 +159,13 @@
             @endif
           </li>
           <li class="mt-8">
-            <a class="flex items-center gap-2 text-red-500" href="{{ route('login') }}">
-              <i class="fas fa-sign-out-alt mr-3"> </i>
-              Logout
+            <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <i class="fas fa-sign-out-alt mr-3"></i> Logout
             </a>
+
+            <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+              @csrf
+            </form>
           </li>
         </ul>
       </div>

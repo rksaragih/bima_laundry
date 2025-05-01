@@ -183,10 +183,13 @@
                 @endif
                 </li>
                 <li class="mt-8">
-                <a class="flex items-center gap-2 text-red-500" href="{{ route('login') }}">
-                    <i class="fas fa-sign-out-alt mr-3"> </i>
-                    Logout
-                </a>
+                    <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="fas fa-sign-out-alt mr-3"></i> Logout
+                    </a>
+    
+                    <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                    @csrf
+                    </form>
                 </li>
             </ul>
             </div>
@@ -244,22 +247,24 @@
                 x-transition:leave-end="opacity-0 translate-y-5 scale-95"
             >
                 <div class="bg-white p-6 rounded w-80 text-center" @click.away="openJenisPesananModal = false">
-                    <h2 class="text-lg font-bold mb-4">Pilih Jenis Pesanan</h2>
+                    <h2 class="text-lg font-bold mb-4">Pilih Kategori Layanan</h2>
 
                     <div class="flex flex-col gap-4">
+
                     <a 
-                        href="{{ route('pesanan.create', ['tipe' => 'kiloan']) }}" 
+                        href="{{ route('pesanan.create', ['tipe' => 'Reguler']) }}" 
                         class="bg-blue-400 hover:bg-blue-500 text-white py-2 rounded"
                     >
-                        Kiloan
+                        Reguler
                     </a>
 
                     <a 
-                        href="{{ route('pesanan.create', ['tipe' => 'satuan']) }}" 
-                        class="bg-green-400 hover:bg-green-500 text-white py-2 rounded"
+                        href="{{ route('pesanan.create', ['tipe' => 'Express']) }}" 
+                        class="bg-blue-400 hover:bg-blue-500 text-white py-2 rounded"
                     >
-                        Satuan
+                        Express
                     </a>
+
                     <a 
                         href="#"
                         x-on:click="openJenisPesananModal = false"
@@ -284,7 +289,7 @@
                 Nomor Telepon
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Jenis Layanan
+                Kategori
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Tanggal Terima
@@ -315,7 +320,7 @@
                       <td class="px-6 py-4 whitespace-nowrap">{{ $pesanans->firstItem() + $index }}</td>
                       <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->pelanggan->nama }}</td>
                       <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->pelanggan->nomor_telepon }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->layanan->jenis_layanan }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->details->first()?->layanan?->kategori ?? '-' }}</td>
                       <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($pesanan->tanggal_terima)->format('d M Y') }}</td>
                       <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($pesanan->tanggal_selesai)->format('d M Y') }}</td>
                       <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->status_pembayaran }}</td>
@@ -388,7 +393,7 @@
                                                     <input type="radio" name="status_pembayaran" 
                                                         value="Lunas" 
                                                         :checked="selectedPesanan.status_pembayaran === 'Lunas'"
-                                                        class="form-radio h-5 w-5 text-green-600"
+                                                        class="form-radio h-5 w-5 text-blue-600"
                                                     >
                                                     <span class="ml-2 text-gray-700">Lunas</span>
                                                 </label>
