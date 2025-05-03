@@ -359,7 +359,7 @@
 
                 <button 
                     class="print-btn bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-500"
-                    onclick="window.print()"
+                    onclick="window.location.href='{{ route('pesanan.print', $pesanan->id) }}'"
                 >
                     Print
                 </button>

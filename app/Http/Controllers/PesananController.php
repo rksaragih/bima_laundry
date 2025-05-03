@@ -5,6 +5,8 @@ use App\Models\Pesanan;
 use App\Models\PesananDetail;
 use App\Models\Pelanggan;
 use App\Models\Layanan;
+use App\Exports\PesananExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -15,7 +17,24 @@ class PesananController extends Controller
     
     public function index() {
         $pesanans = Pesanan::with(['pelanggan', 'details.layanan'])->latest()->paginate(10);
-        return view('dataPesanan', compact('pesanans'));
+
+        $tahunList = Pesanan::selectRaw('YEAR(tanggal_terima) as tahun')->distinct()->pluck('tahun');
+
+        return view('dataPesanan', compact('pesanans', 'tahunList'));
+    }
+
+    public function searchByNama(Request $request)
+    {
+
+        $pesanans = Pesanan::with('pelanggan', 'details.layanan')
+        ->whereHas('pelanggan', function ($query) use ($request) {
+            $query->where('nama', 'like', '%' . $request->search_nama . '%');
+        })->latest()->paginate(10);
+
+        $tahunList = Pesanan::selectRaw('YEAR(tanggal_terima) as tahun')->distinct()->pluck('tahun');
+
+        return view('dataPesanan', compact('pesanans', 'tahunList'));
+
     }
 
     public function detail(Request $request, $id)
@@ -184,6 +203,96 @@ class PesananController extends Controller
 
         // Redirect with a success message
         return redirect()->route('pesanan.index')->with('success', 'Pesanan berhasil diperbarui.');
+    }
+
+    public function printNota($id)
+    {
+        $pesanan = Pesanan::with(['pelanggan', 'details.layanan'])->findOrFail($id);
+        return view('pesanan.nota-print', compact('pesanan'));
+    }
+
+    public function filter(Request $request)
+    {
+        $query = Pesanan::with(['pelanggan', 'details.layanan']);
+
+        $tahunList = Pesanan::selectRaw('YEAR(tanggal_terima) as tahun')->distinct()->orderBy('tahun', 'desc')->pluck('tahun');
+
+        if ($tahunList->isEmpty()) {
+            $tahunList = collect([date('Y')]);
+        }    
+
+        // Filter by kategori if provided
+        if ($request->filled('kategori')) {
+            $query->whereHas('details.layanan', function ($q) use ($request) {
+                $q->where('kategori', $request->kategori);
+            });
+        }
+
+        // Filter by tanggal terima (day, month, year)
+        if ($request->filled('tanggal_hari') || $request->filled('tanggal_bulan') || $request->filled('tanggal_tahun')) {
+            $query->where(function ($q) use ($request) {
+                // If day is provided
+                if ($request->filled('tanggal_hari')) {
+                    $q->whereDay('tanggal_terima', $request->tanggal_hari);
+                }
+                
+                // If month is provided
+                if ($request->filled('tanggal_bulan')) {
+                    $q->whereMonth('tanggal_terima', $request->tanggal_bulan);
+                }
+                
+                // If year is provided
+                if ($request->filled('tanggal_tahun')) {
+                    $q->whereYear('tanggal_terima', $request->tanggal_tahun);
+                }
+            });
+        }
+
+        // Filter by status pembayaran if provided
+        if ($request->filled('status_pembayaran')) {
+            $query->where('status_pembayaran', $request->status_pembayaran);
+        }
+
+        // Filter by status cucian if provided
+        if ($request->filled('status_cucian')) {
+            $query->where('status_cucian', $request->status_cucian);
+        }
+
+        // Add request parameter to indicate filtering is active
+        $request->merge(['filter' => true]);
+
+        $pesanans = $query->latest()->paginate(10);
+        return view('dataPesanan', compact('pesanans', 'tahunList'));
+    }
+
+    public function export(Request $request)
+    {
+        $bulan = $request->input('bulan');
+        $tahun = $request->input('tahun');
+        
+        $fileName = 'data_pesanan';
+        
+        if ($bulan && $tahun) {
+            $namaBulan = [
+                '1' => 'Januari', '2' => 'Februari', '3' => 'Maret', '4' => 'April',
+                '5' => 'Mei', '6' => 'Juni', '7' => 'Juli', '8' => 'Agustus',
+                '9' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+            ];
+            $fileName .= '_' . $namaBulan[$bulan] . '_' . $tahun;
+        } elseif ($bulan) {
+            $namaBulan = [
+                '1' => 'Januari', '2' => 'Februari', '3' => 'Maret', '4' => 'April',
+                '5' => 'Mei', '6' => 'Juni', '7' => 'Juli', '8' => 'Agustus',
+                '9' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+            ];
+            $fileName .= '_' . $namaBulan[$bulan];
+        } elseif ($tahun) {
+            $fileName .= '_' . $tahun;
+        }
+        
+        $fileName .= '.xlsx';
+        
+        return Excel::download(new PesananExport($bulan, $tahun), $fileName);
     }
 
 }

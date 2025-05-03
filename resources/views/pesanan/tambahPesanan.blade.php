@@ -390,8 +390,8 @@
                         </select>
                         <input type="text" class="form-control mb-2 w-full" :name="`jenis_barang[]`" x-model="item.jenis_barang" placeholder="Jenis Barang">
                         <input type="text" class="form-control mb-2 w-full" :name="`spesifikasi_barang[]`" x-model="item.spesifikasi_barang" placeholder="Spesifikasi">
-                        <input type="number" class="form-control mb-2 w-full" :name="`jumlah[]`" x-model="item.jumlah" placeholder="Berat (Kg)/Jumlah Pakaian">
-                        <input type="number" class="form-control mb-2 w-full" :name="`harga_satuan[]`" x-model="item.harga_satuan" placeholder="Harga Per kg/Per Satuan">
+                        <input type="number" step="0.01" class="form-control mb-2 w-full" :name="`jumlah[]`" x-model="item.jumlah" placeholder="Berat (Kg)/Jumlah Pakaian">
+                        <input type="number" step="0.01" class="form-control mb-2 w-full" :name="`harga_satuan[]`" x-model="item.harga_satuan" placeholder="Harga Per kg/Per Satuan">
                     </div>  
                     <button type="button" class="btn btn-danger w-full py-2 bg-red-400 text-white rounded hover:bg-red-500" @click="items.splice(index, 1)">Hapus</button>
                 </div>
@@ -439,6 +439,11 @@
                         <p><strong>Nomor Telepon:</strong>
                             <template x-if="pelanggan_id">
                                 <span x-text="getTeleponPelanggan(pelanggan_id)"></span>
+                            </template>
+                        </p>
+                        <p><strong>Alamat:</strong>
+                            <template x-if="pelanggan_id">
+                                <span x-text="getAlamatPelanggan(pelanggan_id)"></span>
                             </template>
                         </p>
                         <p><strong>Tanggal Terima:</strong><span x-text="formatTanggal(tanggal_terima)"></span></p>
@@ -588,6 +593,11 @@
                     const p = this.pelangganList.find(p => p.id == id);
                     return p ? p.nomor_telepon : '-';
                 },
+
+                getAlamatPelanggan(id) {
+                    const p = this.pelangganList.find(p => p.id == id);
+                    return p ? p.alamat : '-';
+                },
                 
                 getNamaLayanan(id) {
                     const l = this.layananAll.find(l => l.id == id);
@@ -600,7 +610,12 @@
                 },
                 
                 getTotalHarga() {
-                    return this.items.reduce((sum, i) => sum + (parseInt(i.harga_satuan || 0) * parseInt(i.jumlah || 0)), 0);
+                    return this.items.reduce((sum, i) => 
+                    {
+                        const harga = parseFloat(i.harga_satuan || 0);
+                        const jumlah = parseFloat(i.jumlah || 0);
+                        return sum + (harga * jumlah);
+                    }, 0);
                 },
 
                 formatTanggal(dateStr) {

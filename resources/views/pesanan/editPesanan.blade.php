@@ -234,6 +234,11 @@
                                     <span x-text="getTeleponPelanggan(pelanggan_id)"></span>
                                 </template>
                             </p>
+                            <p><strong>Alamat:</strong>
+                                <template x-if="pelanggan_id">
+                                    <span x-text="getAlamatPelanggan(pelanggan_id)"></span>
+                                </template>
+                            </p>
                             <p><strong>Tanggal Terima:</strong><span x-text="formatTanggal(tanggal_terima)"></span></p>
                             <p><strong>Tanggal Selesai:</strong><span x-text="formatTanggal(tanggal_selesai)"></span></p>
                             <p><strong>Status Cucian:</strong><span x-text="status_cucian"></span></p>
@@ -330,6 +335,11 @@
                     const p = this.pelangganList.find(p => p.id == id);
                     return p ? p.nomor_telepon : '-';
                 },
+
+                getAlamatPelanggan(id) {
+                    const p = this.pelangganList.find(p => p.id == id);
+                    return p ? p.alamat : '-';
+                },
                 
                 getNamaLayanan(id) {
                     const l = this.layananAll.find(l => l.id == id);
@@ -407,7 +417,6 @@
                         this.items.forEach((item, index) => {
                             const layananId = item.layanan_id;
                             if (layananId) {
-                                // Cek jika dropdown sudah di-render
                                 const selector = `.layanan-select:eq(${index})`;
                                 if ($(selector).length) {
                                     $(selector).val(layananId);

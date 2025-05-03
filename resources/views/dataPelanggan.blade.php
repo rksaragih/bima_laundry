@@ -5,6 +5,9 @@
     <title>Bima Laundry - Data Pelanggan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
     <script>
         tailwind.config = {
@@ -19,10 +22,49 @@
     </script>
 
     <style>
+
+      .select2-container--default .select2-selection--single {
+          background-color: #f9fafb;
+          border: 1px solid #d1d5db;
+          border-radius: 6px;
+          height: 28px;
+          font-size: 0.75rem;
+          padding-left: 6px;
+          padding-right: 6px;
+          display: flex;
+          align-items: center;
+        }
+
+      .select2-container--default .select2-selection--single .select2-selection__rendered {
+          color: #374151;
+          line-height: 28px;
+        }
+
+      .select2-container--default .select2-selection--single .select2-selection__arrow {
+          height: 100%;
+          right: 6px;
+        }
+
+      .select2-container--open .select2-dropdown {
+          border-radius: 6px;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+          border: 1px solid #d1d5db;
+        }
+
       [x-cloak] {
           display: none !important;
       }
+
     </style>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        $('.select2').select2({
+          placeholder: "Pilih alamat...",
+          width: 'style'
+        });
+      });
+    </script>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 </head>
@@ -37,7 +79,7 @@
             <img
               alt="Logo"
               class="mr-3"
-              src="images/logo-bima-laundry-svg.svg"
+              src="/images/logo-bima-laundry-svg.svg"
             />
           </a>
         </div>
@@ -90,7 +132,6 @@
             <i class="fas fa-wallet fa-fw"></i>
             Tambah Pengeluaran
           </a>
-
 
               <div
                 x-show="openModalPengeluaran"
@@ -179,23 +220,32 @@
             </div>
           </header>
       <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedPelanggan: {} }">
+        <form action="{{ route('pelanggan.search') }}" method="GET">
           <div class="flex justify-between items-center mb-4">
               <h1 class="text-2xl font-bold">Data Pelanggan</h1>
-              <input class="border rounded-lg px-4 py-2" placeholder="Search..." type="text"/>
+              <input class="border rounded-lg px-4 py-2" name="search_nama" placeholder="Search..." type="text"/>
           </div>
+        </form>
 
         <!-- Modal -->
-        @if(Auth::user()->role === 'Admin')
-          <div x-data="{ openModal: false }">
 
+          <div x-data="{ openModal: false }">
             <div class="flex space-x-4 mb-4">
+              @if(Auth::user()->role === 'Admin')
               <button x-on:click="openModal = true" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg">
                 Tambah Data
               </button>
+              @endif
 
-              <button class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded-lg">
-                Filter
-            </button>
+              <button class="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-lg" onclick="window.location.href='{{ route('pelanggan.index') }}'">
+                Reset Filter
+              </button>
+
+              @if(Auth::user()->role === 'Admin')
+                <button onclick="window.location.href='{{ route('pelanggan.export') }}'" class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded-lg">
+                  Export Excel
+                </button>
+              @endif
             </div>
 
             <div
@@ -254,14 +304,29 @@
                 </div>
             </div>
           </div>
-        @endif
 
           <table class="min-w-full bg-white">
               <thead class="bg-gray-50">
                 <tr>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div class="flex items-center gap-2">
+                      <span>Alamat</span>
+                      <form action="{{ route('pelanggan.index') }}" id="filter-alamat-form" method="GET" class="mt-3">
+                        <select 
+                          name="alamat" id="alamat" 
+                          onchange="document.getElementById('filter-alamat-form').submit();"
+                          class="select2 text-xs"
+                        >
+                          <option value="">-- Semua Alamat --</option>
+                            @foreach($alamatList as $alamat)
+                              <option value="{{ $alamat }}" {{ request('alamat') == $alamat ? 'selected' : '' }}>{{ $alamat }}</option>
+                            @endforeach
+                        </select>
+                      </form>
+                    </div>
+                  </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Telepon</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                 </tr>
@@ -387,7 +452,5 @@
       </div>
     </div>
   </div>
-
-  <script src="//unpkg.com/alpinejs" defer></script>
 </body>
 </html>
