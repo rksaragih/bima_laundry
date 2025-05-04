@@ -12,13 +12,14 @@ class Layanan extends Model
 
     protected $table = 'layanans';
     protected $fillable = [
-        'jenis_layanan', 
+        'jenis_laundry', 
         'harga', 
+        'kategori'
     ];
 
     public function pesanans()
     {
-        return $this->hasMany(Pesanan::class, 'id_layanan');
+        return $this->hasMany(PesananDetail::class, 'layanan_id');
     }
 
 }

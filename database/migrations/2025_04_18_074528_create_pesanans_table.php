@@ -13,15 +13,10 @@ return new class extends Migration
     {
         Schema::create('pesanans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
-            $table->foreignId('id_pelanggan')->constrained('pelanggans')->onDelete('cascade');
-            $table->foreignId('id_layanan')->constrained('layanans')->onDelete('cascade');
-            $table->string('jenis_barang');
-            $table->text('spesifikasi_barang');
-            $table->string('tipe_pesanan');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('pelanggan_id')->constrained('pelanggans')->onDelete('cascade');
             $table->string('status_cucian');
             $table->string('status_pembayaran');
-            $table->integer('total_harga');
             $table->date('tanggal_terima');
             $table->date('tanggal_selesai');
             $table->timestamps();

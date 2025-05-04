@@ -12,42 +12,32 @@ class Pesanan extends Model
     protected $table = 'pesanans';
 
     protected $fillable = [
-        'id_user',
-        'id_pelanggan',
-        'id_layanan',
-        'jenis_barang',
-        'spesifikasi_barang',
-        'tipe_pesanan',
+        'user_id',
+        'pelanggan_id',
         'status_cucian',
         'status_pembayaran',
-        'total_harga',
         'tanggal_terima',
         'tanggal_selesai',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function pelanggan()
     {
-        return $this->belongsTo(Pelanggan::class, 'id_pelanggan');
+        return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
     }
 
-    public function layanan()
+    public function details()
     {
-        return $this->belongsTo(Layanan::class, 'id_layanan');
+        return $this->hasMany(PesananDetail::class);
     }
 
-    public function kiloan()
+    public function getTotalHargaAttribute()
     {
-        return $this->hasOne(PesananKiloan::class, 'id');
-    }
-
-    public function satuan()
-    {
-        return $this->hasOne(PesananSatuan::class, 'id');
+        return $this->details->sum('total_harga');
     }
 
 }

@@ -39,6 +39,16 @@
             .logo {
                 margin-left: -17px;
             }
+
+            .btn-custom {
+                background-color: #6FBcFF;
+                color: #fff;
+            }
+
+            .btn-custom:hover {
+                background-color: #5EA9E6;
+                color: white;
+            }
         </style>
     </head>
     
@@ -65,7 +75,7 @@
                     <input type="password" name="password" class="form-control" placeholder="Password" required>
                 </div>
     
-                <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
+                <button type="submit" class="btn btn-custom w-100 mt-2">Login</button>
             </form>
     
         </div>
