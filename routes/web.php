@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\LayananController;
+use App\Http\Controllers\LayananPengirimanController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\DashboardController;
@@ -12,6 +13,7 @@ Route::view('/', 'welcome');
 
 Route::get('/loginPage', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
+
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -29,10 +31,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('pelanggan', PelangganController::class)->except(['show']);
     Route::get('/searchPelanggan', [PelangganController::class, 'searchByNama'])->name('pelanggan.search');
     Route::get('/pelanggan/export', [PelangganController::class, 'export'])->name('pelanggan.export');
-
     Route::resource('layanan', LayananController::class)->except(['show']);
-    
     Route::resource('pengeluaran', PengeluaranController::class)->except(['show']);
+    Route::get('/layanan-pengiriman', [LayananPengirimanController::class, 'index'])->name('layananpengiriman.index');
     Route::get('/pengeluaran/export', [PengeluaranController::class, 'export'])->name('pengeluaran.export');
+
 
 });

@@ -113,7 +113,7 @@
             </a>
           </li>
           <li class="mb-4">
-            <a class="flex items-center gap-4 text-gray-700" href="#">
+            <a class="flex items-center gap-4 text-gray-700" href="{{ route('layananpengiriman.index') }}">
               <i class="fas fa-shipping-fast fa-fw"></i>
               Layanan Pengiriman
             </a>
