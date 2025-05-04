@@ -6,13 +6,16 @@ use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\PesananController;
+use App\Http\Controllers\DashboardController;
 
-Route::get('/', [AuthController::class, 'loginForm'])->name('login');
+Route::view('/', 'welcome');
+
+Route::get('/loginPage', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/grafik', [AuthController::class, 'getGrafik'])->name('index');
+    Route::get('/grafik', [DashboardController::class, 'getGrafik'])->name('index');
 
     Route::resource('pesanan', PesananController::class)->except(['show']);
     Route::get('/detailPesanan/{id}', [PesananController::class, 'detail'])->name('pesanan.detail');

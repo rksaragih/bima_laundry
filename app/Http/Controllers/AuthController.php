@@ -46,11 +46,36 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('message', 'Anda berhasil logout');;
+        return redirect('/loginPage')->with('message', 'Anda berhasil logout');;
     }
 
-    public function getGrafik() {
-        return view('index');
+    public function getGrafikPendapatan(Request $request)
+    {
+        $tahun = $request->tahun ?? now()->year;
+
+        $data = DB::table('pesanan_details')
+            ->join('pesanans', 'pesanan_details.pesanan_id', '=', 'pesanans.id')
+            ->selectRaw('MONTH(pesanans.tanggal_terima) as bulan, SUM(pesanan_details.total_harga) as total')
+            ->whereYear('pesanans.tanggal_terima', $tahun)
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->get();
+
+        $pendapatanPerBulan = array_fill(1, 12, 0);
+        foreach ($data as $item) {
+            $pendapatanPerBulan[$item->bulan] = $item->total;
+        }
+
+        $tahunList = DB::table('pesanans')
+            ->selectRaw('YEAR(tanggal_terima) as tahun')
+            ->distinct()
+            ->pluck('tahun');
+
+        return view('index', [
+            'pendapatan' => $pendapatanPerBulan,
+            'tahunList' => $tahunList,
+            'selectedTahun' => $tahun,
+        ]);
     }
 
 }

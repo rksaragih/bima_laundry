@@ -24,9 +24,9 @@
     <style></style>
   </head>
   <body class="bg-gray-100">
-    <div class="flex">
+    <div class="flex min-h-screen">
       <!-- sidebar -->
-      <div class="w-1/5 bg-white h-screen shadow-lg">
+      <div class="w-1/5 bg-white shadow-lg sticky top-0 h-screen overflow-y-auto">
         <div class="p-6" x-data="{ openModalPengeluaran: false }">
           <div class="flex items-center mb-8">
             <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('pesanan.index') }}">
@@ -153,50 +153,151 @@
 
         <div class="flex justify-between items-center mb-8">
           <h1 class="text-2xl font-bold">Dashboard</h1>
-          <span class="text-blue-500"> {{ Auth::user()->role }} </span>
+          <span class="text-blue-500 font-bold"> {{ Auth::user()->role }} </span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-biruBima text-white p-20 rounded-lg flex items-center">
-            <div class="bg-white text-biruBima p-10 rounded-full mr-6">
-                <i class="fas fa-file-alt fa-fw"></i>
-            </div>
-            <div>
-              <h2 class="text-2xl font-semibold mb-1">Data Pesanan</h2>
-              <p class="text-lg">Total: 10 Pesanan</p>
-            </div>
-          </div>
+        <form method="GET" action="{{ route('index') }}" class="mb-6">
+          <label for="tahun" class="mr-2 font-semibold">Pilih Tahun:</label>
+          <select name="tahun" id="tahun" class="border rounded p-2">
+              @foreach($tahunList as $tahun)
+                  <option value="{{ $tahun }}" {{ $selectedTahun == $tahun ? 'selected' : '' }}>
+                      {{ $tahun }}
+                  </option>
+              @endforeach
+          </select>
+          <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded">Tampilkan</button>
+        </form>
 
-          <div class="bg-biruBima text-white p-20 rounded-lg flex items-center">
-            <div class="bg-white text-biruBima p-10 rounded-full mr-6">
-                <i class="fas fa-users fa-fw"></i>
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold text-blue-600 mb-2">Total Pendapatan ({{ $selectedTahun }})</h3>
+                <p class="text-2xl font-bold">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</p>
             </div>
-            <div>
-              <h2 class="text-2xl font-semibold mb-1">Data Pelanggan</h2>
-              <p class="text-lg">Total: 14 Pelanggan</p>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold text-red-600 mb-2">Total Pengeluaran ({{ $selectedTahun }})</h3>
+                <p class="text-2xl font-bold">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</p>
             </div>
-          </div>
-
-          <div class="bg-biruBima text-white p-20 rounded-lg flex items-center">
-            <div class="bg-white text-biruBima p-10 rounded-full mr-6">
-                <i class="fas fa-user-shield fa-fw"></i>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold text-green-600 mb-2">Total Keuntungan ({{ $selectedTahun }})</h3>
+                <p class="text-2xl font-bold">Rp {{ number_format($totalKeuntungan, 0, ',', '.') }}</p>
             </div>
-            <div>
-              <h2 class="text-2xl font-semibold mb-1">Data Layanan</h2>
-              <p class="text-lg">Total: 4 Layanan</p>
-            </div>
-          </div>
-
-          <div class="bg-biruBima text-white p-20 rounded-lg flex items-center">
-            <div class="bg-white text-biruBima p-10 rounded-full mr-6">
-                <i class="fas fa-wallet fa-fw"></i>
-            </div>
-            <div>
-              <h2 class="text-2xl font-semibold mb-1">Data Pengeluaran</h2>
-              <p class="text-lg">Total: 12.000</p>
-            </div>
-          </div>
         </div>
+
+        <canvas id="pendapatanChart" class="mb-8" height="100"></canvas>
+
+        <canvas id="pengeluaranChart" class="mb-8" height="100"></canvas>
+
+        <canvas id="keuntunganChart" height="100"></canvas>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        
+        <script>
+          const pendapatanData = @json(array_values($pendapatan));
+          const pengeluaranData = @json(array_values($pengeluaran));
+          const keuntunganData = @json(array_values($keuntungan));
+          const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+          // Chart Pendapatan
+          new Chart(document.getElementById('pendapatanChart').getContext('2d'), {
+              type: 'bar',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      label: 'Total Pendapatan (Rp)',
+                      data: pendapatanData,
+                      backgroundColor: '#6FBcFF',
+                      borderRadius: 6
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  plugins: {
+                      title: {
+                          display: true,
+                          text: 'Grafik Pendapatan Bulanan',
+                          font: { size: 18 }
+                      }
+                  },
+                  scales: {
+                      y: {
+                          beginAtZero: true,
+                          ticks: {
+                              callback: value => 'Rp ' + value.toLocaleString('id-ID')
+                          }
+                      }
+                  }
+              }
+          });
+
+          // Chart Pengeluaran
+          new Chart(document.getElementById('pengeluaranChart').getContext('2d'), {
+              type: 'line',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      label: 'Total Pengeluaran (Rp)',
+                      data: pengeluaranData,
+                      borderColor: '#EF4444',
+                      backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                      borderWidth: 2,
+                      tension: 0.4,
+                      fill: true,
+                      pointBackgroundColor: '#EF4444',
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  plugins: {
+                      title: {
+                          display: true,
+                          text: 'Grafik Pengeluaran Bulanan',
+                          font: { size: 18 }
+                      }
+                  },
+                  scales: {
+                      y: {
+                          beginAtZero: true,
+                          ticks: {
+                              callback: value => 'Rp ' + value.toLocaleString('id-ID')
+                          }
+                      }
+                  }
+                }
+            });
+
+          // Chart Keuntungan
+          new Chart(document.getElementById('keuntunganChart').getContext('2d'), {
+              type: 'bar',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      label: 'Keuntungan (Rp)',
+                      data: keuntunganData,
+                      backgroundColor: keuntunganData.map(value => value >= 0 ? '#10B981' : '#EF4444'),
+                      borderRadius: 6
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  plugins: {
+                      title: {
+                          display: true,
+                          text: 'Grafik Keuntungan Bulanan',
+                          font: { size: 18 }
+                      }
+                  },
+                  scales: {
+                      y: {
+                          beginAtZero: false,
+                          ticks: {
+                              callback: value => 'Rp ' + value.toLocaleString('id-ID')
+                          }
+                      }
+                  }
+              }
+          });
+        </script>
       </div>
     </div>
   </body>

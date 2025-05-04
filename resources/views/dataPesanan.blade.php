@@ -50,10 +50,10 @@ Bima Laundry - Data Pesanan
 </head>
 
 <body class="bg-gray-100">
-<div class="flex">
+<div class="flex min-h-screen">
 
     <!-- ini sidebar -->
-    <div class="w-1/5 bg-white h-screen shadow-lg">
+    <div class="w-1/5 bg-white shadow-lg sticky top-0 h-screen overflow-y-auto">
         <div class="p-6" x-data="{ openModalPengeluaran : false }">
         <div class="flex items-center mb-8">
             <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('pesanan.index') }}">
