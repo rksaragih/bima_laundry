@@ -233,17 +233,17 @@
             <div class="flex space-x-4 mb-4">
               @if(Auth::user()->role === 'Admin')
               <button x-on:click="openModal = true" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg">
-                Tambah Data
+                <i class="fas fa-plus mr-2"></i>Tambah Data
               </button>
               @endif
 
               <button class="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-lg" onclick="window.location.href='{{ route('pelanggan.index') }}'">
-                Reset Filter
+                <i class="fas fa-sync mr-2"></i>Reset Filter
               </button>
 
               @if(Auth::user()->role === 'Admin')
                 <button onclick="window.location.href='{{ route('pelanggan.export') }}'" class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded-lg">
-                  Export Excel
+                  <i class="fas fa-file-export mr-2"></i>Export Data
                 </button>
               @endif
             </div>

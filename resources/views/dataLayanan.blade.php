@@ -190,7 +190,7 @@
 
             <div class="flex space-x-4 mb-4">
               <button x-on:click="openModal = true" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg">
-                Tambah Data
+                <i class="fas fa-plus mr-2"></i>Tambah Data
               </button>
             </div>
 

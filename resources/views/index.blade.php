@@ -165,7 +165,9 @@
                   </option>
               @endforeach
           </select>
-          <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded">Tampilkan</button>
+          <button type="submit" class="ml-2 bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
+            <i class="fas fa-rotate-right mr-2"></i>Tampilkan
+          </button>
         </form>
 
         <!-- Summary Cards -->

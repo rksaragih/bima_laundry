@@ -214,7 +214,7 @@ Bima Laundry - Data Pesanan
                         class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg"
                         x-on:click="openJenisPesananModal = true"
                     >
-                        Tambah Data
+                        <i class="fas fa-plus mr-2"></i>Tambah Data
                     </button>
 
                     <!-- Filter Button -->
@@ -226,7 +226,7 @@ Bima Laundry - Data Pesanan
                     </button>
 
                     <button class="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-lg" onclick="window.location.href='{{ route('pesanan.index') }}'">
-                        Reset Filter
+                        <i class="fas fa-sync mr-2"></i>Reset Filter
                     </button>
 
                     @if (Auth::user()->role === 'Admin')
