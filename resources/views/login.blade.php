@@ -49,6 +49,29 @@
                 background-color: #5EA9E6;
                 color: white;
             }
+
+            .alert {
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            }
+
+            .alert-danger {
+                background-color: #FFE8E8;
+                color: #D32F2F;
+                border: 1px solid #FFCDD2;
+            }
+
+            .alert-success {
+                background-color: #E8F5E9;
+                color: #388E3C;
+                border: 1px solid #C8E6C9;
+            }
+
+            .is-invalid {
+                border-color: #D32F2F !important;
+                box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+            }
         </style>
     </head>
     
@@ -64,15 +87,33 @@
     
             {{-- Title --}}
             <h2>Login</h2>
-    
+
+            {{-- Error Messages --}}
+            @if ($errors->any())
+            <div class="alert alert-danger mb-3">
+                <ul class="mb-0 list-unstyled">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
+            {{-- Success Messages --}}
+            @if (session('message'))
+            <div class="alert alert-success mb-3">
+                {{ session('message') }}
+            </div>
+            @endif
+
             {{-- Form --}}
             <form method="POST" action="/login">
                 @csrf
                 <div class="mb-3">
-                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                    <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" placeholder="Username" required>
                 </div>
                 <div class="mb-3">
-                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" required>
                 </div>
     
                 <button type="submit" class="btn btn-custom w-100 mt-2">Login</button>

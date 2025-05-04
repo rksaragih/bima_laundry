@@ -210,7 +210,7 @@
                 >
                 </div>
                 <div 
-                    class="fixed inset-0 flex items-center justify-center z-50" 
+                    class="fixed inset-0 flex items-center justify-center z-50 p-4" 
                     x-show="showModal" x-cloak
                     x-transition:enter="transition ease-out duration-300" 
                     x-transition:enter-start="opacity-0 translate-y-5" 
@@ -219,72 +219,76 @@
                     x-transition:leave-start="opacity-100 translate-y-0" 
                     x-transition:leave-end="opacity-0 translate-y-5"
                 >
-                    <div class="bg-white w-full max-w-lg p-6 rounded-lg shadow-xl">
-                        <h2 class="text-2xl font-semibold mb-4 text-center">Konfirmasi Update Pesanan</h2>
-
-                        <div class="mb-4">
-                            <p><strong>Kategori:</strong> <span x-text="kategori"></span></p>
-                            <p><strong>Pelanggan:</strong>
-                                <template x-if="pelanggan_id">
-                                    <span x-text="getNamaPelanggan(pelanggan_id)"></span>
-                                </template>
-                            </p>
-                            <p><strong>Nomor Telepon:</strong>
-                                <template x-if="pelanggan_id">
-                                    <span x-text="getTeleponPelanggan(pelanggan_id)"></span>
-                                </template>
-                            </p>
-                            <p><strong>Alamat:</strong>
-                                <template x-if="pelanggan_id">
-                                    <span x-text="getAlamatPelanggan(pelanggan_id)"></span>
-                                </template>
-                            </p>
-                            <p><strong>Tanggal Terima:</strong><span x-text="formatTanggal(tanggal_terima)"></span></p>
-                            <p><strong>Tanggal Selesai:</strong><span x-text="formatTanggal(tanggal_selesai)"></span></p>
-                            <p><strong>Status Cucian:</strong><span x-text="status_cucian"></span></p>
+                    <div class="bg-white w-full max-w-lg rounded-lg shadow-xl flex flex-col max-h-[90vh]">
+                        <div class="p-6 border-b">
+                            <h2 class="text-2xl font-semibold text-center">Konfirmasi Pesanan</h2>
                         </div>
 
-                        <div class="mb-4">
-                            <h3 class="font-bold">Detail Layanan:</h3>
-                            <template x-for="(item, index) in items" :key="index">
-                                <div class="border p-2 my-2 rounded bg-gray-50">
-                                    <p><strong>Layanan:</strong> <span x-text="getNamaLayanan(item.layanan_id)"></span></p>
-                                    <p><strong>Jenis Barang:</strong> <span x-text="item.jenis_barang"></span></p>
-                                    <p><strong>Spesifikasi:</strong> <span x-text="item.spesifikasi_barang"></span></p>
-                                    <p><strong>Jumlah/Berat (Kg):</strong> <span x-text="item.jumlah + ' ' + getSatuan(item.layanan_id)""></span></p>
-                                    <p><strong>Harga Satuan:</strong> Rp<span x-text="item.harga_satuan"></span></p>
-                                    <p><strong>Subtotal:</strong> Rp<span x-text="item.jumlah * item.harga_satuan"></span></p>
+                        <div class="overflow-y-auto p-6 flex-grow">
+                            <div class="mb-4">
+                                <p><strong>Kategori:</strong> <span x-text="kategori"></span></p>
+                                <p><strong>Pelanggan:</strong>
+                                    <template x-if="pelanggan_id">
+                                        <span x-text="getNamaPelanggan(pelanggan_id)"></span>
+                                    </template>
+                                </p>
+                                <p><strong>Nomor Telepon:</strong>
+                                    <template x-if="pelanggan_id">
+                                        <span x-text="getTeleponPelanggan(pelanggan_id)"></span>
+                                    </template>
+                                </p>
+                                <p><strong>Alamat:</strong>
+                                    <template x-if="pelanggan_id">
+                                        <span x-text="getAlamatPelanggan(pelanggan_id)"></span>
+                                    </template>
+                                </p>
+                                <p><strong>Tanggal Terima:</strong><span x-text="formatTanggal(tanggal_terima)"></span></p>
+                                <p><strong>Tanggal Selesai:</strong><span x-text="formatTanggal(tanggal_selesai)"></span></p>
+                                <p><strong>Status Cucian:</strong><span x-text="status_cucian"></span></p>
+                            </div>
+
+                            <div class="mb-4">
+                                <h3 class="font-bold">Detail Layanan:</h3>
+                                <template x-for="(item, index) in items" :key="index">
+                                    <div class="border p-2 my-2 rounded bg-gray-50">
+                                        <p><strong>Layanan:</strong> <span x-text="getNamaLayanan(item.layanan_id)"></span></p>
+                                        <p><strong>Jenis Barang:</strong> <span x-text="item.jenis_barang"></span></p>
+                                        <p><strong>Spesifikasi:</strong> <span x-text="item.spesifikasi_barang"></span></p>
+                                        <p><strong>Jumlah/Berat (Kg):</strong> <span x-text="item.jumlah + ' ' + getSatuan(item.layanan_id)""></span></p>
+                                        <p><strong>Harga Satuan:</strong> Rp<span x-text="item.harga_satuan"></span></p>
+                                        <p><strong>Subtotal:</strong> Rp<span x-text="item.jumlah * item.harga_satuan"></span></p>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="mb-4 font-bold text-right">
+                                Total: Rp.<span x-text="getTotalHarga()"></span>
+                            </div>
+
+                            <div class="mt-4">
+                                <p class="font-semibold mb-2">Status Pembayaran</p>
+                                <div class="flex flex-wrap gap-4">
+                                    <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                                        <input 
+                                            type="radio" name="status_pembayaran" 
+                                            value="Lunas" x-model="status_pembayaran" 
+                                            class="text-blue-500 focus:ring-blue-400 border-gray-300 rounded"
+                                        > 
+                                        <span class="whitespace-nowrap">Lunas</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                                        <input 
+                                            type="radio" name="status_pembayaran" 
+                                            value="Belum Lunas" x-model="status_pembayaran" 
+                                            class="text-blue-500 focus:ring-blue-400 border-gray-300 rounded"
+                                        > 
+                                        <span class="whitespace-nowrap">Belum Lunas</span>
+                                    </label>
                                 </div>
-                            </template>
-                        </div>
-
-                        <div class="mb-4 font-bold text-right">
-                            Total: Rp.<span x-text="getTotalHarga()"></span>
-                        </div>
-
-                        <div class="mt-4">
-                            <p class="font-semibold mb-2">Status Pembayaran</p>
-                            <div class="flex flex-wrap gap-4">
-                                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
-                                    <input 
-                                        type="radio" name="status_pembayaran" 
-                                        value="Lunas" x-model="status_pembayaran" 
-                                        class="text-blue-500 focus:ring-blue-400 border-gray-300 rounded"
-                                    > 
-                                    <span class="whitespace-nowrap">Lunas</span>
-                                </label>
-                                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
-                                    <input 
-                                        type="radio" name="status_pembayaran" 
-                                        value="Belum Lunas" x-model="status_pembayaran" 
-                                        class="text-blue-500 focus:ring-blue-400 border-gray-300 rounded"
-                                    > 
-                                    <span class="whitespace-nowrap">Belum Lunas</span>
-                                </label>
                             </div>
                         </div>
 
-                        <div class="flex justify-end gap-4 mt-4">
+                        <div class="p-4 border-t flex justify-end gap-4 bg-white">
                             <button type="submit" class="bg-blue-400 text-white px-6 py-2 rounded hover:bg-blue-500">Konfirmasi & Update</button>
                             <button type="button" @click="showModal = false" class="bg-red-400 text-white px-6 py-2 rounded hover:bg-red-500">Batal</button>
                         </div>
