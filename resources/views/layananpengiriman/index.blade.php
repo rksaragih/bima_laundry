@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,7 +33,6 @@
     };
   </script>
 
-  <!-- Style -->
   <style>
     [x-cloak] {
       display: none !important;
@@ -55,45 +55,50 @@
         <!-- Menu -->
         <ul>
           @if(Auth::user()->role === 'Admin')
-          <li class="mb-4">
-            <a href="{{ route('index') }}" class="flex items-center gap-4 text-gray-700">
-              <i class="fa-solid fa-table-columns fa-fw"></i> Dashboard
-            </a>
-          </li>
+            <li class="mb-4">
+              <a href="{{ route('index') }}" class="flex items-center gap-4 text-gray-700">
+                <i class="fa-solid fa-table-columns fa-fw"></i> Dashboard
+              </a>
+            </li>
           @endif
+
           <li class="mb-4">
             <a href="{{ route('pesanan.index') }}" class="flex items-center gap-4 text-gray-700">
               <i class="fas fa-file-alt fa-fw"></i> Pesanan
             </a>
           </li>
+
           <li class="mb-4">
             <a href="{{ route('pelanggan.index') }}" class="flex items-center gap-4 text-gray-700">
               <i class="fas fa-users fa-fw"></i> Pelanggan
             </a>
           </li>
+
           <li class="mb-4">
             <a href="{{ route('layanan.index') }}" class="flex items-center gap-4 text-gray-700">
               <i class="fas fa-user-shield fa-fw"></i> Layanan
             </a>
           </li>
+
           <li class="mb-4">
             <a href="{{ route('layananpengiriman.index') }}" class="flex items-center gap-4 text-biruBima">
               <i class="fas fa-shipping-fast fa-fw"></i> Layanan Pengiriman
             </a>
           </li>
 
-          <!-- Tombol Tambah Pengeluaran -->
           <li class="mb-4">
-            @if (Auth::user()->role === 'Kasir')
-            <button
-              class="flex items-center text-gray-700"
-              @click.prevent="openModalPengeluaran = true"
-            >
-              <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
-              Tambah Pengeluaran
-            </button>
-            @endif
+            <a href="{{ route('pengeluaran.index') }}" class="flex items-center gap-4 text-gray-700">
+              <i class="fas fa-wallet fa-fw"></i> Pengeluaran
+            </a>
           </li>
+
+          @if (Auth::user()->role === 'Kasir')
+            <li class="mb-4">
+              <button @click.prevent="openModalPengeluaran = true" class="flex items-center text-gray-700">
+                <img src="images/icon-pengeluaran.png" alt="" class="mr-2" /> Tambah Pengeluaran
+              </button>
+            </li>
+          @endif
 
           <li class="mt-8">
             <a href="{{ route('login') }}" class="flex items-center gap-2 text-red-500">
@@ -240,4 +245,5 @@
     }
   </script>
 </body>
+
 </html>
