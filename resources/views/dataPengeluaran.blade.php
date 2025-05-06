@@ -220,7 +220,7 @@
         
                         <div class="flex justify-end gap-2">
                             <button type="button" @click="showExportModal = false" class="px-3 py-1 bg-gray-400 hover:bg-gray-500 rounded text-white">Batal</button>
-                            <button type="submit" class="px-3 py-1 bg-blue-400 hover:bg-blue-500 text-white rounded text-sm">Export</button>
+                            <button type="submit" class="px-3 py-1 bg-green-400 hover:bg-green-500 text-white rounded text-sm">Export</button>
                         </div>
                     </form>
                 </div>
@@ -278,7 +278,7 @@
                               >
                                   Batal
                               </button>
-                              <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
+                              <button type="submit" class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded">
                                   Simpan
                               </button>
                           </div>

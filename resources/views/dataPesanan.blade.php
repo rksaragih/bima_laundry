@@ -680,7 +680,7 @@ Bima Laundry - Data Pesanan
                                                                 <button
                                                                     type="button"
                                                                     @click="showDeleteModal = false"
-                                                                    class="bg-gray-400 text-gray-900 px-4 py-2 rounded hover:bg-gray-500 transition w-24 text-sm">
+                                                                    class="bg-gray-300 text-gray-900 px-4 py-2 rounded hover:bg-gray-400 transition w-24 text-sm">
                                                                     Batal
                                                                 </button>
                     
