@@ -5,6 +5,9 @@
     <title>Bima Laundry - Data Pelanggan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
     <script>
         tailwind.config = {
@@ -19,25 +22,64 @@
     </script>
 
     <style>
+
+      .select2-container--default .select2-selection--single {
+          background-color: #f9fafb;
+          border: 1px solid #d1d5db;
+          border-radius: 6px;
+          height: 28px;
+          font-size: 0.75rem;
+          padding-left: 6px;
+          padding-right: 6px;
+          display: flex;
+          align-items: center;
+        }
+
+      .select2-container--default .select2-selection--single .select2-selection__rendered {
+          color: #374151;
+          line-height: 28px;
+        }
+
+      .select2-container--default .select2-selection--single .select2-selection__arrow {
+          height: 100%;
+          right: 6px;
+        }
+
+      .select2-container--open .select2-dropdown {
+          border-radius: 6px;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+          border: 1px solid #d1d5db;
+        }
+
       [x-cloak] {
           display: none !important;
       }
+
     </style>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        $('.select2').select2({
+          placeholder: "Pilih alamat...",
+          width: 'style'
+        });
+      });
+    </script>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 </head>
 
 <!-- sidebar -->
 <body class="bg-gray-100">
-  <div class="flex">
-    <div class="w-1/5 bg-white h-screen shadow-lg">
+  <div class="flex min-h-screen">
+    <div class="w-1/5 bg-white shadow-lg sticky top-0 h-screen overflow-y-auto">
       <div class="p-6" x-data="{ openModalPengeluaran: false }">
         <div class="flex items-center mb-8">
           <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('pesanan.index') }}">
             <img
               alt="Logo"
               class="mr-3"
-              src="images/logo-bima-laundry-svg.svg"
+              src="/images/logo-bima-laundry-svg.svg"
             />
           </a>
         </div>
@@ -75,24 +117,23 @@
             </a>
           </li>
           <li class="mb-4">
-            <a class="flex items-center gap-4 text-gray-700" href="#">
+            <a class="flex items-center gap-4 text-gray-700" href="{{ route('layananpengiriman.index') }}">
               <i class="fas fa-shipping-fast fa-fw"></i>
               Layanan Pengiriman
             </a>
           </li>
           <li class="mb-4">
             @if (Auth::user()->role === 'Kasir')
-              <a
-                href="#"
-                class="flex items-center text-gray-700"
-                x-on:click.prevent="openModalPengeluaran = true"
-              >
+            <a
+            href="#"
+            class="flex items-center gap-4 text-gray-700"
+            x-on:click.prevent="openModalPengeluaran = true"
+          >
+            <i class="fas fa-wallet fa-fw"></i>
+            Tambah Pengeluaran
+          </a>
 
-                <img src="images/icon-pengeluaran.png" alt="" class="mr-2" />
-                Tambah Pengeluaran
-              </a>
-
-              <div 
+              <div
                 x-show="openModalPengeluaran"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0"
@@ -159,10 +200,13 @@
             @endif
           </li>
           <li class="mt-8">
-            <a class="flex items-center gap-2 text-red-500" href="{{ route('login') }}">
-              <i class="fas fa-sign-out-alt mr-3"> </i>
-              Logout
+            <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <i class="fas fa-sign-out-alt mr-3"></i> Logout
             </a>
+
+            <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+              @csrf
+            </form>
           </li>
         </ul>
       </div>
@@ -176,22 +220,35 @@
             </div>
           </header>
       <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedPelanggan: {} }">
+        <form action="{{ route('pelanggan.search') }}" method="GET">
           <div class="flex justify-between items-center mb-4">
               <h1 class="text-2xl font-bold">Data Pelanggan</h1>
-              <input class="border rounded-lg px-4 py-2" placeholder="Search..." type="text"/>
+              <input class="border rounded-lg px-4 py-2" name="search_nama" placeholder="Search..." type="text"/>
           </div>
+        </form>
 
         <!-- Modal -->
-        @if(Auth::user()->role === 'Admin')
-          <div x-data="{ openModal: false }">
 
+          <div x-data="{ openModal: false }">
             <div class="flex space-x-4 mb-4">
+              @if(Auth::user()->role === 'Admin')
               <button x-on:click="openModal = true" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg">
-                Tambah Data
+                <i class="fas fa-plus mr-2"></i>Tambah Data
               </button>
+              @endif
+
+              <button class="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-lg" onclick="window.location.href='{{ route('pelanggan.index') }}'">
+                <i class="fas fa-sync mr-2"></i>Reset Filter
+              </button>
+
+              @if(Auth::user()->role === 'Admin')
+                <button onclick="window.location.href='{{ route('pelanggan.export') }}'" class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded-lg">
+                  <i class="fas fa-file-export mr-2"></i>Export Data
+                </button>
+              @endif
             </div>
 
-            <div 
+            <div
               x-show="openModal"
               x-transition:enter="transition ease-out duration-300"
               x-transition:enter-start="opacity-0"
@@ -247,14 +304,29 @@
                 </div>
             </div>
           </div>
-        @endif
 
           <table class="min-w-full bg-white">
               <thead class="bg-gray-50">
                 <tr>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div class="flex items-center gap-2">
+                      <span>Alamat</span>
+                      <form action="{{ route('pelanggan.index') }}" id="filter-alamat-form" method="GET" class="mt-3">
+                        <select 
+                          name="alamat" id="alamat" 
+                          onchange="document.getElementById('filter-alamat-form').submit();"
+                          class="select2 text-xs"
+                        >
+                          <option value="">-- Semua Alamat --</option>
+                            @foreach($alamatList as $alamat)
+                              <option value="{{ $alamat }}" {{ request('alamat') == $alamat ? 'selected' : '' }}>{{ $alamat }}</option>
+                            @endforeach
+                        </select>
+                      </form>
+                    </div>
+                  </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Telepon</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                 </tr>
@@ -276,15 +348,69 @@
                     </button>
 
                     @if (auth()->user()->role === 'Admin')
-                    <form action="{{ route('pelanggan.destroy', $pelanggan->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pelanggan ini?');">
-                      @csrf
-                      @method('DELETE')
-                      <button
-                        type="submit"
-                        class="bg-red-400 h-9 w-20 text-white px-4 py-2 hover:bg-red-500 rounded text-sm">
-                        Hapus
-                      </button>
-                    </form>
+                    <div x-data="{ showDeleteModal: false }">
+                        <!-- Tombol Hapus -->
+                        <button
+                            type="button"
+                            @click="showDeleteModal = true"
+                            class="bg-red-400 h-9 w-20 text-white px-4 py-2 hover:bg-red-500 rounded text-sm">
+                            Hapus
+                        </button>
+
+                        <!-- Modal Konfirmasi -->
+                        <div 
+                            x-show="showDeleteModal" x-cloak
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition ease-in duration-200"
+                            x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                            class="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center"
+                        >
+                            <div 
+                                class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl"
+                                x-transition:enter="transition ease-out duration-300" 
+                                x-transition:enter-start="opacity-0 scale-90" 
+                                x-transition:enter-end="opacity-100 scale-100" 
+                                x-transition:leave="transition ease-in duration-200" 
+                                x-transition:leave-start="opacity-100 scale-100" 
+                                x-transition:leave-end="opacity-0 scale-90"
+                                @click.outside="showDeleteModal = false"
+                            >
+                                <div class="text-center mb-4">
+                                    <svg class="mx-auto h-12 w-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                    <h2 class="text-xl font-semibold mt-2">Konfirmasi Hapus</h2>
+                                </div>
+                                
+                                <p class="text-center text-gray-700 mb-5">
+                                    Yakin ingin menghapus pelanggan ini?
+                                </p>
+                                
+                                <div class="flex justify-center">                                   
+                                    <form action="{{ route('pelanggan.destroy', $pelanggan->id) }}" method="POST" class="inline-flex space-x-4">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button
+                                          type="button"
+                                          @click="showDeleteModal = false"
+                                          class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition w-24 text-sm">
+                                          Batal
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            class="bg-red-400 text-white px-4 py-2 hover:bg-red-500 rounded transition w-24 text-sm">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     @endif
 
                   </td>
@@ -293,7 +419,7 @@
               </tbody>
           </table>
 
-          <div 
+          <div
             x-show="openEditModal"
             x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0"
@@ -306,9 +432,9 @@
           >
           </div>
 
-          <div 
-            x-show="openEditModal" 
-            class="fixed inset-0 flex items-center justify-center z-50" 
+          <div
+            x-show="openEditModal"
+            class="fixed inset-0 flex items-center justify-center z-50"
             x-cloak
             x-transition:enter="transition ease-out duration-300 transform"
             x-transition:enter-start="opacity-0 translate-y-5 scale-95"
@@ -380,7 +506,5 @@
       </div>
     </div>
   </div>
-
-  <script src="//unpkg.com/alpinejs" defer></script>
 </body>
 </html>

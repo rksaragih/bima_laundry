@@ -8,13 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class LayananController extends Controller
 {
-
-    // public function __construct()
-    // {
-    //     if (!Auth::check()) {
-    //         redirect()->route('login')->send();
-    //     };
-    // }
     
     public function index()
     {
@@ -25,8 +18,9 @@ class LayananController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'jenis_layanan' => 'required|string|max:255',
-            'harga' => 'required|integer',
+            'jenis_laundry' => 'required|string|max:255',
+            'harga' => 'nullable|integer',
+            'kategori' => 'required|string|max:255'
         ]);
 
         Layanan::create($request->all());
@@ -37,12 +31,13 @@ class LayananController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'jenis_layanan' => 'required|string|max:255',
-            'harga' => 'required|integer',
+            'jenis_laundry' => 'required|string|max:255',
+            'harga' => 'nullable|integer',
+            'kategori' => 'required|string|max:255',
         ]);
 
         $layanan = Layanan::findOrFail($id);
-        $layanan->update($request->only('jenis_layanan', 'harga'));
+        $layanan->update($request->only('jenis_laundry', 'harga', 'kategori'));
 
         return redirect()->route('layanan.index')->with('success', 'Data layanan berhasil diperbarui.');
     }

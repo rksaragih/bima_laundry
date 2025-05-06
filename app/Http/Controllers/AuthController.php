@@ -16,7 +16,10 @@ class AuthController extends Controller
     {
         $request->validate([
             'username' => 'required|string|max:255',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string',
+        ], [
+            'username.required' => 'Username wajib diisi',
+            'password.required' => 'Password wajib diisi',
         ]);
 
         $credentials = $request->only('username', 'password');
@@ -34,24 +37,22 @@ class AuthController extends Controller
     
         }
 
-        return back()->withErrors([
-            'login' => 'Username atau password salah!',
-        ]);
+        return back()
+            ->withInput($request->only('username'))
+            ->withErrors([
+                'login' => 'Username atau password salah!'
+            ]);
+
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
-
+        
+        \Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        $request->session()->flush();
 
-        return redirect('/')->with('message', 'Anda berhasil logout');;
-    }
-
-    public function getGrafik() {
-        return view('index');
+        return redirect('/loginPage')->with('message', 'Anda berhasil logout');;
     }
 
 }
