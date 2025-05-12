@@ -8,8 +8,10 @@ use App\Http\Controllers\LayananPengirimanController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CompanyProfileController;
 
-Route::view('/', 'welcome');
+
+Route::get('/', [CompanyProfileController::class, 'show']);
 
 Route::get('/loginPage', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -35,6 +37,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('pengeluaran', PengeluaranController::class)->except(['show']);
     Route::get('/layanan-pengiriman', [LayananPengirimanController::class, 'index'])->name('layananpengiriman.index');
     Route::get('/pengeluaran/export', [PengeluaranController::class, 'export'])->name('pengeluaran.export');
-
-
 });

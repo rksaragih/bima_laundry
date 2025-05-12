@@ -70,7 +70,7 @@ class LayananSeeder extends Seeder
                 'kategori' => 'Express'
             ],
         ];
-    
+
         foreach ($layanan as $data) {
             Layanan::firstOrCreate(
                 [
