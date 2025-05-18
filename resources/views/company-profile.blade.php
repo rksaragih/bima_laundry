@@ -50,7 +50,7 @@
 
 </head>
 <!-- Tombol WhatsApp -->
-<a href="https://wa.me/6282903458743" target="_blank" class="fixed bottom-5 right-5 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-700 hover:scale-110 transition-all z-50">
+<a href="https://wa.me/6283822345976" target="_blank" class="fixed bottom-5 right-5 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-700 hover:scale-110 transition-all z-50">
     <i class="fab fa-whatsapp text-5xl "></i> <!-- Ikon WhatsApp -->
   </a>
 
@@ -81,7 +81,7 @@
             <li><a href="#tentang" class="hover:text-[#5DA9E9]">Tentang Kami</a></li>
           </ul>
           <!-- CTA -->
-<a href="https://wa.me/6282903458743" target="_blank">
+<a href="https://wa.me/+6283822345976" target="_blank">
     <button class="bg-[#5DA9E9] text-white py-2 px-6 rounded-full hover:bg-gray-700">
         Hubungi Kami
     </button>
