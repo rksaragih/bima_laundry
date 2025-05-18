@@ -50,7 +50,7 @@
 
 </head>
 <!-- Tombol WhatsApp -->
-<a href="https://wa.me/1234567890" target="_blank" class="fixed bottom-5 right-5 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-700 hover:scale-110 transition-all z-50">
+<a href="https://wa.me/6283822345976" target="_blank" class="fixed bottom-5 right-5 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-700 hover:scale-110 transition-all z-50">
     <i class="fab fa-whatsapp text-5xl "></i> <!-- Ikon WhatsApp -->
   </a>
 
@@ -81,7 +81,11 @@
             <li><a href="#tentang" class="hover:text-[#5DA9E9]">Tentang Kami</a></li>
           </ul>
           <!-- CTA -->
-          <button class="bg-[#5DA9E9] text-white py-2 px-6 rounded-full hover:bg-gray-700">Hubungi Kami</button>
+<a href="https://wa.me/+6283822345976" target="_blank">
+    <button class="bg-[#5DA9E9] text-white py-2 px-6 rounded-full hover:bg-gray-700">
+        Hubungi Kami
+    </button>
+</a>
         </nav>
       </div>
   </header>
@@ -119,7 +123,7 @@
     <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
         @foreach($proses as $item)
             <div class="reveal bg-white p-6 rounded-xl shadow flex flex-col items-center text-center hover:text-[#5DA9E9] hover:border-3 hover:bg-[#F1F9FF]">
-                <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}">
+                <img src="{{ asset($item->image) }}" alt="Proses Image" class="w-10% h-auto mx-auto" />
                 <h3 class="mt-4 font-semibold text-lg">{{ $item->title }}</h3>
                 <p class="mt-2 text-gray-600">{{ $item->description }}</p>
             </div>

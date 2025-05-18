@@ -5,12 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProsesResource\Pages;
 use App\Models\Proses;
 use Filament\Forms;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
+use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Facades\Storage;
 
 class ProsesResource extends Resource
 {
@@ -30,7 +31,15 @@ class ProsesResource extends Resource
                 ->required(),
             FileUpload::make('image')
                 ->image()
-                ->required(),
+                ->directory('proses')
+                ->maxSize(1024)
+                ->disk('public')
+                ->visibility('public')
+                ->afterStateUpdated(function ($state, callable $set) {
+                    if ($state) {
+                        $set('image', $state->hashName());
+                    }
+                }),
         ]);
     }
 
@@ -38,6 +47,8 @@ class ProsesResource extends Resource
     {
         return $table->columns([
             TextColumn::make('title'),
+            TextColumn::make('image')
+                ->url(fn ($record) => Storage::url($record->image))
         ]);
     }
 
