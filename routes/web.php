@@ -14,7 +14,6 @@ Route::view('/', 'welcome');
 Route::get('/loginPage', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
-
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/grafik', [DashboardController::class, 'getGrafik'])->name('index');
@@ -35,6 +34,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('pengeluaran', PengeluaranController::class)->except(['show']);
     Route::get('/layanan-pengiriman', [LayananPengirimanController::class, 'index'])->name('layananpengiriman.index');
     Route::get('/pengeluaran/export', [PengeluaranController::class, 'export'])->name('pengeluaran.export');
-
 
 });
