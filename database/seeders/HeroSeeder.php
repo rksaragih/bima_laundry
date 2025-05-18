@@ -21,7 +21,7 @@ class HeroSeeder extends Seeder
                 'hero_description' => 'Kami siap membantu Anda dengan berbagai layanan laundry berkualitas di daerah Cibinong, Bogor.',
                 'hero_cta_link' => '#layanan',
                 'hero_cta_text' => 'Lihat Layanan Kami',
-                'hero_image' => 'images/laundry-hero.png', 
+                'hero_image' => 'images/laundry-hero.png',
             ],
         ]);
     }

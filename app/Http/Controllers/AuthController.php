@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    
+
     public function loginForm() {
         return view('login');
     }
@@ -34,7 +34,7 @@ class AuthController extends Controller
             } else{
                 return view('login');
             }
-    
+
         }
 
         return back()
@@ -47,8 +47,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        
-        \Auth::logout();
+
+        Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

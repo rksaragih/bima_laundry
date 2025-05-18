@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\HeroProsesResource\Pages;
 use App\Models\HeroProses;
 use Filament\Forms;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -22,11 +22,11 @@ class HeroProsesResource extends Resource
     {
         return 'Hero';  // Mengubah label menjadi "Hero"
     }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                // Form Hero
                 Forms\Components\TextInput::make('hero_title')
                     ->label('Hero Title')
                     ->required()
@@ -42,10 +42,8 @@ class HeroProsesResource extends Resource
                     ->required()
                     ->default('Default Hero Description'),
 
-
-                    Forms\Components\FileUpload::make('hero_image')
+                FileUpload::make('hero_image')
                     ->label('Hero Image')
-                    ->required()
                     ->image()
                     ->directory('public/heroes')
                     ->maxSize(1024)
@@ -61,32 +59,21 @@ class HeroProsesResource extends Resource
                     ->label('Hero CTA Text')
                     ->required()
                     ->maxLength(255),
-
             ]);
     }
-    
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-            ])
-            ->filters([
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->columns([ ])
+            ->filters([ ])
+            ->actions([ Tables\Actions\EditAction::make() ])
+            ->bulkActions([ Tables\Actions\BulkActionGroup::make([ Tables\Actions\DeleteBulkAction::make() ]) ]);
     }
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -100,7 +87,16 @@ class HeroProsesResource extends Resource
 
     public static function saveToFile($data)
     {
-        $heroProsesData = json_encode($data);
+        $heroProsesData = json_encode([
+            'hero_title' => $data['hero_title'],
+            'hero_subtitle' => $data['hero_subtitle'],
+            'hero_description' => $data['hero_description'],
+            'hero_cta_link' => $data['hero_cta_link'],
+            'hero_cta_text' => $data['hero_cta_text'],
+            // 'hero_image' => asset('storage/' . $data['hero_image']) // Simpan path gambar relatif
+            'hero_image' => asset($data['hero_image']) // Simpan path gambar relatif
+        ]);
+
         Storage::disk('local')->put('company_profile_hero_proses.json', $heroProsesData);
     }
 }
