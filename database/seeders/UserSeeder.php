@@ -17,15 +17,19 @@ class UserSeeder extends Seeder
         User::firstOrCreate(
             ['username' => 'admin'],
             [
+                'email' => 'admin@gmail.com',  
                 'password' => bcrypt('admin123'),
                 'role' => 'Admin',
-            ]);
+            ]
+        );
 
         User::firstOrCreate(
             ['username' => 'kasir'],
             [
+                'email' => 'kasir@gmail.com',
                 'password' => bcrypt('kasir123'),
                 'role' => 'Kasir',
-            ]);
+            ]
+        );
     }
 }

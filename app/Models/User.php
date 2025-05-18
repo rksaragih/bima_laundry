@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -19,6 +18,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'username',
+        'email',
         'password',
         'role',
     ];
@@ -44,4 +44,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Mendapatkan nama pengguna.
+     *
+     * @return string
+     */
+    public function getUserName(): string
+    {
+        Log::info('UserName: ' . $this->username);
+        return $this->username ?? 'default_username';
+    }
+
 }
