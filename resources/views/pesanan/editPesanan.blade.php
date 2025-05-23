@@ -151,6 +151,13 @@
                         @endforeach
                     </select>
                 </div>
+
+                <button 
+                    type="button" 
+                    x-on:click.stop="openModalTambahPelanggan = true"  
+                    class="mb-4 text-blue-500 text-sm hover:underline">
+                    + Tambah Pelanggan Baru
+                </button>
             
                 <div class="mb-2">
                     <label class="font-semibold">Tanggal Terima:</label>
@@ -183,8 +190,8 @@
                             </select>
                             <input type="text" class="form-control mb-2 w-full" :name="`jenis_barang[]`" x-model="item.jenis_barang" placeholder="Jenis Barang">
                             <input type="text" class="form-control mb-2 w-full" :name="`spesifikasi_barang[]`" x-model="item.spesifikasi_barang" placeholder="Spesifikasi">
-                            <input type="number" class="form-control mb-2 w-full" :name="`jumlah[]`" x-model="item.jumlah" placeholder="Berat (Kg)/Jumlah Pakaian">
-                            <input type="number" class="form-control mb-2 w-full" :name="`harga_satuan[]`" x-model="item.harga_satuan" placeholder="Harga Per kg/Per Satuan">
+                            <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" class="form-control mb-2 w-full" :name="`jumlah[]`" x-model="item.jumlah" placeholder="Berat (Kg)/Jumlah Pakaian">
+                            <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" class="form-control mb-2 w-full" :name="`harga_satuan[]`" x-model="item.harga_satuan" placeholder="Harga Per kg/Per Satuan">
                         </div>  
                         <button type="button" class="btn btn-danger w-full py-2 bg-red-400 text-white rounded hover:bg-red-500" @click="items.splice(index, 1)">Hapus</button>
                     </div>
@@ -304,6 +311,59 @@
                 </button>
 
             </form>
+
+                <div 
+                    x-show="openModalTambahPelanggan"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="fixed inset-0 bg-black bg-opacity-50 z-40"
+                    x-cloak
+                >
+                </div>
+
+                <div 
+                    x-show="openModalTambahPelanggan" 
+                    class="fixed inset-0 flex items-center justify-center z-50" 
+                    x-cloak
+                    x-transition:enter="transition ease-out duration-300 transform"
+                    x-transition:enter-start="opacity-0 translate-y-5 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-200 transform"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-5 scale-95"
+                >
+                    <div class="bg-white p-6 rounded shadow-lg w-80" @click.away="openModalTambahPelanggan = false">
+                        <h2 class="text-lg font-bold mb-4">Tambah Pelanggan</h2>
+                        <form action="{{ route('pelanggan.store') }}" method="POST">
+                            @csrf
+                            <div class="mb-4">
+                                <label class="block mb-1">Nama</label>
+                                <input type="text" name="nama" class="w-full border rounded p-2" required autocomplete="off">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block mb-1">Alamat</label>
+                                <input type="text" name="alamat" class="w-full border rounded p-2" required autocomplete="off">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block mb-1">Nomor Telepon</label>
+                                <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" name="nomor_telepon" class="w-full border rounded p-2" required autocomplete="off">
+                            </div>
+                            <div class="flex justify-end space-x-2">
+                                <button type="button" x-on:click="openModalTambahPelanggan = false" class="text-gray-500">
+                                    Batal
+                                </button>
+                                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                    Simpan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
         </div>
     </div>
 

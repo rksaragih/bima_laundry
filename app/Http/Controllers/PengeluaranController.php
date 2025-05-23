@@ -33,7 +33,7 @@ class PengeluaranController extends Controller
             $query->where('id_user', $request->pencatat);
         }
 
-        $pengeluarans = $query->paginate(10);
+        $pengeluarans = $query->latest()->paginate(10);
 
         $pencatatList = User::whereIn('id', Pengeluaran::select('id_user'))->get();
 

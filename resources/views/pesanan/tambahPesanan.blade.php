@@ -356,7 +356,7 @@
                 <select name="pelanggan_id" class="form-select mb-2 w-full" x-model="pelanggan_id" required id="pelanggan_id">
                     <option value="">--Pilih Pelanggan--</option>
                     @foreach ($pelanggan as $p)
-                        <option value="{{ $p->id }}">{{ $p->nama }}</option>
+                        <option value="{{ $p->id }}">{{ $p->nama }} ({{ $p->nomor_telepon }})</option>
                     @endforeach
                 </select>
             </div>
@@ -390,8 +390,8 @@
                         </select>
                         <input type="text" class="form-control mb-2 w-full" :name="`jenis_barang[]`" x-model="item.jenis_barang" placeholder="Jenis Barang">
                         <input type="text" class="form-control mb-2 w-full" :name="`spesifikasi_barang[]`" x-model="item.spesifikasi_barang" placeholder="Spesifikasi">
-                        <input type="number" step="0.01" class="form-control mb-2 w-full" :name="`jumlah[]`" x-model="item.jumlah" placeholder="Berat (Kg)/Jumlah Pakaian">
-                        <input type="number" step="0.01" class="form-control mb-2 w-full" :name="`harga_satuan[]`" x-model="item.harga_satuan" placeholder="Harga Per kg/Per Satuan">
+                        <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" step="0.01" class="form-control mb-2 w-full" :name="`jumlah[]`" x-model="item.jumlah" placeholder="Berat (Kg)/Jumlah Pakaian">
+                        <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" step="0.01" class="form-control mb-2 w-full" :name="`harga_satuan[]`" x-model="item.harga_satuan" placeholder="Harga Per kg/Per Satuan">
                     </div>  
                     <button type="button" class="btn btn-danger w-full py-2 bg-red-400 text-white rounded hover:bg-red-500" @click="items.splice(index, 1)">Hapus</button>
                 </div>
@@ -549,7 +549,7 @@
                     </div>
                     <div class="mb-4">
                         <label class="block mb-1">Nomor Telepon</label>
-                        <input type="text" name="nomor_telepon" class="w-full border rounded p-2" required autocomplete="off">
+                        <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" name="nomor_telepon" class="w-full border rounded p-2" required autocomplete="off">
                     </div>
                     <div class="flex justify-end space-x-2">
                         <button type="button" x-on:click="openModalTambahPelanggan = false" class="text-gray-500">

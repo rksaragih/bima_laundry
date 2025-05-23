@@ -103,7 +103,7 @@
                           </div>
                           <div class="mb-4">
                               <label class="block mb-1">Biaya</label>
-                              <input type="text" name="biaya" class="w-full border rounded p-2" required>
+                              <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" name="biaya" class="w-full border rounded p-2" required>
                           </div>
                           <div class="mb-4">
                               <label class="block mb-1">Tanggal</label>
@@ -190,7 +190,7 @@
 
         <canvas id="pengeluaranChart" class="mb-8" height="100"></canvas>
 
-        <canvas id="keuntunganChart" height="100"></canvas>
+        <canvas id="keuntunganChart" class="mb-8" height="100"></canvas>
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         
@@ -202,14 +202,19 @@
 
           // Chart Pendapatan
           new Chart(document.getElementById('pendapatanChart').getContext('2d'), {
-              type: 'bar',
+              type: 'line',
               data: {
                   labels: labels,
                   datasets: [{
                       label: 'Total Pendapatan (Rp)',
                       data: pendapatanData,
-                      backgroundColor: '#6FBcFF',
-                      borderRadius: 6
+                      borderColor: '#6FBcFF',
+                      backgroundColor: 'rgba(111, 188, 255, 0.2)',
+                      borderWidth: 2,
+                      tension: 0.4,
+                      fill: true,
+                      borderRadius: 6,
+                      pointBackgroundColor: '#6FBcFF',
                   }]
               },
               options: {

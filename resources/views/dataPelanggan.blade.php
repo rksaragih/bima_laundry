@@ -167,7 +167,7 @@
                         </div>
                         <div class="mb-4">
                             <label class="block mb-1">Biaya</label>
-                            <input type="text" name="biaya" class="w-full border rounded p-2" required>
+                            <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" name="biaya" class="w-full border rounded p-2" required>
                         </div>
                         <div class="mb-4">
                             <label class="block mb-1">Tanggal</label>
@@ -286,7 +286,7 @@
                         </div>
                         <div class="mb-4">
                             <label class="block mb-1">Nomor Telepon</label>
-                            <input type="text" name="nomor_telepon" class="w-full border rounded p-2" required>
+                            <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" name="nomor_telepon" class="w-full border rounded p-2" required>
                         </div>
                         <div class="flex justify-end">
                             <button
@@ -476,7 +476,8 @@
                     <div class="mb-4">
                         <label class="block mb-1">Nomor Telepon</label>
                         <input
-                            type="text"
+                            type="number"
+                            onkeydown="return !['e','E','+','-'].includes(event.key)"
                             name="nomor_telepon"
                             class="w-full border rounded p-2"
                             x-model="selectedPelanggan.nomor_telepon"

@@ -20,7 +20,7 @@ class PelangganController extends Controller
             $query->where('alamat', $request->alamat);
         }
 
-        $pelanggans = $query->paginate(10);
+        $pelanggans = $query->latest()->paginate(10);
         $alamatList = Pelanggan::select('alamat')->distinct()->pluck('alamat');
         return view('dataPelanggan', compact('pelanggans', 'alamatList'));
 
