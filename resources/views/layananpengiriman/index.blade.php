@@ -111,10 +111,36 @@
 
     <!-- Main Content -->
     <div class="flex-1 p-6" x-data="mapWidget()" x-init="init()" x-cloak>
-      <h2 class="text-2xl font-bold mb-4">Layanan Pengiriman</h2>
+  <h2 class="text-2xl font-bold mb-4">Layanan Pengiriman</h2>
+
+  <div class="flex gap-4">
+    <!-- MAP -->
+    <div class="w-3/4">
       <div id="map" x-ref="map" class="h-[500px] rounded-lg shadow-lg overflow-hidden"></div>
     </div>
+
+    <!-- SEARCH -->
+    <div class="w-1/4 bg-white rounded-lg shadow-lg p-4">
+      <h3 class="text-lg font-semibold mb-2">Cari Lokasi</h3>
+      <input
+        type="text"
+        placeholder="Nama kelurahan / kecamatan"
+        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        x-model="searchQuery"
+        @input="searchLocation"
+      >
+      <ul class="mt-4 space-y-2 max-h-96 overflow-y-auto text-sm">
+        <template x-for="loc in filteredLocations" :key="loc.index">
+          <li class="p-2 border rounded hover:bg-blue-50 cursor-pointer" @click="zoomTo(loc)">
+            <div><strong x-text="loc.area"></strong></div>
+            <!-- <div class="text-gray-500 text-xs" x-text="'Lat: ' + loc.lat + ', Lon: ' + loc.lon"></div> -->
+            <div class="text-gray-500 text-xs" ></div>
+          </li>
+        </template>
+      </ul>
+    </div>
   </div>
+</div>
 
   <!-- Modal Tambah Pengeluaran -->
   <div id="pengeluaranModal" class="fixed inset-0 hidden items-center justify-center" style="z-index: 99999;">
@@ -173,90 +199,142 @@
   <!-- Script Map -->
   <script>
     function mapWidget() {
-      return {
-        map: null,
-        init() {
-          delete L.Icon.Default.prototype._getIconUrl;
-          L.Icon.Default.mergeOptions({
-            iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-            shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  return {
+    map: null,
+    searchQuery: '',
+    locations: [],
+    filteredLocations: [],
+
+    init() {
+      delete L.Icon.Default.prototype._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      });
+
+      this.map = L.map(this.$refs.map, {
+        minZoom: 10,
+        maxZoom: 14,
+        zoomControl: true
+      }).setView([-6.5928, 106.8016], 15);
+
+      this.map.invalidateSize();
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(this.map);
+
+      this.loadCSVFromURL('/data/lokasi_pengiriman.csv');
+      this.loadGeoJSONFromURL('/data/Desa-Bogor.geojson'); // tambahan GeoJSON
+    },
+
+    async loadCSVFromURL(url) {
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        const rows = text.trim().split('\n').map(r => r.split(',').map(c => c.trim()));
+        const hdr = rows[0].map(h => h.toLowerCase());
+
+        const latI = hdr.findIndex(h => ['lintang', 'lat'].includes(h));
+        const lonI = hdr.findIndex(h => ['bujur', 'lon', 'lng'].includes(h));
+        const areaI = hdr.findIndex(h => ['kelurahan', 'kecamatan'].includes(h));
+        const hargaI = hdr.findIndex(h => h === 'harga');
+
+        if (latI < 0 || lonI < 0 || areaI < 0) {
+          return alert('CSV harus memiliki kolom lintang, bujur, dan kelurahan.');
+        }
+
+        const redIcon = new L.Icon({
+          iconUrl: 'https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png',
+          iconSize: [32, 32],
+          iconAnchor: [16, 32],
+          popupAnchor: [0, -32],
+        });
+
+        const cluster = L.markerClusterGroup({ disableClusteringAtZoom: 12 });
+
+        for (let i = 1; i < rows.length; i++) {
+          const cols = rows[i];
+          const lat = parseFloat(cols[latI]);
+          const lon = parseFloat(cols[lonI]);
+          const area = cols[areaI];
+
+          if (isNaN(lat) || isNaN(lon)) continue;
+
+          let popup = `<strong>Kelurahan:</strong> ${area}<br>`;
+          if (hargaI >= 0) popup += `<strong>Harga:</strong> ${cols[hargaI]}`;
+
+          const marker = L.marker([lat, lon], { icon: redIcon }).bindPopup(popup, {
+            autoClose: false,
+            closeOnClick: false
           });
 
-          this.map = L.map(this.$refs.map, {
-            minZoom: 10,
-            maxZoom: 35,
-            zoomControl: true
-          }).setView([-6.2, 106.8], 12);
+          cluster.addLayer(marker);
 
-          this.map.invalidateSize();
-
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-          }).addTo(this.map);
-
-          this.loadCSVFromURL('/data/lokasi_pengiriman.csv');
-        },
-
-        async loadCSVFromURL(url) {
-          try {
-            const res = await fetch(url);
-            const text = await res.text();
-            const rows = text.trim().split('\n').map(r => r.split(',').map(c => c.trim()));
-            const hdr = rows[0].map(h => h.toLowerCase());
-
-            const latI = hdr.findIndex(h => ['lintang', 'lat'].includes(h));
-            const lonI = hdr.findIndex(h => ['bujur', 'lon', 'lng'].includes(h));
-            const areaI = hdr.findIndex(h => ['kelurahan', 'kecamatan'].includes(h));
-            const hargaI = hdr.findIndex(h => h === 'harga');
-
-            if (latI < 0 || lonI < 0) {
-              return alert('CSV harus memiliki kolom lintang & bujur.');
-            }
-
-            const redIcon = new L.Icon({
-              iconUrl: 'https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png',
-              iconSize: [32, 32],
-              iconAnchor: [16, 32],
-              popupAnchor: [0, -32],
-            });
-
-            const cluster = L.markerClusterGroup({ disableClusteringAtZoom: 12 });
-
-            for (let i = 1; i < rows.length; i++) {
-              const cols = rows[i];
-              const lat = parseFloat(cols[latI]);
-              const lon = parseFloat(cols[lonI]);
-              if (isNaN(lat) || isNaN(lon)) continue;
-
-              let popup = '';
-              if (areaI >= 0) popup += `<strong>Kelurahan:</strong> ${cols[areaI]}<br>`;
-              if (hargaI >= 0) popup += `<strong>Harga:</strong> ${cols[hargaI]}`;
-
-              const marker = L.marker([lat, lon], { icon: redIcon }).bindPopup(popup, {
-                autoClose: false,
-                closeOnClick: false
-              });
-
-              cluster.addLayer(marker);
-            }
-
-            this.map.addLayer(cluster);
-            if (cluster.getLayers().length) {
-              this.map.fitBounds(cluster.getBounds(), { padding: [20, 20] });
-              setTimeout(() => this.map.invalidateSize(), 200);
-            }
-
-            this.map.on('zoomend', () => {
-              this.map.fitBounds(cluster.getBounds(), { padding: [20, 20] });
-            });
-          } catch (err) {
-            console.error('Gagal memuat CSV:', err);
-            alert('Terjadi kesalahan saat memuat data CSV.');
-          }
+          this.locations.push({
+            index: i,
+            lat,
+            lon,
+            area,
+            marker
+          });
         }
-      };
+
+        this.map.addLayer(cluster);
+        if (cluster.getLayers().length) {
+          this.map.fitBounds(cluster.getBounds(), { padding: [20, 20] });
+          setTimeout(() => this.map.invalidateSize(), 200);
+        }
+      } catch (err) {
+        console.error('Gagal memuat CSV:', err);
+        alert('Terjadi kesalahan saat memuat data CSV.');
+      }
+    },
+
+    async loadGeoJSONFromURL(url) {
+      try {
+        const res = await fetch(url);
+        const geojson = await res.json();
+
+        const geojsonLayer = L.geoJSON(geojson, {
+          onEachFeature: (feature, layer) => {
+            if (feature.properties) {
+              let popupContent = '';
+              for (const key in feature.properties) {
+                popupContent += `<strong>${key}:</strong> ${feature.properties[key]}<br>`;
+              }
+              layer.bindPopup(popupContent);
+            }
+          }
+        });
+
+        geojsonLayer.addTo(this.map);
+
+        const bounds = geojsonLayer.getBounds();
+        if (bounds.isValid()) {
+          this.map.fitBounds(bounds, { padding: [20, 20] });
+          setTimeout(() => this.map.invalidateSize(), 200);
+        }
+      } catch (err) {
+        console.error('Gagal memuat GeoJSON:', err);
+        alert('Terjadi kesalahan saat memuat data GeoJSON.');
+      }
+    },
+
+    searchLocation() {
+      const q = this.searchQuery.toLowerCase();
+      this.filteredLocations = this.locations.filter(loc => loc.area.toLowerCase().includes(q));
+    },
+
+    zoomTo(loc) {
+      this.map.setView([loc.lat, loc.lon], 17);
+      loc.marker.openPopup();
     }
+  };
+}
+
+
   </script>
 </body>
 
