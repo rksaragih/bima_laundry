@@ -70,7 +70,7 @@
 <!-- Sidebar -->
 <body class="bg-gray-100">
 <div class="flex min-h-screen">
-    <div class="w-1/5 bg-white shadow-lg sticky top-0 h-screen overflow-y-auto">
+    <div class="w-1/5 min-w-[240px] bg-white shadow-lg sticky top-0 h-screen overflow-y-auto">
       <div class="p-6">
         <div class="flex items-center mb-8">
           <a href="{{ route('index') }}">
