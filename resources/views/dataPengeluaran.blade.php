@@ -129,7 +129,7 @@
           </li>
           <li class="mt-8">
             <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-              <i class="fas fa-sign-out-alt mr-3"></i> Logout
+              <i class="fas fa-sign-out-alt mr-3"></i> Keluar
             </a>
 
             <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
@@ -142,16 +142,13 @@
 
     <!-- Main -->
     <div class="flex-1 p-10">
-        <header class="bg-biruBima text-white px-6 py-3 shadow">
+        <header class="bg-biruBima rounded-xl text-white px-6 py-3 shadow">
             <div class="flex justify-between items-center">
+              <div class="text-2xl font-semibold">Data Pengeluaran</div>    
               <div class="text-2xl font-semibold ml-auto">{{ Auth::user()->role }}</div>
             </div>
           </header>
         <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedPengeluaran: {} }">
-            <div class="flex justify-between items-center mb-4">
-                <h1 class="text-2xl font-bold">Data Pengeluaran</h1>
-            </div>
-
             <!-- Modal -->
             <div x-data="{ openModal: false, showExportModal: false }">
 
@@ -161,11 +158,11 @@
                 </button>
 
                 <button class="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-lg" onclick="window.location.href='{{ route('pengeluaran.index') }}'">
-                  <i class="fas fa-sync mr-2"></i>Reset Filter
+                  <i class="fas fa-filter-circle-xmark mr-2"></i>Hapus Filter
                 </button>
 
                 <button @click="showExportModal = true" class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded-lg">
-                  <i class="fas fa-file-export mr-2"></i>Export Data
+                  <i class="fas fa-file-export mr-2"></i>Ekspor Data
               </button>
        
               </div>
@@ -195,7 +192,7 @@
                 x-cloak
               >
                 <div @click.away="showExportModal = false" class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
-                    <h2 class="text-lg font-semibold mb-4">Export Pengeluaran</h2>
+                    <h2 class="text-lg font-semibold mb-4">Ekspor Pengeluaran</h2>
         
                     <form action="{{ route('pengeluaran.export') }}" method="GET">
                         <div class="mb-3">
@@ -220,7 +217,7 @@
         
                         <div class="flex justify-end gap-2">
                             <button type="button" @click="showExportModal = false" class="px-3 py-1 bg-gray-400 hover:bg-gray-500 rounded text-white">Batal</button>
-                            <button type="submit" class="px-3 py-1 bg-green-400 hover:bg-green-500 text-white rounded text-sm">Export</button>
+                            <button type="submit" class="px-3 py-1 bg-green-400 hover:bg-green-500 text-white rounded text-sm">Ekspor Excel</button>
                         </div>
                     </form>
                 </div>
@@ -278,8 +275,8 @@
                               >
                                   Batal
                               </button>
-                              <button type="submit" class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded">
-                                  Simpan
+                              <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
+                                  Tambah
                               </button>
                           </div>
                       </form>
@@ -515,7 +512,7 @@
                               Batal
                           </button>
                           <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
-                              Update
+                              Perbarui
                           </button>
                       </div>
                   </form>

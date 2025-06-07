@@ -6,6 +6,7 @@
 Bima Laundry - Data Pesanan
 </title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" defer></script>
 <script src="//unpkg.com/alpinejs" defer></script>
@@ -50,195 +51,196 @@ Bima Laundry - Data Pesanan
 </head>
 
 <body class="bg-gray-100">
-<div class="flex min-h-screen">
+    <div class="flex min-h-screen">
 
-    <!-- ini sidebar -->
-    <div class="w-1/5 min-w-[240px] bg-white shadow-lg sticky top-0 h-screen overflow-y-auto">
-        <div class="p-6" x-data="{ openModalPengeluaran : false }">
-        <div class="flex items-center mb-8">
-            <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('pesanan.index') }}">
-            <img
-                alt="Logo"
-                class="mr-3"
-                src="/images/logo-bima-laundry-svg.svg"
-            />
-            </a>
-        </div>
-        <ul>
-            @if(Auth::user()->role === 'Admin')
-            <li class="mb-4">
-            <a class="flex items-center gap-4 text-gray-700" href="{{ route('index') }}">
-                <i class="fa-solid fa-table-columns fa-fw"></i>
-                Dashboard
-            </a>
-            </li>
-            @endif
-            <li class="mb-4">
-            <a
-                class="flex items-center gap-4 text-biruBima"
-                href="{{ route('pesanan.index') }}"
-            >
-                <i class="fas fa-file-alt fa-fw"></i>
-                Pesanan
-            </a>
-            </li>
-            <li class="mb-4">
-            <a
-                class="flex items-center gap-4 text-gray-700"
-                href="{{ route('pelanggan.index') }}"
-            >
-            <i class="fas fa-users fa-fw"></i>
-                Pelanggan
-            </a>
-            </li>
-            <li class="mb-4">
-            <a class="flex items-center gap-4 text-gray-700" href="{{ route('layanan.index') }}">
-                <i class="fas fa-user-shield fa-fw"></i>
-                Layanan
-            </a>
-            </li>
-            <li class="mb-4">
-                <a class="flex items-center gap-4 text-gray-700" href="{{ route('layananpengiriman.index') }}">
-                <i class="fas fa-shipping-fast fa-fw"></i>
-                Layanan Pengiriman
+        <!-- ini sidebar -->
+        <div class="w-1/5 min-w-[240px] bg-white shadow-lg sticky top-0 h-screen overflow-y-auto">
+            <div class="p-6" x-data="{ openModalPengeluaran : false }">
+                <div class="flex items-center mb-8">
+                    <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('pesanan.index') }}">
+                    <img
+                        alt="Logo"
+                        class="mr-3"
+                        src="/images/logo-bima-laundry-svg.svg"
+                    />
+                    </a>
+                </div>
+                <ul>
+                @if(Auth::user()->role === 'Admin')
+                <li class="mb-4">
+                <a class="flex items-center gap-4 text-gray-700" href="{{ route('index') }}">
+                    <i class="fa-solid fa-table-columns fa-fw"></i>
+                    Dashboard
                 </a>
-            </li>
-
-            <li class="mb-4">
-                @if (Auth::user()->role === 'Kasir')
-                <a
-                href="#"
-                class="flex items-center gap-4 text-gray-700"
-                x-on:click.prevent="openModalPengeluaran = true"
-            >
-                <i class="fas fa-wallet fa-fw"></i>
-                Tambah Pengeluaran
-            </a>
-
-
-                    <div
-                        x-show="openModalPengeluaran"
-                        x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="opacity-0"
-                        x-transition:enter-end="opacity-100"
-                        x-transition:leave="transition ease-in duration-200"
-                        x-transition:leave-start="opacity-100"
-                        x-transition:leave-end="opacity-0"
-                        class="fixed inset-0 bg-black bg-opacity-50 z-40"
-                        x-cloak
-                        >
-                    </div>
-
-                    <div
-                    x-show="openModalPengeluaran"
-                    x-cloak
-                    x-transition:enter="transition ease-out duration-300 transform"
-                    x-transition:enter-start="opacity-0 translate-y-5 scale-95"
-                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                    x-transition:leave="transition ease-in duration-200 transform"
-                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                    x-transition:leave-end="opacity-0 translate-y-5 scale-95"
-                    class="fixed inset-0 flex items-center justify-center z-50"
-                    >
-                    <div class="bg-white p-6 rounded w-96" @click.away="openModalPengeluaran = false">
-                        <h2 class="text-lg font-bold mb-4">Tambah Data Pengeluaran</h2>
-                        <form action="{{ route('pengeluaran.store') }}" method="POST">
-                            @csrf
-                            <div class="mb-4">
-                                <label class="block mb-1">Jenis Pengeluaran</label>
-                                <input type="text" name="jenis_pengeluaran" class="w-full border rounded p-2" required>
-                            </div>
-                            <div class="mb-4">
-                                <label class="block mb-1">Biaya</label>
-                                <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" name="biaya" class="w-full border rounded p-2" required>
-                            </div>
-                            <div class="mb-4">
-                                <label class="block mb-1">Tanggal</label>
-                                <input type="date" name="tanggal" class="w-full border rounded p-2" required>
-                            </div>
-                            <div class="flex justify-end">
-                                <button
-                                    type="button"
-                                    x-on:click="openModalPengeluaran = false"
-                                    class="mr-2 text-gray-500"
-                                >
-                                    Batal
-                                </button>
-                                <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
-                                    Simpan
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    </div>
-
-                @else
-                    <a
-                    href="{{ route('pengeluaran.index') }}"
-                    class="flex items-center gap-4 text-gray-700"
-                    >
-                    <i class="fas fa-wallet fa-fw"></i>
-                    Pengeluaran
-                    </a>
+                </li>
                 @endif
+                <li class="mb-4">
+                <a
+                    class="flex items-center gap-4 text-biruBima"
+                    href="{{ route('pesanan.index') }}"
+                >
+                    <i class="fas fa-file-alt fa-fw"></i>
+                    Pesanan
+                </a>
                 </li>
-                <li class="mt-8">
-                    <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="fas fa-sign-out-alt mr-3"></i> Logout
+                <li class="mb-4">
+                <a
+                    class="flex items-center gap-4 text-gray-700"
+                    href="{{ route('pelanggan.index') }}"
+                >
+                <i class="fas fa-users fa-fw"></i>
+                    Pelanggan
+                </a>
+                </li>
+                <li class="mb-4">
+                <a class="flex items-center gap-4 text-gray-700" href="{{ route('layanan.index') }}">
+                    <i class="fas fa-user-shield fa-fw"></i>
+                    Layanan
+                </a>
+                </li>
+                <li class="mb-4">
+                    <a class="flex items-center gap-4 text-gray-700" href="{{ route('layananpengiriman.index') }}">
+                    <i class="fas fa-shipping-fast fa-fw"></i>
+                    Layanan Pengiriman
                     </a>
-    
-                    <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                    @csrf
-                    </form>
                 </li>
-            </ul>
+
+                <li class="mb-4">
+                    @if (Auth::user()->role === 'Kasir')
+                    <a
+                    href="#"
+                    class="flex items-center gap-4 text-gray-700"
+                    x-on:click.prevent="openModalPengeluaran = true"
+                >
+                    <i class="fas fa-wallet fa-fw"></i>
+                    Tambah Pengeluaran
+                </a>
+
+
+                        <div
+                            x-show="openModalPengeluaran"
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition ease-in duration-200"
+                            x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                            class="fixed inset-0 bg-black bg-opacity-50 z-40"
+                            x-cloak
+                            >
+                        </div>
+
+                        <div
+                        x-show="openModalPengeluaran"
+                        x-cloak
+                        x-transition:enter="transition ease-out duration-300 transform"
+                        x-transition:enter-start="opacity-0 translate-y-5 scale-95"
+                        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave="transition ease-in duration-200 transform"
+                        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave-end="opacity-0 translate-y-5 scale-95"
+                        class="fixed inset-0 flex items-center justify-center z-50"
+                        >
+                        <div class="bg-white p-6 rounded w-96" @click.away="openModalPengeluaran = false">
+                            <h2 class="text-lg font-bold mb-4">Tambah Data Pengeluaran</h2>
+                            <form action="{{ route('pengeluaran.store') }}" method="POST">
+                                @csrf
+                                <div class="mb-4">
+                                    <label class="block mb-1">Jenis Pengeluaran</label>
+                                    <input type="text" name="jenis_pengeluaran" class="w-full border rounded p-2" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block mb-1">Biaya</label>
+                                    <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" name="biaya" class="w-full border rounded p-2" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block mb-1">Tanggal</label>
+                                    <input type="date" name="tanggal" class="w-full border rounded p-2" required>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button
+                                        type="button"
+                                        x-on:click="openModalPengeluaran = false"
+                                        class="mr-2 text-gray-500"
+                                    >
+                                        Batal
+                                    </button>
+                                    <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
+                                        Tambah
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        </div>
+
+                    @else
+                        <a
+                        href="{{ route('pengeluaran.index') }}"
+                        class="flex items-center gap-4 text-gray-700"
+                        >
+                        <i class="fas fa-wallet fa-fw"></i>
+                        Pengeluaran
+                        </a>
+                    @endif
+                    </li>
+                    <li class="mt-8">
+                        <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fas fa-sign-out-alt mr-3"></i> Keluar
+                        </a>
+        
+                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                        @csrf
+                        </form>
+                    </li>
+                </ul>
             </div>
         </div>
 
         <!-- main -->
         <div class="flex-1 p-10" x-data="{ openJenisPesananModal : false, openFilterModal : false, openExportModal : false }">
-            <header class="bg-biruBima text-white px-6 py-3 shadow">
+            <header class="bg-biruBima rounded-xl text-white px-6 py-3 shadow">
                 <div class="flex justify-between items-center">
-                <div class="text-2xl font-semibold ml-auto">{{ Auth::user()->role }}</div>
+                    <div class="text-2xl font-semibold">Data Pesanan</div>
+                    <div class="text-2xl font-semibold ml-auto">{{ Auth::user()->role }}</div>
                 </div>
             </header>
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <form action="{{ route('pesanan.search') }}" method="GET">
-                    <div class="flex justify-between items-center mb-4">
-                        <h1 class="text-2xl font-bold">Data Pesanan</h1>
-                        <input class="border rounded-lg px-4 py-2" name="search_nama" placeholder="Search..." type="text"/>
-                    </div>
-                </form>
-                <div class="flex space-x-4 mb-4">
-                    <button
-                        class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg"
-                        x-on:click="openJenisPesananModal = true"
-                    >
-                        <i class="fas fa-plus mr-2"></i>Tambah Data
-                    </button>
-
-                    <!-- Filter Button -->
-                    <button
-                        class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg"
-                        x-on:click="openFilterModal = true"
-                    >
-                        <i class="fas fa-filter mr-2"></i>Filter Data
-                    </button>
-
-                    <button class="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-lg" onclick="window.location.href='{{ route('pesanan.index') }}'">
-                        <i class="fas fa-sync mr-2"></i>Reset Filter
-                    </button>
-
-                    @if (Auth::user()->role === 'Admin')
+            
+            <div class="bg-white p-6 rounded-lg shadow-lg">                
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex space-x-4">
                         <button
-                            class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded-lg"
-                            x-on:click="openExportModal = true"
+                            class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg"
+                            x-on:click="openJenisPesananModal = true"
                         >
-                            <i class="fas fa-file-export mr-2"></i>Export Data
+                            <i class="fas fa-plus mr-2"></i>Tambah Data
                         </button>
-                    @endif
-                </div>
 
+                        <!-- Filter Button -->
+                        <button
+                            class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg"
+                            x-on:click="openFilterModal = true"
+                        >
+                            <i class="fas fa-filter mr-2"></i>Filter Data
+                        </button>
+
+                        <button class="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-lg" onclick="window.location.href='{{ route('pesanan.index') }}'">
+                            <i class="fas fa-filter-circle-xmark mr-2"></i>Hapus Filter
+                        </button>
+
+                        @if (Auth::user()->role === 'Admin')
+                            <button
+                                class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded-lg"
+                                x-on:click="openExportModal = true"
+                            >
+                                <i class="fas fa-file-export mr-2"></i>Ekspor Data
+                            </button>
+                        @endif
+                    </div>
+
+                    <form action="{{ route('pesanan.search') }}" method="GET" class="flex items-center space-x-2">
+                            <input class="border rounded-lg px-4 py-2" name="search_nama" placeholder="Cari Nama..." type="text"/>
+                    </form>
+                </div>
                 <div
                     x-show="openExportModal"
                     x-transition:enter="transition ease-out duration-300"
@@ -264,7 +266,7 @@ Bima Laundry - Data Pesanan
                     x-transition:leave-end="opacity-0 translate-y-5 scale-95"
                 >
                     <div class="bg-white p-6 rounded w-96" @click.away="openExportModal = false">
-                        <h2 class="text-lg font-bold mb-4">Export Data Pesanan</h2>
+                        <h2 class="text-lg font-bold mb-4">Ekspor Data Pesanan</h2>
                         <form action="{{ route('pesanan.export') }}" method="GET">
                             <div class="mb-4">
                                 <label class="block mb-1 font-medium">Bulan</label>
@@ -310,7 +312,7 @@ Bima Laundry - Data Pesanan
                                     Batal
                                 </button>
                                 <button type="submit" class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded">
-                                    Export Excel
+                                    Ekspor Excel
                                 </button>
                             </div>
                         </form>
@@ -528,9 +530,9 @@ Bima Laundry - Data Pesanan
                                 onclick="window.location.href='{{ route('pesanan.detail', ['id' => $pesanan->id]) }}'"
                                 >
                             <td class="px-6 py-4 whitespace-nowrap">{{ $pesanans->firstItem() + $index }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->pelanggan->nama }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->pelanggan->nomor_telepon }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->details->first()?->layanan?->kategori ?? '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->pelanggan?->nama ?? 'Data Tidak Ditemukan' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->pelanggan?->nomor_telepon ? '+' . $pesanan->pelanggan->nomor_telepon : 'Data Tidak Ditemukan' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->details->first()?->layanan?->kategori ?? 'Data Tidak Ditemukan' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($pesanan->tanggal_terima)->format('d M Y') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($pesanan->tanggal_selesai)->format('d M Y') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $pesanan->status_pembayaran }}</td>
@@ -540,8 +542,9 @@ Bima Laundry - Data Pesanan
                                     x-data="{ openSelectionModal: false, selectedPesanan: {} }">
                                     <!-- dropdown -->
                                     <button
-                                        class="text-gray-500 p-2 rounded-full focus:outline-none hover:text-gray-700"
+                                        class="text-gray-500 p-2 rounded-full transition-all duration-200 hover:text-white hover:bg-gray-500 hover:scale-150 focus:outline-none"
                                         x-on:click.stop="openSelectionModal = true; selectedPesanan = {{ $pesanan }};"
+                                        title="Lihat opsi"
                                     >
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
@@ -611,7 +614,7 @@ Bima Laundry - Data Pesanan
                                                 </div>
                                                 <div class="flex flex-col gap-4">
                                                     <button type="submit" class="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-500">
-                                                        Simpan
+                                                        Perbarui
                                                     </button>
                                                     @if (auth()->user()->role === 'Admin')
                                                     <button type="button"
@@ -744,6 +747,61 @@ Bima Laundry - Data Pesanan
             </div>
         </div>
     </div>
-</div>
+
+    @if(session('kirim_wa'))
+        <div id="whatsappModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+            <div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl">
+                <div class="text-center mb-4">
+                    <svg class="mx-auto h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                    <h2 class="text-xl font-semibold mt-2">Kirim WhatsApp</h2>
+                </div>
+                
+                <p class="text-center text-gray-700 mb-5">
+                    Kirim notifikasi WhatsApp ke <strong>{{ session('kirim_wa.nama') }}</strong>?<br>
+                    <span class="text-sm text-gray-600">Cucian sudah selesai dan siap diambil.</span>
+                </p>
+                
+                <div class="flex justify-center space-x-4">
+                    <button
+                        type="button"
+                        onclick="closeWhatsAppModal()"
+                        class="bg-gray-300 text-gray-900 px-4 py-2 rounded hover:bg-gray-400 transition w-24 text-sm">
+                        Batal
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="sendWhatsApp()"
+                        class="bg-green-500 text-white px-4 py-2 hover:bg-green-600 rounded transition w-24 text-sm">
+                        Kirim
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function closeWhatsAppModal() {
+                document.getElementById('whatsappModal').remove();
+            }
+
+            function sendWhatsApp() {
+                const nama = @json(session('kirim_wa.nama'));
+                const alamat = @json(session('kirim_wa.alamat'));
+                const no_hp = @json(session('kirim_wa.no_hp'));
+                const msg = encodeURIComponent(`Halo ${nama}, cucian Anda telah selesai. Silahkan datang untuk mengambilnya.`);
+                
+                if (no_hp) {
+                    window.open(`https://wa.me/${no_hp}?text=${msg}`, '_blank');
+                }
+                closeWhatsAppModal();
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+            });
+        </script>
+    @endif
+
 </body>
 </html>

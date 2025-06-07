@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pesanan_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pesanan_id')->constrained('pesanans')->onDelete('cascade');
-            $table->foreignId('layanan_id')->constrained('layanans')->onDelete('cascade');
+            $table->foreignId('layanan_id')->nullable()->constrained('layanans')->onDelete('set null');
             $table->string('jenis_barang');
             $table->text('spesifikasi_barang')->nullable();
             $table->integer('jumlah');

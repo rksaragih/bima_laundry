@@ -5,511 +5,430 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Tambah Data Pesanan</title>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" defer></script>
-    <script src="//unpkg.com/alpinejs" defer></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
 
     <script>
         tailwind.config = {
-        theme: {
-            extend: {
-            colors: {
-                biruBima: '#6FBcFF',
+            theme: {
+                extend: {
+                    colors: {
+                        biruBima: '#6FBcFF',
+                        biruBimaDark: '#3B82F6',
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateY(-10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        }
+                    }
+                },
             },
-            },
-        },
         };
     </script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
+        [x-cloak] { display: none !important; }
+        
+        .select2-container--default .select2-selection--single {
+            height: 48px !important;
+            padding: 12px 16px !important;
+            border: 2px solid #e5e7eb !important;
+            border-radius: 12px !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        .select2-container--default .select2-selection--single:focus-within {
+            border-color: #6FBcFF !important;
+            box-shadow: 0 0 0 3px rgba(111, 188, 255, 0.1) !important;
+        }
+        
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-here: 24px !important;
+            padding-left: 0 !important;
+            color: #374151 !important;
+        }
+        
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 46px !important;
+        }
+        
+        .flatpickr-input[readonly] {
+            background-color: white !important;
+            cursor: pointer !important;
         }
 
-        body {
-            background-color: #f0f2f5;
-            padding: 12px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .form-input {
+            @apply w-full px-4 py-3 border-2 border-gray-200 rounded-xl transition-all duration-200 focus:border-biruBima focus:ring-4 focus:ring-blue-50 outline-none;
         }
 
-        .container {
-            width: 100%;
-            max-width: 750px;
-            margin: 12px auto;
-            background-color: white;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .btn-primary {
+            @apply bg-gradient-to-r from-biruBima to-biruBimaDark text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200;
         }
 
-        h1 {
-            font-size: 22px;
-            margin-bottom: 22px;
-            color: #333;
+        .btn-secondary {
+            @apply bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200;
         }
 
-        .form-section {
-            margin-bottom: 22px;
+        .btn-danger {
+            @apply bg-gradient-to-r from-red-400 to-red-500 text-white px-4 py-2 rounded-lg font-medium hover:from-red-500 hover:to-red-600 transition-all duration-200;
         }
 
-        h2 {
-            font-size: 16px;
-            margin-bottom: 14px;
-            color: #333;
+        .card {
+            @apply bg-white rounded-2xl shadow-lg border border-gray-100 p-6;
         }
 
-        .form-row {
-            display: flex;
-            gap: 14px;
-            margin-bottom: 14px;
+        .card-header {
+            @apply border-b border-gray-100 pb-4 mb-6;
         }
 
-        input, select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            width: 100%;
-            height: 42px;
-            background-color: white;
+        .sidebar-link {
+            @apply flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-gray-50;
         }
 
-        /* Style for full-width inputs */
-        .full-width {
-            width: 100%;
-            margin-bottom: 14px;
+        .sidebar-link.active {
+            @apply bg-gradient-to-r from-biruBima to-biruBimaDark text-white shadow-lg;
         }
 
-        /* Style for alamat and spesifikasi input */
-        input[placeholder="Alamat"],
-        input[placeholder="Spesifikasi Barang"] {
-            height: 60px;
-            margin-bottom: 14px;
+        .item-card {
+            @apply bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-200;
         }
-
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 14px;
-            padding-right: 35px;
-            cursor: pointer;
-        }
-
-        button[type="submit"] {
-            background-color: #1a73e8;
-            color: white;
-            padding: 8px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            height: 42px;
-            min-width: 120px;
-            transition: background-color 0.2s;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #1557b0;
-        }
-
-        /* Smartphone (portrait) */
-        @media (max-width: 480px) {
-            body {
-                padding: 8px;
-            }
-
-            .container {
-                padding: 16px;
-                margin: 8px;
-            }
-
-            h1 {
-                font-size: 20px;
-                margin-bottom: 20px;
-            }
-
-            h2 {
-                font-size: 15px;
-                margin-bottom: 12px;
-            }
-
-            .form-section {
-                margin-bottom: 20px;
-            }
-
-            .form-row {
-                flex-direction: column;
-                gap: 12px;
-                margin-bottom: 12px;
-            }
-
-            input, select {
-                height: 40px;
-                font-size: 14px;
-            }
-
-            input[placeholder="Alamat"],
-            input[placeholder="Spesifikasi Barang"] {
-                height: 55px;
-            }
-
-            button[type="submit"] {
-                width: 100%;
-                height: 40px;
-            }
-        }
-
-        /* Smartphone (landscape) dan tablet kecil */
-        @media (min-width: 481px) and (max-width: 767px) {
-            .container {
-                padding: 20px;
-                margin: 10px;
-            }
-
-            h1 {
-                font-size: 21px;
-                margin-bottom: 20px;
-            }
-
-            .form-row {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            input, select {
-                height: 40px;
-            }
-
-            input[placeholder="Alamat"],
-            input[placeholder="Spesifikasi Barang"] {
-                height: 58px;
-            }
-
-            button[type="submit"] {
-                width: 100%;
-                height: 40px;
-            }
-        }
-
-        /* Tablet (portrait) */
-        @media (min-width: 768px) and (max-width: 1024px) {
-            .container {
-                max-width: 85%;
-                padding: 22px;
-            }
-
-            h1 {
-                font-size: 22px;
-            }
-
-            input, select {
-                height: 42px;
-            }
-
-            input[placeholder="Alamat"],
-            input[placeholder="Spesifikasi Barang"] {
-                height: 60px;
-            }
-
-            button[type="submit"] {
-                height: 42px;
-                min-width: 130px;
-            }
-        }
-
-        /* Laptop dan desktop */
-        @media (min-width: 1025px) and (max-width: 2559px) {
-            .container {
-                max-width: 750px;
-                padding: 24px;
-            }
-
-            input, select {
-                height: 42px;
-            }
-
-            input[placeholder="Alamat"],
-            input[placeholder="Spesifikasi Barang"] {
-                height: 60px;
-            }
-
-            button[type="submit"] {
-                height: 42px;
-            }
-        }
-
-        /* 4K Display (2560px and above) */
-        @media (min-width: 2560px) {
-            .container {
-                max-width: 900px;
-                padding: 28px;
-            }
-
-            h1 {
-                font-size: 24px;
-                margin-bottom: 24px;
-            }
-
-            h2 {
-                font-size: 17px;
-                margin-bottom: 16px;
-            }
-
-            .form-section {
-                margin-bottom: 24px;
-            }
-
-            .form-row {
-                gap: 16px;
-                margin-bottom: 16px;
-            }
-
-            input, select {
-                padding: 10px 14px;
-                font-size: 15px;
-                height: 45px;
-                border-radius: 6px;
-            }
-
-            input[placeholder="Alamat"],
-            input[placeholder="Spesifikasi Barang"] {
-                height: 65px;
-            }
-
-            select {
-                background-size: 15px;
-                background-position: right 14px center;
-                padding-right: 40px;
-            }
-
-            button[type="submit"] {
-                height: 45px;
-                font-size: 15px;
-                padding: 10px 28px;
-                min-width: 140px;
-            }
-        }
-
-        .modal-transition-enter {
-            transition: opacity 0.3s ease-out;
-            opacity: 0;
-        }
-        .modal-transition-enter-end {
-            opacity: 1;
-        }
-        .modal-transition-leave {
-            transition: opacity 0.3s ease-in;
-            opacity: 1;
-        }
-        .modal-transition-leave-end {
-            opacity: 0;
-        }
-
-        [x-cloak] {
-            display: none !important;
-        }
-
     </style>
 
 </head>
-<body>
-    <div class="container mx-auto p-6" x-data="openModalTambahPelanggan: false">
-        <h1 class="text-3xl font-bold mb-6">Tambah Pesanan</h1>
 
-        <form 
-            action="{{ route('pesanan.store') }}" method="POST" 
-            x-data="formHandler( '{{ $kategori }}', {{ $pelanggan->toJson() }} )"
-            >
-            @csrf
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
 
-            <input type="hidden" name="kategori" :value="kategori">
-
-            <div>
-                <label class="font-semibold text-lg">Kategori</label>
-                <div class="flex gap-4 mb-4">
-                    <label class="flex items-center">
-                        <input type="radio" name="kategori" value="Reguler" x-model="kategori" class="mr-2"> Reguler
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" name="kategori" value="Express" x-model="kategori" class="mr-2"> Express
-                    </label>
+    <div class="flex min-h-screen" x-data="{ 
+        openModalTambahPelanggan: false,
+        openModalPengeluaran: false 
+    }">
+        
+        <!-- Sidebar -->
+        <div class="w-1/5 min-w-[240px] bg-white shadow-lg sticky top-0 h-screen overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center mb-8">
+                    <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('pesanan.index') }}">
+                    <img
+                        alt="Logo"
+                        class="mr-3"
+                        src="/images/logo-bima-laundry-svg.svg"
+                    />
+                    </a>
                 </div>
-        
-            <div class="mb-2">
-                <label class="font-semibold">Pelanggan:</label>
-                <select name="pelanggan_id" class="form-select mb-2 w-full" x-model="pelanggan_id" required id="pelanggan_id">
-                    <option value="">--Pilih Pelanggan--</option>
-                    @foreach ($pelanggan as $p)
-                        <option value="{{ $p->id }}">{{ $p->nama }} ({{ $p->nomor_telepon }})</option>
-                    @endforeach
-                </select>
-            </div>
+                <ul>
+                @if(Auth::user()->role === 'Admin')
+                <li class="mb-4">
+                <a class="flex items-center gap-4 text-gray-700" href="{{ route('index') }}">
+                    <i class="fa-solid fa-table-columns fa-fw"></i>
+                    Dashboard
+                </a>
+                </li>
+                @endif
+                <li class="mb-4">
+                <a
+                    class="flex items-center gap-4 text-biruBima"
+                    href="{{ route('pesanan.index') }}"
+                >
+                    <i class="fas fa-file-alt fa-fw"></i>
+                    Pesanan
+                </a>
+                </li>
+                <li class="mb-4">
+                <a
+                    class="flex items-center gap-4 text-gray-700"
+                    href="{{ route('pelanggan.index') }}"
+                >
+                <i class="fas fa-users fa-fw"></i>
+                    Pelanggan
+                </a>
+                </li>
+                <li class="mb-4">
+                <a class="flex items-center gap-4 text-gray-700" href="{{ route('layanan.index') }}">
+                    <i class="fas fa-user-shield fa-fw"></i>
+                    Layanan
+                </a>
+                </li>
+                <li class="mb-4">
+                    <a class="flex items-center gap-4 text-gray-700" href="{{ route('layananpengiriman.index') }}">
+                    <i class="fas fa-shipping-fast fa-fw"></i>
+                    Layanan Pengiriman
+                    </a>
+                </li>
 
-            <button 
-                type="button" 
-                x-on:click.stop="openModalTambahPelanggan = true"  
-                class="mb-4 text-blue-500 text-sm hover:underline">
-                + Tambah Pelanggan Baru
-            </button>
+                <li class="mb-4">
+                    @if (Auth::user()->role === 'Kasir')
+                        <a
+                            href="#"
+                            class="flex items-center gap-4 text-gray-700"
+                            x-on:click.prevent="openModalPengeluaran = true"
+                        >
+                            <i class="fas fa-wallet fa-fw"></i>
+                            Tambah Pengeluaran
+                        </a>
+                    @else
+                        <a
+                        href="{{ route('pengeluaran.index') }}"
+                        class="flex items-center gap-4 text-gray-700"
+                        >
+                        <i class="fas fa-wallet fa-fw"></i>
+                        Pengeluaran
+                        </a>
+                    @endif
+                    </li>
+                    <li class="mt-8">
+                        <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fas fa-sign-out-alt mr-3"></i> Keluar
+                        </a>
         
-            <div class="mb-2">
-                <label class="font-semibold">Tanggal Terima:</label>
-                <input type="text" id="tanggal_terima" name="tanggal_terima" class="form-control mb-2" x-model="tanggal_terima" required>
+                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                        @csrf
+                        </form>
+                    </li>
+                </ul>
             </div>
-        
-            <div class="mb-4">
-                <label class="font-semibold">Tanggal Selesai:</label>
-                <input type="text" id="tanggal_selesai" name="tanggal_selesai" class="form-control mb-2" x-model="tanggal_selesai" required>
-            </div>
-        
-            <template x-for="(item, index) in items" :key="index">
-                <div class="border p-4 mb-4 bg-gray-100 rounded-lg shadow-md">
-                    <div class="grid grid-cols-1 gap-2 mb-3">
-                        <label class="font-semibold">Layanan</label>
-                        <select :name="`layanan_id[]`" x-model="item.layanan_id" class="form-select mb-2 w-full">
-                            <option value="">--Pilih Layanan--</option>
-                            <template x-for="layanan in layananFiltered" :key="layanan.id">
-                                <option :value="layanan.id" x-text="`${layanan.jenis_laundry}`"></option>
-                            </template>
-                        </select>
-                        <input type="text" class="form-control mb-2 w-full" :name="`jenis_barang[]`" x-model="item.jenis_barang" placeholder="Jenis Barang">
-                        <input type="text" class="form-control mb-2 w-full" :name="`spesifikasi_barang[]`" x-model="item.spesifikasi_barang" placeholder="Spesifikasi">
-                        <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" step="0.01" class="form-control mb-2 w-full" :name="`jumlah[]`" x-model="item.jumlah" placeholder="Berat (Kg)/Jumlah Pakaian">
-                        <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" step="0.01" class="form-control mb-2 w-full" :name="`harga_satuan[]`" x-model="item.harga_satuan" placeholder="Harga Per kg/Per Satuan">
-                    </div>  
-                    <button type="button" class="btn btn-danger w-full py-2 bg-red-400 text-white rounded hover:bg-red-500" @click="items.splice(index, 1)">Hapus</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <header class="bg-biruBima rounded-xl text-white px-6 py-4 shadow-sm">
+                <div class="flex justify-between items-center">
+                <div class="text-2xl font-semibold">Tambah Pesanan</div>
+                <div class="text-2xl font-semibold ml-auto">{{ Auth::user()->role }}</div>
                 </div>
-            </template>
-        
-            <button type="button" class="btn btn-secondary py-2 px-4 bg-blue-400 text-white rounded hover:bg-blue-500" @click="items.push({ layanan_id: '', jenis_barang: '', spesifikasi_barang: '', jumlah: '', harga_satuan: '' })">
-                Tambah Layanan
-            </button>
-        
-            <!-- Modal Trigger -->
-            <button type="button" class="btn btn-primary py-2 px-6 mt-4 bg-blue-400 text-white rounded hover:bg-blue-500" @click="showModal = true">Simpan Pesanan</button>
+            </header>
 
-            <!-- Modal Konfirmasi -->
-            <div 
-                x-show="showModal" x-cloak
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                class="fixed inset-0 bg-black bg-opacity-50 z-40"
-            >
-            </div>
-            <div 
-                class="fixed inset-0 flex items-center justify-center z-50 p-4" 
-                x-show="showModal" x-cloak
-                x-transition:enter="transition ease-out duration-300" 
-                x-transition:enter-start="opacity-0 translate-y-5" 
-                x-transition:enter-end="opacity-100 translate-y-0" 
-                x-transition:leave="transition ease-in duration-200" 
-                x-transition:leave-start="opacity-100 translate-y-0" 
-                x-transition:leave-end="opacity-0 translate-y-5"
-            >
-                <div class="bg-white w-full max-w-lg rounded-lg shadow-xl flex flex-col max-h-[90vh]">
-                    <div class="p-6 border-b">
-                        <h2 class="text-2xl font-semibold mb-4 text-center">Konfirmasi Pesanan</h2>
-                    </div>
-                    
-                    <div class="overflow-y-auto p-6 flex-grow">
-                        <div class="mb-4">
-                            <p><strong>Kategori:</strong> <span x-text="kategori"></span></p>
-                            <p><strong>Pelanggan:</strong>
-                                <template x-if="pelanggan_id">
-                                    <span x-text="getNamaPelanggan(pelanggan_id)"></span>
-                                </template>
-                            </p>
-                            <p><strong>Nomor Telepon:</strong>
-                                <template x-if="pelanggan_id">
-                                    <span x-text="getTeleponPelanggan(pelanggan_id)"></span>
-                                </template>
-                            </p>
-                            <p><strong>Alamat:</strong>
-                                <template x-if="pelanggan_id">
-                                    <span x-text="getAlamatPelanggan(pelanggan_id)"></span>
-                                </template>
-                            </p>
-                            <p><strong>Tanggal Terima:</strong><span x-text="formatTanggal(tanggal_terima)"></span></p>
-                            <p><strong>Tanggal Selesai:</strong><span x-text="formatTanggal(tanggal_selesai)"></span></p>
-                        </div>
+            <div class="space-y-6 grid grid-cols-1 gap-4 p-4 bg-white rounded-xl shadow-lg">
+                
+                <form 
+                    action="{{ route('pesanan.store') }}" method="POST" 
+                    x-data="formHandler( '{{ $kategori }}', {{ $pelanggan->toJson() }} )"
+                    >
+                    @csrf
 
-                        <div class="mb-4">
-                            <h3 class="font-bold">Detail Layanan:</h3>
-                            <template x-for="(item, index) in items" :key="index">
-                                <div class="border p-2 my-2 rounded bg-gray-50">
-                                    <p><strong>Layanan:</strong> <span x-text="getNamaLayanan(item.layanan_id)"></span></p>
-                                    <p><strong>Jenis Barang:</strong> <span x-text="item.jenis_barang"></span></p>
-                                    <p><strong>Spesifikasi:</strong> <span x-text="item.spesifikasi_barang"></span></p>
-                                    <p><strong>Jumlah/Berat (Kg):</strong> <span x-text="item.jumlah + ' ' + getSatuan(item.layanan_id)"></span></p>
-                                    <p><strong>Harga Satuan:</strong> Rp<span x-text="item.harga_satuan"></span></p>
-                                    <p><strong>Subtotal:</strong> Rp<span x-text="item.jumlah * item.harga_satuan"></span></p>
+                    <input type="hidden" name="kategori" :value="kategori">
+
+                    <div class="card-header">
+                        <label class="text-xl font-bold text-gray-800">Kategori</label>
+                        <div class="flex gap-6 mt-2">
+                            <label class="flex items-center cursor-pointer group">
+                                <input type="radio" name="kategori" value="Reguler" x-model="kategori" 
+                                       class="sr-only">
+                                <div class="flex items-center space-x-3 px-6 py-3 rounded-xl border-2 transition-all duration-200"
+                                     :class="kategori === 'Reguler' ? 'border-biruBima bg-blue-50 text-biruBimaDark' : 'border-gray-200 hover:border-gray-300'">
+                                    <i class="fas fa-clock text-lg"></i>
+                                    <span class="font-semibold">Reguler</span>
                                 </div>
-                            </template>
+                            </label>
+                            <label class="flex items-center cursor-pointer group">
+                                <input type="radio" name="kategori" value="Express" x-model="kategori" 
+                                       class="sr-only">
+                                <div class="flex items-center space-x-3 px-6 py-3 rounded-xl border-2 transition-all duration-200"
+                                     :class="kategori === 'Express' ? 'border-biruBima bg-blue-50 text-biruBimaDark' : 'border-gray-200 hover:border-gray-300'">
+                                    <i class="fas fa-bolt text-lg"></i>
+                                    <span class="font-semibold">Express</span>
+                                </div>
+                            </label>
                         </div>
+                    </div>
+                
+                    <div class="my-6">
+                        <label class="block text-sm mb-2 font-semibold text-gray-700">
+                            <i class="fas fa-user mr-2 text-biruBima"></i>Pilih Pelanggan
+                        </label>
 
-                        <div class="mb-4 font-bold text-right">
-                            Total: Rp.<span x-text="getTotalHarga()"></span>
+                        <select name="pelanggan_id" class="form-select mb-2 w-full" x-model="pelanggan_id" required id="pelanggan_id">
+                            <option value="">--Pilih Pelanggan--</option>
+                            @foreach ($pelanggan as $p)
+                                <option value="{{ $p->id }}">{{ $p->nama }} (+{{ $p->nomor_telepon }})</option>
+                            @endforeach
+                        </select>
+
+                        <button 
+                            type="button" 
+                            x-on:click.stop="openModalTambahPelanggan = true"  
+                            class="mt-3 text-biruBima hover:text-biruBimaDark font-semibold text-sm flex items-center">
+                            <i class="fas fa-plus mr-2"></i> Tambah Pelanggan Baru
+                        </button>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">
+                                <i class="fas fa-calendar-alt mr-2 text-biruBima"></i> Tanggal Terima
+                            </label>
+                            <input type="text" id="tanggal_terima" name="tanggal_terima" class="form-input w-full border rounded p-2" x-model="tanggal_terima" required>
                         </div>
+                    
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">
+                                <i class="fas fa-calendar-alt mr-2 text-biruBima"></i> Tanggal Selesai
+                            </label>
+                            <input type="text" id="tanggal_selesai" name="tanggal_selesai" class="form-input mb-4 w-full border rounded p-2" x-model="tanggal_selesai" required>
+                        </div>
+                    </div>
+                
+                    <template x-for="(item, index) in items" :key="index">
+                        <div class="border p-4 mb-4 bg-gray-100 rounded-lg shadow-md">
+                            <div class="grid grid-cols-1 gap-2 mb-3">
+                                <label class="font-semibold">Layanan</label>
+                                <select :name="`layanan_id[]`" x-model="item.layanan_id" class="form-select mb-2 p-2 w-full">
+                                    <option value="">--Pilih Layanan--</option>
+                                    <template x-for="layanan in layananFiltered" :key="layanan.id">
+                                        <option :value="layanan.id" x-text="`${layanan.jenis_laundry}`"></option>
+                                    </template>
+                                </select>
+                                <input type="text" class="form-input mb-4 w-full border rounded p-2" :name="`jenis_barang[]`" x-model="item.jenis_barang" placeholder="Jenis Barang">
+                                <input type="text" class="form-input mb-4 w-full border rounded p-2" :name="`spesifikasi_barang[]`" x-model="item.spesifikasi_barang" placeholder="Spesifikasi">
+                                <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" step="0.01" class="form-input mb-4 w-full border rounded p-2" :name="`jumlah[]`" x-model="item.jumlah" placeholder="Berat (Kg)/Jumlah Pakaian">
+                                <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" step="0.01" class="form-input mb-4 w-full border rounded p-2" :name="`harga_satuan[]`" x-model="item.harga_satuan" placeholder="Harga Per kg/Per Satuan">
+                            </div>  
+                            <button type="button" class="btn btn-danger w-full py-2 bg-red-400 text-white rounded hover:bg-red-500" @click="items.splice(index, 1)">
+                                <i class="fas fa-trash mr-2"></i> Hapus Item
+                            </button>
+                        </div>
+                    </template>
+                
+                    <button type="button" class="btn btn-secondary py-2 px-4 bg-blue-400 text-white rounded hover:bg-blue-500" @click="items.push({ layanan_id: '', jenis_barang: '', spesifikasi_barang: '', jumlah: '', harga_satuan: '' })">
+                        <i class="fas fa-plus mr-2"></i>Tambah Layanan
+                    </button>
+                
+                    <button type="button" class="btn btn-primary py-2 px-6 mt-4 bg-blue-400 text-white rounded hover:bg-blue-500" @click="showModal = true">
+                        <i class="fas fa-check mr-2"></i>Simpan Pesanan
+                    </button>
 
-                        <div class="mt-4">
-                            <p class="font-semibold mb-2">Status Pembayaran</p>
-                            <div class="flex flex-wrap gap-4">
-                                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
-                                    <input 
-                                        type="radio" name="status_pembayaran" 
-                                        value="Lunas" x-model="status_pembayaran" 
-                                        class="text-blue-500 focus:ring-blue-400 border-gray-300 rounded"
-                                    > 
-                                    <span class="whitespace-nowrap">Lunas</span>
-                                </label>
-                                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
-                                    <input 
-                                        type="radio" name="status_pembayaran" 
-                                        value="Belum Lunas" x-model="status_pembayaran" 
-                                        class="text-blue-500 focus:ring-blue-400 border-gray-300 rounded"
-                                    > 
-                                    <span class="whitespace-nowrap">Belum Lunas</span>
-                                </label>
+                    <div 
+                        x-show="showModal" x-cloak
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100"
+                        x-transition:leave="transition ease-in duration-200"
+                        x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
+                        class="fixed inset-0 bg-black bg-opacity-50 z-40"
+                    >
+                    </div>
+                    <div 
+                        class="fixed inset-0 flex items-center justify-center z-50 p-4" 
+                        x-show="showModal" x-cloak
+                        x-transition:enter="transition ease-out duration-300" 
+                        x-transition:enter-start="opacity-0 translate-y-5" 
+                        x-transition:enter-end="opacity-100 translate-y-0" 
+                        x-transition:leave="transition ease-in duration-200" 
+                        x-transition:leave-start="opacity-100 translate-y-0" 
+                        x-transition:leave-end="opacity-0 translate-y-5"
+                    >
+                        <div class="bg-white w-full max-w-lg rounded-lg shadow-xl flex flex-col max-h-[90vh]">
+                            <div class="p-6 border-b">
+                                <h2 class="text-2xl font-semibold mb-4 text-center">Konfirmasi Pesanan</h2>
+                            </div>
+                            
+                            <div class="overflow-y-auto p-6 flex-grow">
+                                <div class="mb-4">
+                                    <p><strong>Kategori:</strong> <span x-text="kategori"></span></p>
+                                    <p><strong>Pelanggan:</strong>
+                                        <template x-if="pelanggan_id">
+                                            <span x-text="getNamaPelanggan(pelanggan_id)"></span>
+                                        </template>
+                                    </p>
+                                    <p><strong>Nomor Telepon:</strong>
+                                        <template x-if="pelanggan_id">
+                                            <span x-text="getTeleponPelanggan(pelanggan_id)"></span>
+                                        </template>
+                                    </p>
+                                    <p><strong>Alamat:</strong>
+                                        <template x-if="pelanggan_id">
+                                            <span x-text="getAlamatPelanggan(pelanggan_id)"></span>
+                                        </template>
+                                    </p>
+                                    <p><strong>Tanggal Terima: </strong><span x-text="formatTanggal(tanggal_terima)"></span></p>
+                                    <p><strong>Tanggal Selesai: </strong><span x-text="formatTanggal(tanggal_selesai)"></span></p>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h3 class="font-bold">Detail Layanan:</h3>
+                                    <template x-for="(item, index) in items" :key="index">
+                                        <div class="border p-2 my-2 rounded bg-gray-50">
+                                            <p><strong>Layanan:</strong> <span x-text="getNamaLayanan(item.layanan_id)"></span></p>
+                                            <p><strong>Jenis Barang:</strong> <span x-text="item.jenis_barang"></span></p>
+                                            <p><strong>Spesifikasi:</strong> <span x-text="item.spesifikasi_barang"></span></p>
+                                            <p><strong>Jumlah/Berat (Kg):</strong> <span x-text="item.jumlah + ' ' + getSatuan(item.layanan_id)"></span></p>
+                                            <p><strong>Harga Satuan:</strong> Rp<span x-text="item.harga_satuan"></span></p>
+                                            <p><strong>Subtotal:</strong> Rp<span x-text="item.jumlah * item.harga_satuan"></span></p>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="mb-4 font-bold text-right">
+                                    Total: Rp.<span x-text="getTotalHarga()"></span>
+                                </div>
+
+                                <div class="mt-4">
+                                    <p class="font-semibold mb-2">Status Pembayaran</p>
+                                    <div class="flex flex-wrap gap-4">
+                                        <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                                            <input 
+                                                type="radio" name="status_pembayaran" 
+                                                value="Lunas" x-model="status_pembayaran" 
+                                                class="text-blue-500 focus:ring-blue-400 border-gray-300 rounded"
+                                            > 
+                                            <span class="whitespace-nowrap">Lunas</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                                            <input 
+                                                type="radio" name="status_pembayaran" 
+                                                value="Belum Lunas" x-model="status_pembayaran" 
+                                                class="text-blue-500 focus:ring-blue-400 border-gray-300 rounded"
+                                            > 
+                                            <span class="whitespace-nowrap">Belum Lunas</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 border-t flex justify-end gap-4 bg-white">
+                                <button type="submit" class="bg-blue-400 text-white px-6 py-2 rounded hover:bg-blue-500">Konfirmasi & Simpan</button>
+                                <button type="button" @click="showModal = false" class="bg-red-400 text-white px-6 py-2 rounded hover:bg-red-500">Batal</button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="p-4 border-t flex justify-end gap-4 bg-white">
-                        <button type="submit" class="bg-blue-400 text-white px-6 py-2 rounded hover:bg-blue-500">Konfirmasi & Simpan</button>
-                        <button type="button" @click="showModal = false" class="bg-red-400 text-white px-6 py-2 rounded hover:bg-red-500">Batal</button>
-                    </div>
-                </div>
+                    <button 
+                        type="button" 
+                        class="btn btn-primary py-2 px-6 mt-4 bg-gray-400 text-white rounded hover:bg-gray-500" 
+                        onclick="window.location.href='{{ route('pesanan.index') }}'"
+                    >
+                        Kembali
+                    </button>
+
+                </form>
             </div>
-
-            <button 
-                type="button" 
-                class="btn btn-primary py-2 px-6 mt-4 bg-gray-400 text-white rounded hover:bg-gray-500" 
-                onclick="window.location.href='{{ route('pesanan.index') }}'"
-            >
-                Kembali
-            </button>
-
-        </form>
+        </div>
 
         <div 
             x-show="openModalTambahPelanggan"
@@ -562,7 +481,65 @@
                 </form>
             </div>
         </div>
-        
+
+        <!-- Modal Pengeluaran -->
+        <div
+            x-show="openModalPengeluaran"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-black bg-opacity-50 z-9998"
+            x-cloak
+            >
+        </div>
+
+        <div
+            x-show="openModalPengeluaran"
+            x-transition:enter="transition ease-out duration-300 transform"
+            x-transition:enter-start="opacity-0 translate-y-5 scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+            x-transition:leave="transition ease-in duration-200 transform"
+            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+            x-transition:leave-end="opacity-0 translate-y-5 scale-95"
+            class="fixed inset-0 flex items-center justify-center z-9999"
+            x-cloak
+        >
+            <div class="bg-white p-6 rounded w-96" @click.away="openModalPengeluaran = false">
+                <h2 class="text-lg font-bold mb-4">Tambah Data Pengeluaran</h2>
+                <form action="{{ route('pengeluaran.store') }}" method="POST">
+                    @csrf
+                    <div class="mb-4">
+                        <label class="block mb-1">Jenis Pengeluaran</label>
+                        <input type="text" name="jenis_pengeluaran" class="w-full border rounded p-2" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1">Biaya</label>
+                        <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" name="biaya" class="w-full border rounded p-2" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1">Tanggal</label>
+                        <input type="date" name="tanggal" class="w-full border rounded p-2" required>
+                    </div>
+                    <div class="flex justify-end">
+                        <button
+                            type="button"
+                            x-on:click="openModalPengeluaran = false"
+                            class="mr-2 text-gray-500"
+                        >
+                            Batal
+                        </button>
+                        <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
 
     <script>
         function formHandler(kategoriAwal, pelangganData) {
@@ -574,7 +551,6 @@
                 status_cucian: '',
                 status_pembayaran: '',
                 showModal: false,
-                openModalTambahPelanggan: false,
                 pelangganList: pelangganData,
                 items: [{ layanan_id: '', jenis_barang: '', spesifikasi_barang: '', jumlah: '', harga_satuan: '' }],
                 
@@ -670,11 +646,6 @@
                             self.pelanggan_id = $(this).val();
                         });
                         
-                        // const tanggalTerimaFmt = flatpickr.formatDate(today, "d F Y", 'id');
-                        // const tanggalSelesaiFmt = flatpickr.formatDate(today, "d F Y", 'id');
-                        // this.tanggal_terima = tanggalTerimaFmt;
-                        // this.tanggal_selesai = tanggalSelesaiFmt;
-                        
                         this.status_pembayaran = 'Belum Lunas';
                     });
                 }
@@ -682,6 +653,6 @@
         }
     </script>
 
-    </div>
 </body>
+
 </html>

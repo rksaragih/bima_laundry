@@ -142,7 +142,7 @@
                                 Batal
                             </button>
                             <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
-                                Simpan
+                                Tambah
                             </button>
                         </div>
                     </form>
@@ -161,7 +161,7 @@
           </li>
           <li class="mt-8">
             <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-              <i class="fas fa-sign-out-alt mr-3"></i> Logout
+              <i class="fas fa-sign-out-alt mr-3"></i> Keluar
             </a>
 
             <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
@@ -174,16 +174,14 @@
 
     <!-- main -->
     <div class="flex-1 p-10">
-        <header class="bg-biruBima text-white px-6 py-3 shadow">
-            <div class="flex justify-between items-center">
-              <div class="text-2xl font-semibold ml-auto">{{ Auth::user()->role }}</div>
-            </div>
-          </header>
-        <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedLayanan: {} }">
-            <div class="flex justify-between items-center mb-4">
-                <h1 class="text-2xl font-bold">Data Layanan</h1>
-            </div>
+        <header class="bg-biruBima rounded-xl text-white px-6 py-3 shadow">
+          <div class="flex justify-between items-center">
+            <div class="text-2xl font-semibold">Data Layanan</div>              
+            <div class="text-2xl font-semibold ml-auto">{{ Auth::user()->role }}</div>
+          </div>
+        </header>
 
+        <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedLayanan: {} }">
           @if (auth()->user()->role === 'Admin')
           <!-- Modal -->
           <div x-data="{ openModal: false }">
@@ -246,7 +244,7 @@
                                 Batal
                             </button>
                             <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
-                                Simpan
+                                Tambah
                             </button>
                         </div>
                     </form>
@@ -327,9 +325,17 @@
                                         <h2 class="text-xl font-semibold mt-2">Konfirmasi Hapus</h2>
                                     </div>
                                     
-                                    <p class="text-center text-gray-700 mb-5">
-                                        Yakin ingin menghapus layanan ini?
+                                <div class="text-center mb-4">
+                                    <p class="text-gray-700 mb-2">
+                                        Yakin ingin menghapus layanan <strong>{{ $layanan->jenis_laundry }}</strong>?
                                     </p>
+                                    <p class="text-sm text-gray-500">
+                                        Pesanan yang terkait dengan layanan ini akan tetap tersimpan.
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        Tindakan ini tidak dapat dibatalkan.
+                                    </p>
+                                </div>
                                     
                                     <div class="flex justify-center"> 
                                         <form action="{{ route('layanan.destroy', $layanan->id) }}" method="POST" class="inline-flex space-x-4">
@@ -434,7 +440,7 @@
                               Batal
                           </button>
                           <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
-                              Update
+                              Perbarui
                           </button>
                       </div>
                   </form>

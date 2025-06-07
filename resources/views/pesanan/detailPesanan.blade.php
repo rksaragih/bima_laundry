@@ -7,7 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script src="//unpkg.com/alpinejs" defer></script>
+
     <script>
         tailwind.config = {
         theme: {
@@ -20,7 +22,7 @@
         };
     </script>
 
-    <style>
+    {{-- <style>
         * {
             margin: 0;
             padding: 0;
@@ -276,93 +278,270 @@
                 box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
             }
         }
+    </style> --}}
+
+    <script>
+        document.querySelector('tr').addEventListener('click', function(e) {
+            if (!e.target.closest('button')) {
+                window.location.href = 'url-detail';
+            }
+        });
+
+        function tutupModal() {
+                document.getElementById('openSelectionModal').classList.add('hidden');
+            }
+
+        window.onclick = function(event) {
+                const modal = document.getElementById('openSelectionModal');
+                if (event.target === modal) {
+                    tutupModal();
+                }
+            }
+    </script>
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 
 </head>
-<body>
-    <div class="container">
-        <div class="card">
-            <h1 class="text-2xl font-bold mb-6">Detail Pesanan</h1>
+<body class="bg-gray-100">
+    <div class="flex min-h-screen">
 
-            <div class="bg-white rounded-lg shadow p-6 mb-8">
-                <h2 class="text-lg font-semibold mb-4 border-b pb-2">Data Pelanggan</h2>
-                <div class="space-y-2">
-                    <p><strong>Nama: </strong> {{ $pesanan->pelanggan->nama }} </p>
-                    <p><strong>Alamat: </strong> {{ $pesanan->pelanggan->alamat }} </p>
-                    <p><strong>No Hp.: </strong> {{ $pesanan->pelanggan->nomor_telepon }} </p>
+        <!-- ini sidebar -->
+        <div class="w-1/5 min-w-[240px] bg-white shadow-lg sticky top-0 h-screen overflow-y-auto">
+            <div class="p-6" x-data="{ openModalPengeluaran : false }">
+                <div class="flex items-center mb-8">
+                    <a href="{{ Auth::user()->role === 'Admin' ? route('index') : route('pesanan.index') }}">
+                    <img
+                        alt="Logo"
+                        class="mr-3"
+                        src="/images/logo-bima-laundry-svg.svg"
+                    />
+                    </a>
                 </div>
-            </div>
+                <ul>
+                @if(Auth::user()->role === 'Admin')
+                <li class="mb-4">
+                <a class="flex items-center gap-4 text-gray-700" href="{{ route('index') }}">
+                    <i class="fa-solid fa-table-columns fa-fw"></i>
+                    Dashboard
+                </a>
+                </li>
+                @endif
+                <li class="mb-4">
+                <a
+                    class="flex items-center gap-4 text-biruBima"
+                    href="{{ route('pesanan.index') }}"
+                >
+                    <i class="fas fa-file-alt fa-fw"></i>
+                    Pesanan
+                </a>
+                </li>
+                <li class="mb-4">
+                <a
+                    class="flex items-center gap-4 text-gray-700"
+                    href="{{ route('pelanggan.index') }}"
+                >
+                <i class="fas fa-users fa-fw"></i>
+                    Pelanggan
+                </a>
+                </li>
+                <li class="mb-4">
+                <a class="flex items-center gap-4 text-gray-700" href="{{ route('layanan.index') }}">
+                    <i class="fas fa-user-shield fa-fw"></i>
+                    Layanan
+                </a>
+                </li>
+                <li class="mb-4">
+                    <a class="flex items-center gap-4 text-gray-700" href="{{ route('layananpengiriman.index') }}">
+                    <i class="fas fa-shipping-fast fa-fw"></i>
+                    Layanan Pengiriman
+                    </a>
+                </li>
 
-            <div class="bg-white rounded-lg shadow p-6">
-                <h2 class="text-lg font-semibold mb-4 border-b pb-2">Data Pesanan</h2>
-                <div class="space-y-2">
-                    <p><strong>Kategori Pesanan: </strong>{{ $pesanan->details->first()?->layanan?->kategori ?? '-' }}</p>
+                <li class="mb-4">
+                    @if (Auth::user()->role === 'Kasir')
+                    <a
+                    href="#"
+                    class="flex items-center gap-4 text-gray-700"
+                    x-on:click.prevent="openModalPengeluaran = true"
+                >
+                    <i class="fas fa-wallet fa-fw"></i>
+                    Tambah Pengeluaran
+                </a>
 
-                    <div class="bg-gray-50 rounded-lg p-5 shadow mb-8">
-                        <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">Detail Layanan</h2>
-                        
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full bg-white border border-gray-200">
-                                <thead>
-                                    <tr>
-                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">No</th>
-                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Layanan</th>
-                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Jenis Barang</th>
-                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Spesifikasi</th>
-                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Jumlah/Berat</th>
-                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Harga Satuan</th>
-                                        <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Subtotal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($pesanan->details as $index => $item)
-                                    <tr class="{{ $index % 2 === 0 ? 'bg-white' : 'bg-gray-50' }}">
-                                        <td class="py-3 px-4 border-b">{{ $index + 1 }}</td>
-                                        <td class="py-3 px-4 border-b">{{ $item->layanan->jenis_laundry }}</td>
-                                        <td class="py-3 px-4 border-b">{{ $item->jenis_barang }}</td>
-                                        <td class="py-3 px-4 border-b">{{ $item->spesifikasi_barang }}</td>
-                                        <td class="py-3 px-4 border-b">{{ $item->jumlah }}</td>
-                                        <td class="py-3 px-4 border-b">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-                                        <td class="py-3 px-4 border-b font-medium">Rp {{ number_format($item->jumlah * $item->harga_satuan, 0, ',', '.') }}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot>
-                                    <tr class="bg-gray-100">
-                                        <td colspan="6" class="py-3 px-4 border-b text-right font-bold">Total:</td>
-                                        <td class="py-3 px-4 border-b font-bold text-blue-600">
-                                            Rp {{ number_format($pesanan->details->sum(function($item) { return $item->jumlah * $item->harga_satuan; }), 0, ',', '.') }}
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+
+                        <div
+                            x-show="openModalPengeluaran"
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition ease-in duration-200"
+                            x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                            class="fixed inset-0 bg-black bg-opacity-50 z-40"
+                            x-cloak
+                            >
                         </div>
-                    </div>
 
-                    <p><strong>Tanggal Terima: </strong>{{ \Carbon\Carbon::parse($pesanan->tanggal_terima)->format('d M Y') }}</p>
-                    <p><strong>Estimasi Selesai: </strong>{{ \Carbon\Carbon::parse($pesanan->tanggal_selesai)->format('d M Y') }}</p>
+                        <div
+                        x-show="openModalPengeluaran"
+                        x-cloak
+                        x-transition:enter="transition ease-out duration-300 transform"
+                        x-transition:enter-start="opacity-0 translate-y-5 scale-95"
+                        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave="transition ease-in duration-200 transform"
+                        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave-end="opacity-0 translate-y-5 scale-95"
+                        class="fixed inset-0 flex items-center justify-center z-50"
+                        >
+                        <div class="bg-white p-6 rounded w-96" @click.away="openModalPengeluaran = false">
+                            <h2 class="text-lg font-bold mb-4">Tambah Data Pengeluaran</h2>
+                            <form action="{{ route('pengeluaran.store') }}" method="POST">
+                                @csrf
+                                <div class="mb-4">
+                                    <label class="block mb-1">Jenis Pengeluaran</label>
+                                    <input type="text" name="jenis_pengeluaran" class="w-full border rounded p-2" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block mb-1">Biaya</label>
+                                    <input type="number" onkeydown="return !['e','E','+','-'].includes(event.key)" name="biaya" class="w-full border rounded p-2" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block mb-1">Tanggal</label>
+                                    <input type="date" name="tanggal" class="w-full border rounded p-2" required>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button
+                                        type="button"
+                                        x-on:click="openModalPengeluaran = false"
+                                        class="mr-2 text-gray-500"
+                                    >
+                                        Batal
+                                    </button>
+                                    <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
+                                        Simpan
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        </div>
 
-                    <p><strong>Status Cucian: </strong> {{ $pesanan->status_cucian }} </p>
-                    <p><strong>Status Pembayaran: </strong> {{ $pesanan->status_pembayaran }} </p>
-
-                    <p><strong>Total Harga: </strong> {{ $pesanan->total_harga }} </p>
-                </div>
+                    @else
+                        <a
+                        href="{{ route('pengeluaran.index') }}"
+                        class="flex items-center gap-4 text-gray-700"
+                        >
+                        <i class="fas fa-wallet fa-fw"></i>
+                        Pengeluaran
+                        </a>
+                    @endif
+                    </li>
+                    <li class="mt-8">
+                        <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fas fa-sign-out-alt mr-3"></i> Keluar
+                        </a>
+        
+                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                        @csrf
+                        </form>
+                    </li>
+                </ul>
             </div>
+        </div>
 
-            <div class="button-container mt-6 flex justify-end gap-4">
-                <button 
-                    class="cancel-btn bg-red-400 text-white px-4 py-2 rounded hover:bg-red-500"
-                    onclick="window.location.href='{{ route('pesanan.index') }}'"
-                >
-                    Cancel
-                </button>
+        <div class="flex-1 p-10">
+            <header class="bg-biruBima rounded-xl text-white px-6 py-3 shadow">
+                <div class="flex justify-between items-center">
+                <div class="text-2xl font-semibold">Detail Pesanan</div>
+                <div class="text-2xl font-semibold ml-auto">{{ Auth::user()->role }}</div>
+                </div>
+            </header>
+            
+            <div class="space-y-6">
+                <div class="bg-white rounded-lg shadow p-6 mb-8">
+                    <h2 class="text-lg font-semibold mb-4 border-b pb-2">Data Pelanggan</h2>
+                    <div class="space-y-2">
+                        <p><strong>Nama: </strong> {{ $pesanan->pelanggan?->nama ?? 'Data Tidak Ditemukan' }} </p>
+                        <p><strong>Alamat: </strong> {{ $pesanan->pelanggan?->alamat ?? 'Data Tidak Ditemukan'}} </p>
+                        <p><strong>No Hp.: </strong> {{ $pesanan->pelanggan?->nomor_telepon ?? 'Data Tidak Ditemukan' }} </p>
+                    </div>
+                </div>
 
-                <button 
-                    class="print-btn bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-500"
-                    onclick="window.location.href='{{ route('pesanan.print', $pesanan->id) }}'"
-                >
-                    Print
-                </button>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-lg font-semibold mb-4 border-b pb-2">Data Pesanan</h2>
+                    <div class="space-y-2">
+                        <p><strong>Kategori Pesanan: </strong>{{ $pesanan->details->first()?->layanan?->kategori ?? 'Data Tidak Ditemukan' }}</p>
+
+                        <div class="bg-gray-50 rounded-lg p-5 shadow mb-8">
+                            <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">Detail Layanan</h2>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr>
+                                            <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">No</th>
+                                            <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Layanan</th>
+                                            <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Jenis Barang</th>
+                                            <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Spesifikasi</th>
+                                            <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Jumlah/Berat</th>
+                                            <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Harga Satuan</th>
+                                            <th class="py-3 px-4 border-b text-left bg-gray-100 text-sm font-medium text-gray-600">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($pesanan->details as $index => $item)
+                                        <tr class="{{ $index % 2 === 0 ? 'bg-white' : 'bg-gray-50' }}">
+                                            <td class="py-3 px-4 border-b">{{ $index + 1 }}</td>
+                                            <td class="py-3 px-4 border-b">{{ $item->layanan?->jenis_laundry ?? 'Data Tidak Ditemukan' }}</td>
+                                            <td class="py-3 px-4 border-b">{{ $item->jenis_barang }}</td>
+                                            <td class="py-3 px-4 border-b">{{ $item->spesifikasi_barang }}</td>
+                                            <td class="py-3 px-4 border-b">{{ $item->jumlah }}</td>
+                                            <td class="py-3 px-4 border-b">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                                            <td class="py-3 px-4 border-b font-medium">Rp {{ number_format($item->jumlah * $item->harga_satuan, 0, ',', '.') }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="bg-gray-100">
+                                            <td colspan="6" class="py-3 px-4 border-b text-right font-bold">Total:</td>
+                                            <td class="py-3 px-4 border-b font-bold text-blue-600">
+                                                Rp {{ number_format($pesanan->details->sum(function($item) { return $item->jumlah * $item->harga_satuan; }), 0, ',', '.') }}
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <p><strong>Tanggal Terima: </strong>{{ \Carbon\Carbon::parse($pesanan->tanggal_terima)->format('d M Y') }}</p>
+                        <p><strong>Estimasi Selesai: </strong>{{ \Carbon\Carbon::parse($pesanan->tanggal_selesai)->format('d M Y') }}</p>
+
+                        <p><strong>Status Cucian: </strong> {{ $pesanan->status_cucian }} </p>
+                        <p><strong>Status Pembayaran: </strong> {{ $pesanan->status_pembayaran }} </p>
+
+                        <p><strong>Total Harga: </strong> {{ $pesanan->total_harga }} </p>
+                    </div>
+                </div>
+
+                <div class="button-container mt-6 flex justify-end gap-4">
+                    <button 
+                        class="cancel-btn bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+                        onclick="window.history.back()"
+                    >
+                        Kembali
+                    </button>
+
+                    <button 
+                        class="print-btn bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-500"
+                        onclick="window.location.href='{{ route('pesanan.print', $pesanan->id) }}'"
+                    >
+                        Cetak Struk
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>

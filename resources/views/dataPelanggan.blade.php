@@ -69,9 +69,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 </head>
 
-<!-- sidebar -->
 <body class="bg-gray-100">
   <div class="flex min-h-screen">
+
+    <!-- sidebar -->
     <div class="w-1/5 min-w-[240px] bg-white shadow-lg sticky top-0 h-screen overflow-y-auto">
       <div class="p-6" x-data="{ openModalPengeluaran: false }">
         <div class="flex items-center mb-8">
@@ -182,7 +183,7 @@
                                 Batal
                             </button>
                             <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
-                                Simpan
+                                Tambah
                             </button>
                         </div>
                     </form>
@@ -201,7 +202,7 @@
           </li>
           <li class="mt-8">
             <a href="#" class="flex items-center gap-2 text-red-500" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-              <i class="fas fa-sign-out-alt mr-3"></i> Logout
+              <i class="fas fa-sign-out-alt mr-3"></i> Keluar
             </a>
 
             <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
@@ -214,23 +215,17 @@
 
     <!-- main -->
     <div class="flex-1 p-10">
-        <header class="bg-biruBima text-white px-6 py-3 shadow">
-            <div class="flex justify-between items-center">
-              <div class="text-2xl font-semibold ml-auto">{{ Auth::user()->role }}</div>
-            </div>
-          </header>
-      <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedPelanggan: {} }">
-        <form action="{{ route('pelanggan.search') }}" method="GET">
-          <div class="flex justify-between items-center mb-4">
-              <h1 class="text-2xl font-bold">Data Pelanggan</h1>
-              <input class="border rounded-lg px-4 py-2" name="search_nama" placeholder="Search..." type="text"/>
+        <header class="bg-biruBima rounded-xl text-white px-6 py-3 shadow">
+          <div class="flex justify-between items-center">
+            <div class="text-2xl font-semibold">Data Pelanggan</div>               
+            <div class="text-2xl font-semibold ml-auto">{{ Auth::user()->role }}</div>
           </div>
-        </form>
+        </header>
 
+      <div class="bg-white p-6 rounded-lg shadow-lg" x-data="{ openEditModal: false, selectedPelanggan: {} }">
         <!-- Modal -->
-
-          <div x-data="{ openModal: false }">
-            <div class="flex space-x-4 mb-4">
+          <div class="flex justify-between items-center mb-4" x-data="{ openModal: false }">
+            <div class="flex space-x-4">
               @if(Auth::user()->role === 'Admin')
               <button x-on:click="openModal = true" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-lg">
                 <i class="fas fa-plus mr-2"></i>Tambah Data
@@ -238,15 +233,19 @@
               @endif
 
               <button class="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-lg" onclick="window.location.href='{{ route('pelanggan.index') }}'">
-                <i class="fas fa-sync mr-2"></i>Reset Filter
+                <i class="fas fa-filter-circle-xmark mr-2"></i>Hapus Filter
               </button>
 
               @if(Auth::user()->role === 'Admin')
                 <button onclick="window.location.href='{{ route('pelanggan.export') }}'" class="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded-lg">
-                  <i class="fas fa-file-export mr-2"></i>Export Data
+                  <i class="fas fa-file-export mr-2"></i>Ekspor Data
                 </button>
               @endif
             </div>
+
+            <form action="{{ route('pelanggan.search') }}" method="GET" class="flex items-center space-x-2">
+              <input class="border rounded-lg px-4 py-2" name="search_nama" placeholder="Cari Nama..." type="text"/>
+            </form>
 
             <div
               x-show="openModal"
@@ -297,12 +296,13 @@
                                 Batal
                             </button>
                             <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
-                                Simpan
+                                Tambah
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
+
           </div>
 
           <table class="min-w-full bg-white">
@@ -337,7 +337,7 @@
                   <td class="px-6 py-4 whitespace-nowrap">{{ $pelanggans->firstItem() + $index }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ $pelanggan->nama }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ $pelanggan->alamat }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ $pelanggan->nomor_telepon }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">+{{ $pelanggan->nomor_telepon }}</td>
                   <td class="px-6 py-4 whitespace-nowrap flex gap-2">
 
                     <button
@@ -385,9 +385,17 @@
                                     <h2 class="text-xl font-semibold mt-2">Konfirmasi Hapus</h2>
                                 </div>
                                 
-                                <p class="text-center text-gray-700 mb-5">
-                                    Yakin ingin menghapus pelanggan ini?
-                                </p>
+                                <div class="text-center mb-4">
+                                    <p class="text-gray-700 mb-2">
+                                        Yakin ingin menghapus pelanggan <strong>{{ $pelanggan->nama }}</strong>?
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        Pesanan yang terkait dengan pelanggan ini akan tetap tersimpan.
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        Tindakan ini tidak dapat dibatalkan.
+                                    </p>
+                                </div>
                                 
                                 <div class="flex justify-center">                                   
                                     <form action="{{ route('pelanggan.destroy', $pelanggan->id) }}" method="POST" class="inline-flex space-x-4">
@@ -493,7 +501,7 @@
                             Batal
                         </button>
                         <button type="submit" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">
-                            Update
+                            Perbarui
                         </button>
                     </div>
                 </form>

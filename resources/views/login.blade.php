@@ -86,7 +86,7 @@
             </div>
     
             {{-- Title --}}
-            <h2>Login</h2>
+            <h2>Masuk</h2>
 
             {{-- Error Messages --}}
             @if ($errors->any())
@@ -116,7 +116,7 @@
                     <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" required>
                 </div>
     
-                <button type="submit" class="btn btn-custom w-100 mt-2">Login</button>
+                <button type="submit" class="btn btn-custom w-100 mt-2">Masuk</button>
             </form>
     
         </div>

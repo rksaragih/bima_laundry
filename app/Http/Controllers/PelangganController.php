@@ -48,7 +48,16 @@ class PelangganController extends Controller
             'nomor_telepon' => 'required|string|max:15',
         ]);
 
-        Pelanggan::create($request->all());
+        $nomorTelepon = preg_replace('/[^0-9]/', '', $request->nomor_telepon);
+        if (strpos($nomorTelepon, '0') === 0) {
+            $nomorTelepon = '62' . substr($nomorTelepon, 1);
+        }
+
+        Pelanggan::create([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'nomor_telepon' => $nomorTelepon,
+        ]);
 
         return redirect()->back()->with('success', 'Data pelanggan berhasil ditambahkan.');
     }
@@ -61,8 +70,17 @@ class PelangganController extends Controller
             'nomor_telepon' => 'required|string|max:20',
         ]);
 
+        $nomorTelepon = preg_replace('/[^0-9]/', '', $request->nomor_telepon);
+        if (strpos($nomorTelepon, '0') === 0) {
+            $nomorTelepon = '62' . substr($nomorTelepon, 1);
+        }
+
         $pelanggan = Pelanggan::findOrFail($id);
-        $pelanggan->update($request->only('nama', 'alamat', 'nomor_telepon'));
+        $pelanggan->update([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'nomor_telepon' => $nomorTelepon,
+        ]);
 
         return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil diperbarui.');
     }

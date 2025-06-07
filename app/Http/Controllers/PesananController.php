@@ -131,6 +131,14 @@ class PesananController extends Controller
         $pesanan = Pesanan::findOrFail($id);
         $pesanan->update($request->only('status_cucian', 'status_pembayaran'));
 
+        if ($request->status_cucian === 'Selesai') {
+        session()->flash('kirim_wa', [
+            'nama' => $pesanan->pelanggan->nama,
+            'alamat' => $pesanan->pelanggan->alamat,
+            'no_hp' => $pesanan->pelanggan->nomor_telepon,
+        ]);
+    }
+
         return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui.');
     }
 
@@ -199,6 +207,14 @@ class PesananController extends Controller
                 'jumlah' => $request->jumlah[$i],
                 'harga_satuan' => $request->harga_satuan[$i],
                 'total_harga' => $request->jumlah[$i] * $request->harga_satuan[$i],
+            ]);
+        }
+
+        if ($request->status_cucian === 'Selesai') {
+            session()->flash('kirim_wa', [
+                'nama' => $pesanan->pelanggan->nama,
+                'alamat' => $pesanan->pelanggan->alamat,
+                'no_hp' => $pesanan->pelanggan->nomor_telepon,
             ]);
         }
 
